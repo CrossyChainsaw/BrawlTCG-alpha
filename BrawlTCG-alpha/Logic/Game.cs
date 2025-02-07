@@ -1,4 +1,5 @@
-﻿using BrawlTCG_alpha.Visuals;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+using BrawlTCG_alpha.Visuals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +21,8 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UpdateCardsInDeckPile;
         public event Action<Player, bool> UI_ShowCards;
         public event Action<Player, ZoneTypes, bool> UI_EnableCards;
-        public event Action<Player> UI_EnableEnemyCards;
         public event Action UI_Multi_DisableCardsOnEssenceZones;
         public event Action<Player> UI_UpdatePlayerInformation;
-        public event Action<Player, ZoneTypes, List<Card>, int> UI_RearrangeCards;
         public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
         public event Action<string> UI_PopUpNotification;
         bool _bottomPlayerTurn = false;
@@ -44,8 +43,8 @@ namespace BrawlTCG_alpha.Logic
             UI_EnableCards(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
-            TopPlayer.DrawStartingHandFromDeck();
-            BottomPlayer.DrawStartingHandFromDeck();
+            ActivePlayer.DrawStartingHandFromDeck();
+            InactivePlayer.DrawStartingHandFromDeck();
             UI_InitializeCardsInHand.Invoke(ActivePlayer);
             UI_InitializeCardsInHand.Invoke(InactivePlayer);
 
@@ -56,12 +55,12 @@ namespace BrawlTCG_alpha.Logic
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
             UI_Multi_DisableCardsOnEssenceZones.Invoke();
         }
-        public async Task Start()
+        public void Start()
         {
             //SwitchTurn();
             StartTurn();
         }
-        public void StartTurn()
+        public Task StartTurn()
         {
             // Before you start
             UI_EnableCards.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
@@ -69,9 +68,9 @@ namespace BrawlTCG_alpha.Logic
             UI_ShowCards(ActivePlayer, true); // enable your cards
             ActivePlayer.GetEssence();
             UI_UpdatePlayerInformation.Invoke(ActivePlayer);
-
-            // now you can interact with cards
+            return Task.CompletedTask;
         }
+
         public void SwitchTurn()
         {
             // Switch the Turn
@@ -98,8 +97,8 @@ namespace BrawlTCG_alpha.Logic
             Card? card = ActivePlayer.DrawCardFromDeck();
             if (card != null)
             {
-                UI_UpdateCardsInDeckPile.Invoke(player);
                 UI_ChangeCardZone.Invoke(player, card, ZoneTypes.Deck, ZoneTypes.Hand);
+                UI_UpdateCardsInDeckPile.Invoke(player);
             }
         }
         void RandomizeStartingPlayer()
@@ -128,3 +127,5 @@ namespace BrawlTCG_alpha.Logic
 
     }
 }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

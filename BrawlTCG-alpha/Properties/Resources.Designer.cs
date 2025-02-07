@@ -63,6 +63,26 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Artemis {
+            get {
+                object obj = ResourceManager.GetObject("Artemis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BlazingFire {
+            get {
+                object obj = ResourceManager.GetObject("BlazingFire", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BrawlLogo {
             get {
                 object obj = ResourceManager.GetObject("BrawlLogo", resourceCulture);
@@ -116,6 +136,66 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Fangwild2 {
             get {
                 object obj = ResourceManager.GetObject("Fangwild2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap GalaxyLance {
+            get {
+                object obj = ResourceManager.GetObject("GalaxyLance", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MagmaSpear {
+            get {
+                object obj = ResourceManager.GetObject("MagmaSpear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Orion {
+            get {
+                object obj = ResourceManager.GetObject("Orion", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SpearIcon {
+            get {
+                object obj = ResourceManager.GetObject("SpearIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SpearSkyforged {
+            get {
+                object obj = ResourceManager.GetObject("SpearSkyforged", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap StarryScythe {
+            get {
+                object obj = ResourceManager.GetObject("StarryScythe", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

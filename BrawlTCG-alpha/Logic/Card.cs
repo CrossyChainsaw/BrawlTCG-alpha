@@ -11,7 +11,9 @@ enum Elements
     Fire,
     Magic,
     Nature,
-    Electric
+    Cosmic,
+    Water,
+    Wild,
 }
 
 namespace BrawlTCG_alpha.Logic
@@ -22,22 +24,28 @@ namespace BrawlTCG_alpha.Logic
         public int Cost { get; internal set; }
         public string Description { get; internal set; }
         public Elements Element { get; internal set; }
-        public Action<object> StartTurnEffect { get; internal set; }
-        public Action<object> EndTurnEffect { get; internal set; }
-        public Action<object> WhenPlayedEffect { get; internal set; }
+        public Action<object>? StartTurnEffect { get; internal set; }
+        public Action<object>? EndTurnEffect { get; internal set; }
+        public Action<object>? WhenPlayedEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
-        static Color MagicColor = Color.DarkViolet;
-        static Color NatureColor = Color.DarkTurquoise;
+        public Color TextColor { get; internal set; }
 
-        public Card(string name, int cost, string description, Elements element, Image image, Action<object> startTurnEffect = null, Action<object> endTurnEffect = null, Action<object> whenPlayedEffect = null)
+        static Color MagicColor = Color.DarkViolet;
+        static Color NatureColor = Color.DarkTurquoise; // DarkTurquoise
+        static Color FireColor = Color.DarkRed;
+        static Color CosmicColor = Color.DarkBlue;
+
+
+        public Card(string name, int cost, string description, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
         {
             Name = name;
             Cost = cost;
             Description = description;
             Element = element;
             Image = image;
-            CardColor = SetColor(element);
+            CardColor = SetCardColor(element);
+            TextColor = SetTextColor(element);
             // Effects
             StartTurnEffect = startTurnEffect;
             EndTurnEffect = endTurnEffect;
@@ -48,7 +56,7 @@ namespace BrawlTCG_alpha.Logic
         public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
         public void OnPlayed(object target) => WhenPlayedEffect?.Invoke(target);
         public abstract Card Clone();
-        public static Color SetColor(Elements element)
+        public static Color SetCardColor(Elements element)
         {
             if (element == Elements.Magic)
             {
@@ -58,7 +66,27 @@ namespace BrawlTCG_alpha.Logic
             {
                 return NatureColor;
             }
-            return Color.Black;
+            else if (element == Elements.Fire)
+            {
+                return FireColor;
+            }
+            else if (element == Elements.Cosmic)
+            {
+                return CosmicColor;
+            }
+            throw new Exception("This element has no color");
+        }
+        public static Color SetTextColor(Elements element)
+        {
+            if (element == Elements.Magic || element == Elements.Fire || element == Elements.Nature)
+            {
+                return Color.Black;
+            }
+            else if (element == Elements.Cosmic)
+            {
+                return Color.White;
+            }
+            throw new Exception("This element has no color");
         }
     }
 }
