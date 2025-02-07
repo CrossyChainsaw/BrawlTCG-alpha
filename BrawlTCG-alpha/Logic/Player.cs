@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 20;
-        const int STARTING_HAND_CARDS = 17;
+        const int STARTING_HAND_CARDS = 1;
         const int STARTING_ESSENCE = 0;
         public string Name { get; private set; }
         public int Health { get; private set; }
@@ -56,14 +56,16 @@ namespace BrawlTCG_alpha.Logic
                 DrawCardFromDeck();
             }
         }
-        public void DrawCardFromDeck()
+        public Card? DrawCardFromDeck()
         {
             if (Deck.Count > 0)
             {
                 Card card = Deck[0];
                 Deck.RemoveAt(0);
                 Hand.Add(card);
+                return card;
             }
+            return null;
         }
         public void RemoveEssence(Card card)
         {

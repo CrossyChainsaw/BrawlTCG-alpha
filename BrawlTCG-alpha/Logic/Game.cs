@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrawlTCG_alpha.Visuals;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -14,13 +15,16 @@ namespace BrawlTCG_alpha.Logic
         public Player ActivePlayer { get; private set; }
         public Player InactivePlayer { get; private set; }
         public event Action UI_Multi_InitializeDeckPiles;
-        public event Action<Player> InitializeCardsInHand;
+        public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
-        public event Action<Player> UI_FlipPlayerCards;
+        public event Action<Player, bool> UI_ShowCards;
+        public event Action<Player, bool> UI_EnableCards;
         public event Action<Player> UI_EnableEnemyCards;
         public event Action UI_Multi_DisableCardsOnEssenceZones;
         public event Action<Player> UI_UpdatePlayerInformation;
+        public event Action<Player, ZoneTypes, List<Card>, int> UI_RearrangeCards;
+        public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
         bool _bottomPlayerTurn = false;
 
         public Game(Player playerOne, Player playerTwo)
@@ -33,14 +37,19 @@ namespace BrawlTCG_alpha.Logic
         }
         public void Prepare()
         {
+            // Define Players
+            InactivePlayer = BottomPlayer;
+            ActivePlayer = TopPlayer;
+            _bottomPlayerTurn = false;
+
             // Initialize Decks Visually
             UI_Multi_InitializeDeckPiles.Invoke();
 
             // Draw Starting Hands and Display Visually
             TopPlayer.DrawStartingHandFromDeck();
             BottomPlayer.DrawStartingHandFromDeck();
-            InitializeCardsInHand.Invoke(BottomPlayer);
-            InitializeCardsInHand.Invoke(TopPlayer);
+            UI_InitializeCardsInHand.Invoke(BottomPlayer);
+            UI_InitializeCardsInHand.Invoke(TopPlayer);
 
             // Obtain first Essence card and display visually - and disable them
             TopPlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
@@ -51,22 +60,17 @@ namespace BrawlTCG_alpha.Logic
         }
         public async Task Start()
         {
-            // GAME STARTS
-            InactivePlayer = BottomPlayer;
-            ActivePlayer = TopPlayer;
-            _bottomPlayerTurn = false;
             SwitchTurn();
             StartTurn();
         }
         public void StartTurn()
         {
             // Before you start
-
-            UI_FlipPlayerCards(InactivePlayer);
-            ActivePlayer.DrawCardFromDeck();
-            UI_DrawCardFromDeck(ActivePlayer);
+            UI_EnableCards.Invoke(InactivePlayer, false); // disable enemy cards
+            DrawCardFromDeck(ActivePlayer); // draw card
+            UI_ShowCards(ActivePlayer, true); // enable your cards
             ActivePlayer.GetEssence();
-            UI_UpdatePlayerInformation(ActivePlayer);
+            UI_UpdatePlayerInformation.Invoke(ActivePlayer);
 
             // now you can interact with cards
         }
@@ -75,7 +79,6 @@ namespace BrawlTCG_alpha.Logic
             // Switch the Turn
             _bottomPlayerTurn = !_bottomPlayerTurn;
             ActivePlayer.PlayedEssenceCardThisTurn(false);
-
             if (ActivePlayer == BottomPlayer)
             {
                 ActivePlayer = TopPlayer;
@@ -86,19 +89,22 @@ namespace BrawlTCG_alpha.Logic
                 ActivePlayer = BottomPlayer;
                 InactivePlayer = TopPlayer;
             }
-        }
-
-        // Logic
-        void PlayCard(Card card)
-        {
-
+            UI_ShowCards(InactivePlayer, false);
+            UI_EnableCards(InactivePlayer, false);
+            UI_ShowCards(ActivePlayer, true);
+            UI_EnableCards(ActivePlayer, true);
         }
 
         // Visual Method Collection
-        void UI_DrawCardFromDeck(Player player)
+        void DrawCardFromDeck(Player player)
         {
-            UI_UpdateCardsInDeckPile(player);
-            InitializeCardsInHand(player);
+            // Logic
+            Card? card = ActivePlayer.DrawCardFromDeck();
+            if (card != null)
+            {
+                UI_UpdateCardsInDeckPile.Invoke(player);
+                UI_ChangeCardZone.Invoke(player, card, ZoneTypes.Deck, ZoneTypes.Hand);
+            }
         }
     }
 }
