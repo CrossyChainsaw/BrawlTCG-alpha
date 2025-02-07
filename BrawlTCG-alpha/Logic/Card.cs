@@ -27,6 +27,8 @@ namespace BrawlTCG_alpha.Logic
         public Action<object> WhenPlayedEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
+        static Color MagicColor = Color.DarkViolet;
+        static Color NatureColor = Color.DarkTurquoise;
 
         public Card(string name, int cost, string description, Elements element, Image image, Action<object> startTurnEffect = null, Action<object> endTurnEffect = null, Action<object> whenPlayedEffect = null)
         {
@@ -35,6 +37,7 @@ namespace BrawlTCG_alpha.Logic
             Description = description;
             Element = element;
             Image = image;
+            CardColor = SetColor(element);
             // Effects
             StartTurnEffect = startTurnEffect;
             EndTurnEffect = endTurnEffect;
@@ -45,5 +48,17 @@ namespace BrawlTCG_alpha.Logic
         public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
         public void OnPlayed(object target) => WhenPlayedEffect?.Invoke(target);
         public abstract Card Clone();
+        public static Color SetColor(Elements element)
+        {
+            if (element == Elements.Magic)
+            {
+                return MagicColor;
+            }
+            else if (element == Elements.Nature)
+            {
+                return NatureColor;
+            }
+            return Color.Black;
+        }
     }
 }

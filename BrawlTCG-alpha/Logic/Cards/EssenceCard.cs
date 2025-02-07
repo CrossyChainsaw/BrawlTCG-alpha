@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BrawlTCG_alpha.Logic
+namespace BrawlTCG_alpha.Logic.Cards
 {
     internal class EssenceCard : Card
     {
@@ -17,7 +17,6 @@ namespace BrawlTCG_alpha.Logic
             Element = element;
             Image = image;
             StartTurnEffect = (target) => GivePlayerEssence(target);
-            CardColor = Color.DarkViolet;
         }
         void GivePlayerEssence(object target)
         {

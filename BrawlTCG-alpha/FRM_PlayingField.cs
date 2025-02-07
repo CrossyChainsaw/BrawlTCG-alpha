@@ -1,4 +1,5 @@
 using BrawlTCG_alpha.Logic;
+using BrawlTCG_alpha.Logic.Cards;
 using BrawlTCG_alpha.Visuals;
 using Microsoft.VisualBasic.Devices;
 using System.Configuration;
@@ -10,52 +11,8 @@ namespace BrawlTCG_alpha
     public partial class FRM_PlayingField : Form
     {
         // Any sort of relation to logic
-        Player player1 = new Player("John", new List<Card>
-        {
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-        });
-        Player player2 = new Player("Jane", new List<Card>
-        {
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-            CardCatalogue.Essence.Clone(),
-        });
+        Player player1 = new Player("John", CardCatalogue.Deck1);
+        Player player2 = new Player("Jane", CardCatalogue.Deck2);
 
         // Visuals
         const int BASE_OFFSET_LEFT = 20;
@@ -89,7 +46,6 @@ namespace BrawlTCG_alpha
         }
 
         // Visual UI Functions
-        /// <summary>For now, this function shows a single card if there is >0 cards in the deck.</summary>
         /// <summary>Removes the Deck Pile if you have 0 cards in your deck pile</summary>
         void UpdateCardsInDeckPile(Player player)
         {
@@ -97,7 +53,7 @@ namespace BrawlTCG_alpha
             ZoneControl zone = GetMyZone(ZoneTypes.Deck, player);
             if (player.Deck.Count == 0)
             {
-                foreach (CardControl cardControl in zone.CardsControls)
+                foreach (CardControl cardControl in zone.CardsControls.ToList())
                 {
                     if (cardControl.Owner == player)
                     {
@@ -311,7 +267,7 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void ArrangeCards(Player player, ZoneTypes zoneType, List<Card> cardList)
+        void ArrangeCards(Player player, ZoneTypes zoneType, List<Card> cardList, int spacing = 20)
         {
             ZoneControl zone = GetMyZone(zoneType, player);
             if (cardList.Count != zone.CardsControls.Count)
@@ -320,9 +276,7 @@ namespace BrawlTCG_alpha
             }
             if (cardList.Count > 0)
             {
-                // Default spacing
-                int spacing = 20; // Initial spacing between cards
-
+                // Default spacing is passed as an argument, can be adjusted
                 // Calculate the total width needed for the cards and spacing
                 int totalCardWidth = CARD_WIDTH * cardList.Count;
                 int totalSpacingWidth = spacing * (cardList.Count - 1);
@@ -338,13 +292,13 @@ namespace BrawlTCG_alpha
                 // Calculate the starting X position to center the cards
                 int startX = zone.Location.X + (zone.Width - (CARD_WIDTH * cardList.Count) - (spacing * (cardList.Count - 1))) / 2;
 
-
                 for (int i = 0; i < cardList.Count; i++)
                 {
-                    zone.CardsControls[i].Location = Location = new Point(startX + i * (CARD_WIDTH + spacing), zone.Location.Y + 10);
+                    zone.CardsControls[i].Location = new Point(startX + i * (CARD_WIDTH + spacing), zone.Location.Y + 10);
                 }
             }
         }
+
 
         // Frontend Logic
         List<ZoneControl> GetZones(ZoneTypes targetZoneType)
@@ -370,6 +324,7 @@ namespace BrawlTCG_alpha
             }
             return null;
         }
+        // Play Cards
         internal async Task<bool> TryToSnapCard(CardControl cardControl, Card card, Player player)
         {
             if (card is EssenceCard)
@@ -377,39 +332,49 @@ namespace BrawlTCG_alpha
                 bool result = TryPlayEssenceCard(player, card, cardControl);
                 return result;
             }
+            else if (card is StageCard)
+            {
+                bool result = TryPlayStageCard(player, card, cardControl);
+                return result;
+            }
+            else if (card is LegendCard)
+            {
+                bool result = TryPlayLegendCard(player, card, cardControl);
+                return result;
+            }
+            return false;
+        }
+        bool TryPlayStageCard(Player player, Card card, CardControl cardControlOld)
+        {
+            ZoneControl stageZone = GetZones(ZoneTypes.Stage)[0];
+            if (IsMouseInZone(stageZone))
+            {
+                if (player.Essence >= card.Cost)
+                {
+                    PlayCardInZone(player, card, cardControlOld, stageZone);
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
             return false;
         }
         bool TryPlayEssenceCard(Player player, Card card, CardControl cardControlOld)
         {
+            // Check if the mouse is in the Essence Field
             ZoneControl essenceZone = GetMyZone(ZoneTypes.EssenceField, player);
-
-            // Convert screen coordinates to form-relative coordinates
-            Point mousePos = this.PointToClient(Cursor.Position);
-
-            // Convert essenceZone's bounds to form-relative coordinates
-            Rectangle essenceZoneBounds = essenceZone.Parent.RectangleToScreen(essenceZone.Bounds);
-            essenceZoneBounds = this.RectangleToClient(essenceZoneBounds);
-
-            // Check if the mouse position is within the EssenceField zone
-            if (essenceZoneBounds.Contains(mousePos))
+            if (IsMouseInZone(essenceZone))
             {
+                // Only 1 essence card per turn
                 if (!player.PlayedEssenceCardThisTurn())
                 {
-                    player.PlayCard(card);
-                    RemoveCardControl(cardControlOld, GetMyZone(ZoneTypes.Hand, player));
-
-                    CardControl cardControl = new CardControl(card, isOpen: true, owner: player)
+                    PlayCardInZone(player, card, cardControlOld, essenceZone, (p) =>
                     {
-                        Location = new Point(0, 0)
-                    };
-                    cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
-
-                    player.PlayedEssenceCardThisTurn(true);
-                    AddCardControl(cardControl, essenceZone);
-                    ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
-                    ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-                    cardControl.Enabled = false; // disable it
-
+                        p.PlayedEssenceCardThisTurn(true);
+                        ArrangeCards(p, ZoneTypes.EssenceField, p.EssenceField);
+                    });
                     return true;
                 }
                 else
@@ -418,6 +383,61 @@ namespace BrawlTCG_alpha
                 }
             }
             return false;
+        }
+        bool TryPlayLegendCard(Player player, Card card, CardControl cardControlOld)
+        {
+            ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
+            if (IsMouseInZone(playZone))
+            {
+                if (player.Essence >= card.Cost)
+                {
+                    // are there already 5?
+                    if (playZone.CardsControls.Count < 5)
+                    {
+                        PlayCardInZone(player, card, cardControlOld, playZone, (p) =>
+                        {
+                            ArrangeCards(p, ZoneTypes.PlayingField, p.PlayingField, spacing: 60);
+                        });
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Already 5 Legends");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
+            return false;
+        }
+        bool IsMouseInZone(ZoneControl zone)
+        {
+            Point mousePos = this.PointToClient(Cursor.Position);
+            Rectangle zoneBounds = zone.Parent.RectangleToScreen(zone.Bounds);
+            zoneBounds = this.RectangleToClient(zoneBounds);
+            return zoneBounds.Contains(mousePos);
+        }
+        /// <summary>Handles playing cards visually and logically</summary>
+        void PlayCardInZone(Player player, Card card, CardControl cardControlOld, ZoneControl targetZone, Action<Player> postPlayAction = null)
+        {
+            player.PlayCard(card);
+            RemoveCardControl(cardControlOld, GetMyZone(ZoneTypes.Hand, player));
+
+            CardControl cardControl = new CardControl(card, isOpen: true, owner: player)
+            {
+                Location = new Point(targetZone.Location.X + 10, targetZone.Location.Y + 10)
+            };
+            cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+
+            AddCardControl(cardControl, targetZone);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+            postPlayAction?.Invoke(player);  // Additional actions specific to the card type
+
+            cardControl.Enabled = false; // Disable after playing
+            UpdatePlayerInformation(player);
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
+using BrawlTCG_alpha.Logic.Cards;
+using BrawlTCG_alpha.Visuals;
 
 namespace BrawlTCG_alpha.Logic
 {
@@ -11,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 20;
-        const int STARTING_HAND_CARDS = 7;
+        const int STARTING_HAND_CARDS = 17;
         const int STARTING_ESSENCE = 0;
         public string Name { get; private set; }
         public int Health { get; private set; }
@@ -73,9 +75,13 @@ namespace BrawlTCG_alpha.Logic
             {
                 EssenceField.Add(essenceCard);
             }
+            else if (card is LegendCard legendCard)
+            {
+                PlayingField.Add(legendCard);
+            }
             Hand.Remove(card);
             RemoveEssence(card);
-            DiscardPile.Add(card);
+            //DiscardPile.Add(card);
         }
         public void GainEssence(int gain)
         {
