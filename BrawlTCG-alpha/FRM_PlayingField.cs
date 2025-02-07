@@ -42,11 +42,13 @@ namespace BrawlTCG_alpha
             // Multi
             _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
             _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
+            // Non-Player
+            _game.UI_PopUpNotification += (message) => MessageBox.Show(message);
         }
-        private void FRM_PlayingField_Load(object sender, EventArgs e)
+        private async void FRM_PlayingField_Load(object sender, EventArgs e)
         {
             _game.Prepare();
-            _game.Start();
+            await _game.Start();
         }
 
         // Visual UI Functions
@@ -100,9 +102,9 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void EnableCards(Player player, bool enable)
+        void EnableCards(Player player, ZoneTypes zoneType, bool enable)
         {
-            ZoneControl zone = GetMyZone(ZoneTypes.Hand, player);
+            ZoneControl zone = GetMyZone(zoneType, player);
             foreach (CardControl card in zone.CardsControls)
             {
                 if (enable)
@@ -131,6 +133,8 @@ namespace BrawlTCG_alpha
             ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
             zone.Label.Text = $"Health: {player.Health}\nEssence: {player.Essence}";
         }
+        
+        
         // Build & Rearrange the Playing Field
         void InitializePlayingFieldZones()
         {
@@ -389,6 +393,8 @@ namespace BrawlTCG_alpha
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        
+        
         // Play Cards
         internal async Task<bool> TryToSnapCard(CardControl cardControl, Card card, Player player)
         {

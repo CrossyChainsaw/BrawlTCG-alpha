@@ -61,5 +61,9 @@ namespace BrawlTCG_alpha.Logic
             FaerieQueen.Clone(),
             FaerieQueen.Clone(),
         };
+        public static List<Card> SingleCard = new List<Card>() {
+            Essence.Clone(),
+        };
+
     }
 }

@@ -19,54 +19,52 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
         public event Action<Player, bool> UI_ShowCards;
-        public event Action<Player, bool> UI_EnableCards;
+        public event Action<Player, ZoneTypes, bool> UI_EnableCards;
         public event Action<Player> UI_EnableEnemyCards;
         public event Action UI_Multi_DisableCardsOnEssenceZones;
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<Player, ZoneTypes, List<Card>, int> UI_RearrangeCards;
         public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
+        public event Action<string> UI_PopUpNotification;
         bool _bottomPlayerTurn = false;
 
         public Game(Player playerOne, Player playerTwo)
         {
             BottomPlayer = playerOne;
             TopPlayer = playerTwo;
-
-            ActivePlayer = BottomPlayer;
-            InactivePlayer = TopPlayer;
         }
         public void Prepare()
         {
             // Define Players
-            InactivePlayer = BottomPlayer;
-            ActivePlayer = TopPlayer;
-            _bottomPlayerTurn = false;
+            RandomizeStartingPlayer();
 
             // Initialize Decks Visually
             UI_Multi_InitializeDeckPiles.Invoke();
+            UI_EnableCards(ActivePlayer, ZoneTypes.Deck, false);
+            UI_EnableCards(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
             TopPlayer.DrawStartingHandFromDeck();
             BottomPlayer.DrawStartingHandFromDeck();
-            UI_InitializeCardsInHand.Invoke(BottomPlayer);
-            UI_InitializeCardsInHand.Invoke(TopPlayer);
+            UI_InitializeCardsInHand.Invoke(ActivePlayer);
+            UI_InitializeCardsInHand.Invoke(InactivePlayer);
 
             // Obtain first Essence card and display visually - and disable them
-            TopPlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            BottomPlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            UI_UpdateEssenceCardsInEssenceField.Invoke(BottomPlayer);
-            UI_UpdateEssenceCardsInEssenceField.Invoke(TopPlayer);
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
+            UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
             UI_Multi_DisableCardsOnEssenceZones.Invoke();
         }
         public async Task Start()
         {
-            SwitchTurn();
+            //SwitchTurn();
             StartTurn();
         }
         public void StartTurn()
         {
             // Before you start
-            UI_EnableCards.Invoke(InactivePlayer, false); // disable enemy cards
+            UI_EnableCards.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
             DrawCardFromDeck(ActivePlayer); // draw card
             UI_ShowCards(ActivePlayer, true); // enable your cards
             ActivePlayer.GetEssence();
@@ -90,12 +88,10 @@ namespace BrawlTCG_alpha.Logic
                 InactivePlayer = TopPlayer;
             }
             UI_ShowCards(InactivePlayer, false);
-            UI_EnableCards(InactivePlayer, false);
+            UI_EnableCards(InactivePlayer, ZoneTypes.Hand, false);
             UI_ShowCards(ActivePlayer, true);
-            UI_EnableCards(ActivePlayer, true);
+            UI_EnableCards(ActivePlayer, ZoneTypes.Hand, true);
         }
-
-        // Visual Method Collection
         void DrawCardFromDeck(Player player)
         {
             // Logic
@@ -106,5 +102,29 @@ namespace BrawlTCG_alpha.Logic
                 UI_ChangeCardZone.Invoke(player, card, ZoneTypes.Deck, ZoneTypes.Hand);
             }
         }
+        void RandomizeStartingPlayer()
+        {
+            // Randomize which player starts (0 for top player, 1 for bottom player)
+            Random random = new Random();
+            int startingPlayer = random.Next(2); // Generates either 0 or 1
+
+            if (startingPlayer == 0)
+            {
+                // Top player starts
+                InactivePlayer = BottomPlayer;
+                ActivePlayer = TopPlayer;
+                _bottomPlayerTurn = false;
+                UI_PopUpNotification("Top Player Starts");
+            }
+            else
+            {
+                // Bottom player starts
+                InactivePlayer = TopPlayer;
+                ActivePlayer = BottomPlayer;
+                _bottomPlayerTurn = true;
+                UI_PopUpNotification("Bottom Player Starts");
+            }
+        }
+
     }
 }
