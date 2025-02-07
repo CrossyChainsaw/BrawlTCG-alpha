@@ -14,7 +14,7 @@ namespace BrawlTCG_alpha.Logic
         // Stages
         public static StageCard Fangwild = new StageCard("Fangwild", 2, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Properties.Resources.Fangwild2);
         // Legends
-        public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 2, "Legend", Elements.Magic, Properties.Resources.FaerieQueen, 7, 7, 4, 4, Weapons.Spear, Weapons.Greatsword); // base stance
+        public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 2, "Legend", Elements.Magic, Properties.Resources.FaerieQueen, 7, 7, 4, 4, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.SpearStab.Clone(), attack2: AttackCatalogue.GreatSwordSwing.Clone(), attack3: AttackCatalogue.GreatSwordString.Clone(), attack4: AttackCatalogue.SpearGreatSwordPinkRoses.Clone()); // base stance
         public static LegendCard BriarRose = new LegendCard("Briar Rose", 2, "Legend", Elements.Nature, Properties.Resources.BriarRose, 6, 7, 4, 5, Weapons.Spear, Weapons.Greatsword); // speed stance
         public static LegendCard Artemis = new LegendCard("Artemis", 2, "Legend", Elements.Cosmic, Properties.Resources.Artemis, 5, 5, 4, 8, Weapons.RocketLance, Weapons.Scythe);
         public static LegendCard Orion = new LegendCard("Orion", 2, "Legend", Elements.Cosmic, Properties.Resources.Orion, 4, 6, 6, 6, Weapons.RocketLance, Weapons.Spear);

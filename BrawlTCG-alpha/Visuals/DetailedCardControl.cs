@@ -81,20 +81,33 @@ namespace BrawlTCG_alpha.Visuals
 
                 // Draw text elements
                 Brush textBrush = new SolidBrush(Card.TextColor);
-
                 g.DrawString($"{legendCard.Name}", Font, textBrush, new PointF(5, 5));
-
-                // Draw the Cost at the bottom-right corner
                 g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-
-                // Draw HP at the top-right corner
                 g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.HitPoints}", Font, textBrush, new PointF(Width - 100, 5)); // Adjust for padding and alignment
-
-                // Draw Attack (Att) centered at the bottom
                 SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
                 g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((Width - attSize.Width) / 2, 5)); // Adjusted for centering
 
 
+                // Render the Attacks on the card
+                List<Attack> legendAttacks = legendCard.GetAttacks();
+                int attackTextY = y + newHeight + 20; // Starting Y position: 20px below the image
+
+                foreach (Attack attack in legendAttacks)
+                {
+                    string attackText = $"{attack.Name}: {attack.WeaponOne} ({attack.WeaponOneAmount})";
+
+                    // Include WeaponTwo if it exists
+                    if (attack.WeaponTwo != null && attack.WeaponTwoAmount != null)
+                    {
+                        attackText += $" & {attack.WeaponTwo} ({attack.WeaponTwoAmount})";
+                    }
+
+                    // Draw the attack text
+                    g.DrawString(attackText, Font, textBrush, new PointF(10, attackTextY));
+
+                    // Move to the next line, 20px below
+                    attackTextY += 20;
+                }
             }
             else
             {

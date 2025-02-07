@@ -88,7 +88,7 @@ namespace BrawlTCG_alpha.Logic
         {
             Essence += gain;
         }
-        public void LoseHealth(int damage)
+        public void TakeDamage(int damage)
         {
             Health -= damage;
         }

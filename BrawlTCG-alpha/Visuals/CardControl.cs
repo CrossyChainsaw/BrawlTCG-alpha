@@ -183,6 +183,7 @@ namespace BrawlTCG_alpha.Visuals
         }
         private void OnCardClicked()
         {
+            _isDragging = false;
             if (!_mouseMoved)
             {
                 if (Card is LegendCard legendCard)

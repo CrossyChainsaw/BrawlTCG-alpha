@@ -19,10 +19,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         public List<Card> StackedCards { get; internal set; }
         // Nullable
         public Action<object>? Ability { get; private set; }
-        public Action<object>? Attack1 { get; private set; }
-        public Action<object>? Attack2 { get; private set; }
-        public Action<object>? Attack3 { get; private set; }
-        public Action<object>? Attack4 { get; private set; }
+        public Attack Attack1 { get; private set; }
+        public Attack Attack2 { get; private set; }
+        public Attack Attack3 { get; private set; }
+        public Attack Attack4 { get; private set; }
 
         public LegendCard(
             // Card
@@ -44,10 +44,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             Action<object>? whenPlayedEffect = null,
             // LegendCard Opt.
             Action<object>? ability = null,
-            Action<object>? attack1 = null,
-            Action<object>? attack2 = null,
-            Action<object>? attack3 = null,
-            Action<object>? attack4 = null
+            Attack attack1 = null,
+            Attack attack2 = null,
+            Attack attack3 = null,
+            Attack attack4 = null
         ) : base(name, cost, description, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
@@ -107,7 +107,6 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             return new List<Weapons> { PrimaryWeapon, SecondaryWeapon };
         }
-
         internal void StackCard(Card card)
         {
             // TODO: Differentiate battle/weapon cards
@@ -121,5 +120,16 @@ namespace BrawlTCG_alpha.Logic.Cards
                 throw new NotImplementedException();
             }
         }
+        public void TakeDamage(int damage)
+        {
+            CurrentHP -= damage;
+        }
+        public List<Attack> GetAttacks()
+        {
+            return new List<Attack> { Attack1, Attack2, Attack3, Attack4 }
+                .Where(attack => attack != null)
+                .ToList();
+        }
+
     }
 }
