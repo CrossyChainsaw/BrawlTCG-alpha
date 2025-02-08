@@ -2,10 +2,10 @@
 using BrawlTCG_alpha.Logic;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BrawlTCG_alpha.Visuals
 {
@@ -13,24 +13,20 @@ namespace BrawlTCG_alpha.Visuals
     {
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
+        private List<Button> attackButtons;
 
-        // Methods
         public DetailedCardControl(Card card)
         {
             Card = card;
-            Size = new Size(150, 200); // Default card size
-            BackColor = card.CardColor; // Background color of the card
+            Size = new Size(150, 200);
+            BackColor = card.CardColor;
             ForeColor = card.TextColor;
             Font = new Font("Arial", 12, FontStyle.Bold);
-            // You can customize the behavior when clicked, for example
-            this.Click += (sender, e) =>
-            {
-                OnCardClicked();
-            };
+            this.Click += (sender, e) => OnCardClicked();
             CardsControls = new List<CardControl>();
+            attackButtons = new List<Button>();
         }
 
-        // Paint method to draw the card
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -41,72 +37,68 @@ namespace BrawlTCG_alpha.Visuals
                 Brush brush = new SolidBrush(legendCard.CardColor);
                 g.FillRectangle(brush, 0, 0, Width, Height);
 
-                // Define the aspect ratio (4:3 for LegendCard)
                 float aspectRatio = 4f / 3f;
                 int maxWidth = Width - 20;
-                int availableHeight = Height - 60; // Exclude the bottom margin for text and other info
-
+                int availableHeight = Height - 60;
                 int newWidth = maxWidth;
                 int newHeight = (int)(newWidth / aspectRatio);
 
-                // Adjust if the height exceeds the available space
                 if (newHeight > availableHeight)
                 {
                     newHeight = availableHeight;
                     newWidth = (int)(newHeight * aspectRatio);
                 }
 
-                // Calculate the vertical position with 20px margin at the top and center the image
                 int x = 10 + (maxWidth - newWidth) / 2;
-                int y = 20 + (availableHeight - newHeight) / 2; // 20px margin from the top
-                y = 30;
+                int y = 30;
 
-                // Rounded corners for the image
-                int cornerRadius = 15; // Adjust for more or less rounding
+                int cornerRadius = 15;
                 GraphicsPath roundedImagePath = new GraphicsPath();
-                roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90); // Top-left
-                roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90); // Top-right
-                roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90); // Bottom-right
-                roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90); // Bottom-left
+                roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90);
+                roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90);
+                roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90);
+                roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90);
                 roundedImagePath.CloseFigure();
 
-                // Clip the drawing area to the rounded rectangle
-                g.SetClip(roundedImagePath);   // Apply the rounded clip
-
-                // Draw the image with rounded corners
+                g.SetClip(roundedImagePath);
                 g.DrawImage(legendCard.Image, new Rectangle(x, y, newWidth, newHeight));
-
-                // Reset the clipping region to its default state
                 g.ResetClip();
 
-                // Draw text elements
                 Brush textBrush = new SolidBrush(Card.TextColor);
-                g.DrawString($"{legendCard.Name}", Font, textBrush, new PointF(5, 5));
+                g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
                 g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.HitPoints}", Font, textBrush, new PointF(Width - 100, 5)); // Adjust for padding and alignment
+                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.HitPoints}", Font, textBrush, new PointF(Width - 100, 5));
                 SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
-                g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((Width - attSize.Width) / 2, 5)); // Adjusted for centering
+                g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((Width - attSize.Width) / 2, 5));
 
-
-                // Render the Attacks on the card
                 List<Attack> legendAttacks = legendCard.GetAttacks();
-                int attackTextY = y + newHeight + 20; // Starting Y position: 20px below the image
+                int attackButtonY = y + newHeight + 20;
+
+                foreach (var btn in attackButtons.ToList())
+                {
+                    Controls.Remove(btn);
+                    btn.Dispose();
+                }
+                attackButtons.Clear();
 
                 foreach (Attack attack in legendAttacks)
                 {
-                    string attackText = $"{attack.Name}: {attack.WeaponOne} ({attack.WeaponOneAmount})";
-
-                    // Include WeaponTwo if it exists
-                    if (attack.WeaponTwo != null && attack.WeaponTwoAmount != null)
+                    Button attackButton = new Button
                     {
-                        attackText += $" & {attack.WeaponTwo} ({attack.WeaponTwoAmount})";
-                    }
+                        Text = $"{attack.Name}\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
+                        Location = new Point((Width - (Width - 20)) / 2, attackButtonY),
+                        Size = new Size(Width - 20, 50),
+                        Font = new Font("Arial", 9, FontStyle.Bold),
+                        BackColor = Color.LightGray,
+                        TextAlign = ContentAlignment.MiddleCenter
+                    };
 
-                    // Draw the attack text
-                    g.DrawString(attackText, Font, textBrush, new PointF(10, attackTextY));
+                    attackButton.Click += (sender, e) => MessageBox.Show($"Clicked on attack {attack.Name}");
 
-                    // Move to the next line, 20px below
-                    attackTextY += 20;
+                    Controls.Add(attackButton);
+                    attackButtons.Add(attackButton);
+
+                    attackButtonY += 50;
                 }
             }
             else
@@ -120,46 +112,32 @@ namespace BrawlTCG_alpha.Visuals
                 g.DrawString(Card.Cost.ToString(), font, textBrush, new PointF(Width - 25, Height - 33));
             }
 
-
-
-            //// Draw the inner border (1px thick) within the card
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
         }
+
         private void OnCardClicked()
         {
-            // Find the parent form
             Form parentForm = this.FindForm();
-
-            // Remove the DetailedCardControl for the legend card
             parentForm.Controls.Remove(this);
 
-            // If the card is a LegendCard, we need to remove the related weapon cards
             if (Card is LegendCard legendCard)
             {
-                // Get the list of stacked weapon cards
-                List<Card> stackedCards = legendCard.StackedCards;
-
-                // Iterate over each stacked card and remove the corresponding DetailedCardControl
-                foreach (Card weaponCard in stackedCards)
+                foreach (Card weaponCard in legendCard.StackedCards)
                 {
-                    // Find the control corresponding to the weapon card
                     Control controlToRemove = parentForm.Controls
                         .OfType<DetailedCardControl>()
                         .FirstOrDefault(c => c.Card == weaponCard);
 
-                    // Remove the control if it is found
                     if (controlToRemove != null)
                     {
                         parentForm.Controls.Remove(controlToRemove);
-                        controlToRemove.Dispose(); // Optionally dispose of the control to free resources
+                        controlToRemove.Dispose();
                     }
                 }
             }
 
-            // Optionally, you can dispose of the card control itself
             this.Dispose();
         }
-
     }
 }

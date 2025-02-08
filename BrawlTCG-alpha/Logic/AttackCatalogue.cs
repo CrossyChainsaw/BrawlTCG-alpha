@@ -22,12 +22,12 @@ namespace BrawlTCG_alpha.Logic
         }
 
 
-        public static Attack SpearStab = new Attack("Spear Stab", 0, Weapons.Spear, weaponOneAmount: 1, execute: (attacker, target, attack) =>
+        public static Attack SpearStab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack) =>
         {
             DefaultAttack(attacker, target, attack.AttackModifier);
         });
 
-        public static Attack GreatSwordSwing = new Attack("Great Sword Swing", 0, Weapons.Greatsword, weaponOneAmount: 1, execute: (attacker, target, attack) =>
+        public static Attack GreatSwordSwing = new Attack("Great Sword Swing", 0, Weapons.Greatsword, 1, execute: (attacker, target, attack) =>
         {
             DefaultAttack(attacker, target, attack.AttackModifier);
         });
