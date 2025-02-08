@@ -11,11 +11,15 @@ namespace BrawlTCG_alpha.Visuals
 {
     internal class DetailedCardControl : Control
     {
+        public Player Owner;
+        public List<Player> Players;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
-        private List<Button> attackButtons;
+        List<Button> attackButtons;
+        public bool IsAttacking = false;
+        public CardControl OriginalCardControl { get; private set; }
 
-        public DetailedCardControl(Card card)
+        public DetailedCardControl(Card card, Player owner, List<Player> players, CardControl originalCardControl)
         {
             Card = card;
             Size = new Size(150, 200);
@@ -25,6 +29,9 @@ namespace BrawlTCG_alpha.Visuals
             this.Click += (sender, e) => OnCardClicked();
             CardsControls = new List<CardControl>();
             attackButtons = new List<Button>();
+            Owner = owner;
+            Players = players;
+            OriginalCardControl = originalCardControl;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -33,6 +40,17 @@ namespace BrawlTCG_alpha.Visuals
             Graphics g = e.Graphics;
 
             if (Card is LegendCard legendCard)
+            {
+                PaintLegendCard(g, legendCard);
+            }
+            else
+            {
+                PaintCard(g);
+            }
+            PaintBorder();
+
+            // Local Methods
+            void PaintLegendCard(Graphics g, LegendCard legendCard)
             {
                 Brush brush = new SolidBrush(legendCard.CardColor);
                 g.FillRectangle(brush, 0, 0, Width, Height);
@@ -87,11 +105,51 @@ namespace BrawlTCG_alpha.Visuals
                         BackColor = Color.LightGray,
                         TextAlign = ContentAlignment.MiddleCenter
                     };
-                    attackButton.Click += (sender, e) => MessageBox.Show($"Clicked on attack {attack.Name}");
+                    attackButton.Click += (sender, e) =>
+                    {
+                        if (!IsAttacking)
+                        {
+                            OriginalCardControl.Enabled = false; // prevents from attacking twice
+                            IsAttacking = true;
+                            Player otherPlayer = GetOtherPlayer(Owner);
+
+                            if (otherPlayer.PlayingField.Count == 0)
+                            {
+                                attack.Effect.Invoke(legendCard, otherPlayer, attack);
+                                if (otherPlayer.Health <= 0 )
+                                {
+                                    MessageBox.Show($"{otherPlayer.Name} has been defeated");
+                                }
+                            }
+                            else
+                            {
+                                // Let the enemy cards know that we are attacking
+                                // Enable enemy cards to be able to be clicked to take damage
+                                FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
+                                ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
+                                foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
+                                {
+                                    cardControl.EnemyIsAttacking(true, attack, legendCard);
+                                }
+
+                                MessageBox.Show("Choose an opposing Legend");
+                                // now the player will click on an opposing card.
+                            }
+                            foreach (Button attackButton in attackButtons.ToList())
+                            {
+                                attackButton.Enabled = false;
+                            }
+                        }
+                        else
+                        {
+                            OnCardClicked();
+                            IsAttacking = false;
+                        }
+                    };
                     attackButtons.Add(attackButton);
                     // Add To UI
                     Controls.Add(attackButton);
-                    
+
                     // Check if the attack can be played
                     // Check weapon one requirement
                     bool canPlayAttack = legendCard.StackedCards.Count(c => c is WeaponCard wc && wc.Weapon == attack.WeaponOne) >= attack.WeaponOneAmount;
@@ -107,7 +165,7 @@ namespace BrawlTCG_alpha.Visuals
                     attackButtonY += 50;
                 }
             }
-            else
+            void PaintCard(Graphics g)
             {
                 Font font = new Font("Arial", 16, FontStyle.Bold);
                 Brush cardBrush = new SolidBrush(Card.CardColor);
@@ -117,12 +175,14 @@ namespace BrawlTCG_alpha.Visuals
                 g.DrawString(Card.Name, font, textBrush, new PointF(5, 5));
                 g.DrawString(Card.Cost.ToString(), font, textBrush, new PointF(Width - 25, Height - 33));
             }
-
-            int borderThickness = 3;
-            g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
+            void PaintBorder()
+            {
+                int borderThickness = 3;
+                g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
+            }
         }
 
-        private void OnCardClicked()
+        internal void OnCardClicked()
         {
             Form parentForm = this.FindForm();
             parentForm.Controls.Remove(this);
@@ -144,6 +204,17 @@ namespace BrawlTCG_alpha.Visuals
             }
 
             this.Dispose();
+        }
+        Player GetOtherPlayer(Player player)
+        {
+            foreach (Player p in Players)
+            {
+                if (p != player)
+                {
+                    return p;
+                }
+            }
+            throw new Exception();
         }
     }
 }

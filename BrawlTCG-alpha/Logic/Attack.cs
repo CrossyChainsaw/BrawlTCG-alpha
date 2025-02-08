@@ -18,8 +18,11 @@ namespace BrawlTCG_alpha.Logic
         // Opt.
         public Weapons? WeaponTwo { get; private set; }
         public int? WeaponTwoAmount { get; private set; }
+        public int WeaponOneBurnAmount { get; private set; }
+        public int WeaponTwoBurnAmount { get; private set; }
 
-        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack> execute, Weapons? weaponTwo = null, int? weaponTwoAmount = null)
+
+        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0)
         {
             // Req
             Name = name;
@@ -30,6 +33,8 @@ namespace BrawlTCG_alpha.Logic
             // Opt.
             WeaponTwo = weaponTwo;
             WeaponTwoAmount = weaponTwoAmount;
+            WeaponOneBurnAmount = weaponOneBurnAmount;
+            WeaponTwoBurnAmount = weaponTwoBurnAmount;
         }
         public void Execute(LegendCard attacker, object target)
         {
@@ -44,7 +49,7 @@ namespace BrawlTCG_alpha.Logic
         }
         public Attack Clone()
         {
-            return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponTwo, WeaponTwoAmount);
+            return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount);
         }
 
     }

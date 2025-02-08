@@ -90,6 +90,9 @@ namespace BrawlTCG_alpha.Logic
             UI_EnableCards(InactivePlayer, ZoneTypes.Hand, false);
             UI_ShowCards(ActivePlayer, true);
             UI_EnableCards(ActivePlayer, ZoneTypes.Hand, true);
+            UI_EnableCards(ActivePlayer, ZoneTypes.PlayingField, true);
+            UI_EnableCards(InactivePlayer, ZoneTypes.PlayingField, true);
+
         }
         void DrawCardFromDeck(Player player)
         {
@@ -124,7 +127,10 @@ namespace BrawlTCG_alpha.Logic
                 UI_PopUpNotification("Bottom Player Starts");
             }
         }
-
+        public List<Player> GetPlayers()
+        {
+            return [ActivePlayer, InactivePlayer];
+        }
     }
 }
 

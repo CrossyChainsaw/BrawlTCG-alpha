@@ -16,7 +16,7 @@ namespace BrawlTCG_alpha
     {
         // Any sort of relation to logic
         Player player1 = new Player("John", CardCatalogue.CloneList(CardCatalogue.FaerieQueenDeck));
-        Player player2 = new Player("Jane", CardCatalogue.CloneList(CardCatalogue.TestDeck));
+        Player player2 = new Player("Jane", CardCatalogue.CloneList(CardCatalogue.CosmicDeck));
 
         // Visuals
         const int BASE_OFFSET_LEFT = 20;
@@ -74,7 +74,7 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void RemoveCardControl(CardControl cardControl, ZoneControl zone)
+        internal void RemoveCardControl(CardControl cardControl, ZoneControl zone)
         {
             Controls.Remove(cardControl);
             zone.CardsControls.Remove(cardControl);
@@ -248,7 +248,7 @@ namespace BrawlTCG_alpha
                     Card card = player.Hand[i];
 
                     // Create the card control and position it based on the calculated X and fixed Y
-                    CardControl cardControl = new CardControl(card, isOpen: false, owner: player)
+                    CardControl cardControl = new CardControl(card, isOpen: false, owner: player, players: _game.GetPlayers())
                     {
                         Location = new Point(startX + i * (CARD_WIDTH + spacing), handZone.Location.Y + 10),
                     };
@@ -299,10 +299,10 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void ArrangeCardsInField(Player player)
+        internal void ArrangeCardsInField(Player player)
         {
             List<Card> cardList = player.PlayingField;
-            int spacing = 20*3;
+            int spacing = 20 * 3;
             ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
             if (cardList.Count != zone.CardsControls.Count)
             {
@@ -399,7 +399,7 @@ namespace BrawlTCG_alpha
             }
             return zones;
         }
-        ZoneControl? GetMyZone(ZoneTypes targetZoneType, Player player)
+        internal ZoneControl? GetMyZone(ZoneTypes targetZoneType, Player player)
         {
             foreach (ZoneControl zone in Zones)
             {
@@ -410,7 +410,7 @@ namespace BrawlTCG_alpha
             }
             return null;
         }
-        CardControl? GetCardControl(Player player, ZoneTypes zoneType, Card card)
+        internal CardControl? GetCardControl(Player player, ZoneTypes zoneType, Card card)
         {
             ZoneControl zone = GetMyZone(zoneType, player);
             foreach (CardControl cardControl in zone.CardsControls)
@@ -429,7 +429,7 @@ namespace BrawlTCG_alpha
             {
                 RemoveCardControl(cardControlOld, GetMyZone(oldZoneType, player));
 
-                CardControl cardControl = new CardControl(card, isOpen: cardControlOld.IsOpen, owner: player)
+                CardControl cardControl = new CardControl(card, isOpen: cardControlOld.IsOpen, owner: player, players: _game.GetPlayers())
                 {
                     Location = new Point(0, 0) // rearrange it
                 };
@@ -613,7 +613,6 @@ namespace BrawlTCG_alpha
             ZoneControl essenceZone = GetMyZone(ZoneTypes.EssenceField, player);
             if (IsMouseInZone(essenceZone))
             {
-                // Only 1 essence card per turn
                 if (!player.PlayedEssenceCardThisTurn())
                 {
                     PlayCardInZone(player, card, cardControlOld, essenceZone, (p) =>
@@ -645,6 +644,7 @@ namespace BrawlTCG_alpha
             return zoneBounds.Contains(mousePos);
         }
 
+
         /// <summary>Handles playing cards visually and logically</summary>
         CardControl PlayCardInZone(Player player, Card card, CardControl cardControlOld, ZoneControl targetZone, Action<Player>? postPlayAction = null)
         {
@@ -652,7 +652,7 @@ namespace BrawlTCG_alpha
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
             RemoveCardControl(cardControlOld, handZone);
 
-            CardControl cardControl = new CardControl(card, isOpen: true, owner: player)
+            CardControl cardControl = new CardControl(card, isOpen: true, owner: player, players: _game.GetPlayers())
             {
                 Location = new Point(targetZone.Location.X + 10, targetZone.Location.Y + 10)
             };
@@ -663,12 +663,20 @@ namespace BrawlTCG_alpha
 
             postPlayAction?.Invoke(player);  // Additional actions specific to the card type
 
-            //cardControl.Enabled = false; // Disable after playing
+            if (card is EssenceCard)
+            {
+                cardControl.Enabled = false; // Disable after playing
+            }
+
             UpdatePlayerInformation(player);
             return cardControl;
         }
+
     }
+
 }
+
+
 
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.

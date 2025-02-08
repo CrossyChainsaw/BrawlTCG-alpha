@@ -120,7 +120,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 throw new NotImplementedException();
             }
         }
-        public void TakeDamage(int damage)
+        public void LoseHealth(int damage)
         {
             CurrentHP -= damage;
         }
@@ -130,6 +130,23 @@ namespace BrawlTCG_alpha.Logic.Cards
                 .Where(attack => attack != null)
                 .ToList();
         }
-
+        public void BurnWeapon(Weapons weapon, int burnAmount)
+        {
+            // remove card from legend
+            int cardsBurned = 0;
+            foreach (Card card in StackedCards.ToList())
+            {
+                if (card is WeaponCard wepCard && wepCard.Weapon == weapon)
+                {
+                    StackedCards.Remove(wepCard);
+                    // add card to discard pile
+                    cardsBurned++;
+                    if (cardsBurned == burnAmount)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
 }
