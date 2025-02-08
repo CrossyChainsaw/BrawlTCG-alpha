@@ -188,39 +188,48 @@ namespace BrawlTCG_alpha.Visuals
             {
                 if (Card is LegendCard legendCard)
                 {
-                    // RENDER THE LEGEND CARD
-                    Point formPoint = new Point(20, 20);
                     Form parentForm = this.FindForm();
+                    RenderLegendCard(parentForm);
+                    RenderWeaponCards(legendCard, parentForm);
+                }
+            }
+            void RenderLegendCard(Form parentForm)
+            {
+                // Init Card
+                DetailedCardControl legendCardControl = new DetailedCardControl(this.Card)
+                {
+                    Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
+                    Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
+                };
+                // UI
+                parentForm.Controls.Add(legendCardControl);
+                legendCardControl.BringToFront();
+            }
+            void RenderWeaponCards(LegendCard legendCard, Form parentForm)
+            {
+                List<Card> stackedCards = legendCard.StackedCards;
 
-                    DetailedCardControl legendCardControl = new DetailedCardControl(this.Card)
+                int spacing = 20;                      // Spacing between cards
+                int cardWidth = (int)(CARD_WIDTH * 1.5);
+                int cardHeight = (int)(CARD_HEIGHT * 1.5);
+
+                // Start from the right edge of the form
+                int startX = parentForm.ClientSize.Width - cardWidth - spacing;
+                int startY = parentForm.ClientSize.Height - cardHeight - spacing; // 20 px from bottom
+
+                foreach (Card weaponCard in stackedCards)
+                {
+                    DetailedCardControl weaponCardControl = new DetailedCardControl(weaponCard)
                     {
-                        Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
-                        Location = formPoint
+                        Size = new Size(cardWidth, cardHeight),
+                        Location = new Point(startX, startY)
                     };
 
-                    parentForm.Controls.Add(legendCardControl);
-                    legendCardControl.BringToFront();
+                    parentForm.Controls.Add(weaponCardControl);
+                    weaponCardControl.BringToFront();
 
-                    // RENDER THE WEAPON CARDS
-                    List<Card> stackedCards = legendCard.StackedCards;
-
-                    int spacing = 20;                      // Spacing between cards
-                    int startX = spacing;                  // Start 20 px from the left
-                    int startY = parentForm.ClientSize.Height - (int)(CARD_HEIGHT * 1.5) - spacing; // 20 px from bottom
-
-                    foreach (Card weaponCard in stackedCards)
-                    {
-                        DetailedCardControl weaponCardControl = new DetailedCardControl(weaponCard)
-                        {
-                            Size = new Size((int)(CARD_WIDTH * 1.5), (int)(CARD_HEIGHT * 1.5)), // Default size
-                            Location = new Point(startX, startY)
-                        };
-
-                        parentForm.Controls.Add(weaponCardControl);
-                        weaponCardControl.BringToFront();
-
-                        startX += (int)(CARD_WIDTH) + spacing; // Move to the right for the next card
-                    }
+                    // Move to the left for the next card
+                    startX -= cardWidth / 2 + spacing;
                 }
             }
         }

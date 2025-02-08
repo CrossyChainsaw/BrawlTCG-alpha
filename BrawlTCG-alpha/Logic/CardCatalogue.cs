@@ -11,21 +11,25 @@ namespace BrawlTCG_alpha.Logic
     {
         // Essence
         public static EssenceCard Essence = new EssenceCard("Essence", 0, "Start Turn: Gives the player 1 Essence", Elements.Magic, Properties.Resources.Essence);
+        
         // Stages
         public static StageCard Fangwild = new StageCard("Fangwild", 2, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Properties.Resources.Fangwild2);
+        
         // Legends
         public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 2, "Legend", Elements.Magic, Properties.Resources.FaerieQueen, 7, 7, 4, 4, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.SpearStab.Clone(), attack2: AttackCatalogue.GreatSwordSwing.Clone(), attack3: AttackCatalogue.GreatSwordString.Clone(), attack4: AttackCatalogue.SpearGreatSwordPinkRoses.Clone()); // base stance
         public static LegendCard BriarRose = new LegendCard("Briar Rose", 2, "Legend", Elements.Nature, Properties.Resources.BriarRose, 6, 7, 4, 5, Weapons.Spear, Weapons.Greatsword); // speed stance
         public static LegendCard Artemis = new LegendCard("Artemis", 2, "Legend", Elements.Cosmic, Properties.Resources.Artemis, 5, 5, 4, 8, Weapons.RocketLance, Weapons.Scythe);
         public static LegendCard Orion = new LegendCard("Orion", 2, "Legend", Elements.Cosmic, Properties.Resources.Orion, 4, 6, 6, 6, Weapons.RocketLance, Weapons.Spear);
+        
         // Weapons
         public static WeaponCard MagmaSpear = new WeaponCard("Magma Spear", 1, "Spear", Elements.Fire, Properties.Resources.MagmaSpear, Weapons.Spear);
         public static WeaponCard BlazingFire = new WeaponCard("Blazing Fire", 1, "Blasters", Elements.Fire, Properties.Resources.BlazingFire, Weapons.Blasters);
         public static WeaponCard GalaxyLance = new WeaponCard("Galaxy Lance", 1, "Lance", Elements.Cosmic, Properties.Resources.GalaxyLance, Weapons.RocketLance);
         public static WeaponCard StarryScythe = new WeaponCard("Starry Scythe", 1, "Scythe", Elements.Cosmic, Properties.Resources.StarryScythe, Weapons.Scythe);
+        public static WeaponCard LawOfTheLand = new WeaponCard("Law of the Land", 1, "Greatsword", Elements.Nature, Properties.Resources.LawOfTheLand, Weapons.Greatsword);
 
         // Decks
-        public static List<Card> Deck1 = new List<Card>() {
+        public static List<Card> FaerieQueenDeck = new List<Card>() {
             Essence.Clone(),
             Essence.Clone(),
             Essence.Clone(),
@@ -34,10 +38,6 @@ namespace BrawlTCG_alpha.Logic
             Essence.Clone(),
             Essence.Clone(),
             Fangwild.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
             FaerieQueen.Clone(),
             FaerieQueen.Clone(),
             FaerieQueen.Clone(),
@@ -45,11 +45,14 @@ namespace BrawlTCG_alpha.Logic
             FaerieQueen.Clone(),
             FaerieQueen.Clone(),
             FaerieQueen.Clone(),
-            BriarRose.Clone(),
-            BriarRose.Clone(),
-            BriarRose.Clone(),
-            BriarRose.Clone(),
-            BriarRose.Clone(),
+            MagmaSpear.Clone(),
+            MagmaSpear.Clone(),
+            MagmaSpear.Clone(),
+            LawOfTheLand.Clone(),
+            LawOfTheLand.Clone(),
+            LawOfTheLand.Clone(),
+            LawOfTheLand.Clone(),
+            LawOfTheLand.Clone(),
         };
         public static List<Card> TestDeck = new List<Card>() {
             Essence.Clone(),

@@ -74,30 +74,36 @@ namespace BrawlTCG_alpha.Visuals
                 List<Attack> legendAttacks = legendCard.GetAttacks();
                 int attackButtonY = y + newHeight + 20;
 
-                foreach (var btn in attackButtons.ToList())
-                {
-                    Controls.Remove(btn);
-                    btn.Dispose();
-                }
-                attackButtons.Clear();
-
+                // add Attack buttons
                 foreach (Attack attack in legendAttacks)
                 {
+                    // Init. Button
                     Button attackButton = new Button
                     {
-                        Text = $"{attack.Name}\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
+                        Text = $"{attack.Name} ({attack.AttackModifier + legendCard.Power} Damage)\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
                         Location = new Point((Width - (Width - 20)) / 2, attackButtonY),
                         Size = new Size(Width - 20, 50),
                         Font = new Font("Arial", 9, FontStyle.Bold),
                         BackColor = Color.LightGray,
                         TextAlign = ContentAlignment.MiddleCenter
                     };
-
                     attackButton.Click += (sender, e) => MessageBox.Show($"Clicked on attack {attack.Name}");
-
-                    Controls.Add(attackButton);
                     attackButtons.Add(attackButton);
+                    // Add To UI
+                    Controls.Add(attackButton);
+                    
+                    // Check if the attack can be played
+                    // Check weapon one requirement
+                    bool canPlayAttack = legendCard.StackedCards.Count(c => c is WeaponCard wc && wc.Weapon == attack.WeaponOne) >= attack.WeaponOneAmount;
+                    // Check weapon two requirement if there is 
+                    if (attack.WeaponTwo != null)
+                    {
+                        canPlayAttack &= legendCard.StackedCards.Count(c => c is WeaponCard wc && wc.Weapon == attack.WeaponTwo) >= attack.WeaponTwoAmount;
+                    }
+                    // Enable or disable the button based on weapon availability
+                    attackButton.Enabled = canPlayAttack;
 
+                    // Change Y for next attack button
                     attackButtonY += 50;
                 }
             }
