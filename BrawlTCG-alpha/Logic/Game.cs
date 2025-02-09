@@ -30,6 +30,7 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<string> UI_PopUpNotification;
         public event Action<Player> UI_EnemyStopsAttacking;
+        public event Action<Player> UI_UntapPlayerCards;
         public StageCard ActiveStageCard;
         bool _bottomPlayerTurn = false;
 
@@ -84,6 +85,8 @@ namespace BrawlTCG_alpha.Logic
         {
             // END TURN
             // ...
+            // untap all cards of the active player
+            UI_UntapPlayerCards.Invoke(ActivePlayer);
 
             // Switch the Turn
             _bottomPlayerTurn = !_bottomPlayerTurn;

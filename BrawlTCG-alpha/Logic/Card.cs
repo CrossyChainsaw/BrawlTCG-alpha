@@ -24,6 +24,7 @@ namespace BrawlTCG_alpha.Logic
         public int Cost { get; internal set; }
         public string Description { get; internal set; }
         public Elements Element { get; internal set; }
+        public bool IsOpen { get; internal set; }
         public Action<object>? StartTurnEffect { get; internal set; }
         public Action<object>? EndTurnEffect { get; internal set; }
         public Action<object>? WhenPlayedEffect { get; internal set; }

@@ -15,7 +15,6 @@ namespace BrawlTCG_alpha.Visuals
         // Fields
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
-        public bool IsOpen { get; private set; }
         public Player? Owner { get; private set; }
         public List<Player> Players { get; internal set; }
         public event Func<Task<bool>>? CardReleased;
@@ -38,8 +37,8 @@ namespace BrawlTCG_alpha.Visuals
         // Methods
         public CardControl(Card card, bool isOpen = false, Player? owner = null, List<Player> players = null)
         {
-            IsOpen = isOpen;
             Card = card;
+            this.Card.IsOpen = isOpen;
             Size = new Size(CARD_WIDTH, CARD_HEIGHT); // Default card size
             BackColor = Color.White; // Background color of the card
             Font = new Font("Arial", 12, FontStyle.Bold);
@@ -95,7 +94,7 @@ namespace BrawlTCG_alpha.Visuals
             base.OnPaint(e);
             Graphics g = e.Graphics;
 
-            if (IsOpen)
+            if (Card.IsOpen)
             {
                 if (Card is LegendCard legendCard)
                 {
@@ -239,7 +238,7 @@ namespace BrawlTCG_alpha.Visuals
         }
         public void FlipCard()
         {
-            IsOpen = !IsOpen;
+            Card.IsOpen = !Card.IsOpen;
             Invalidate();
         }
         CardControl OnCardClicked()

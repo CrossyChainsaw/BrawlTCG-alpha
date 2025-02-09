@@ -164,9 +164,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public void TapOut()
         {
-            IsTapped = true;
+            IsOpen = false;
             MessageBox.Show($"{this.Name} is now tapped");
         }
-
     }
 }

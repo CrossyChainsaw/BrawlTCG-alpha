@@ -44,12 +44,15 @@ namespace BrawlTCG_alpha
             _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
             _game.UI_UpdatePlayerInformation += UpdatePlayerInformation;
             _game.UI_EnemyStopsAttacking += EnemyStopsAttacking;
+            _game.UI_UntapPlayerCards += UntapPlayerCards;
             // Multi
             _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
             _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
             // Non-Player
             _game.UI_PopUpNotification += (message) => MessageBox.Show(message);
         }
+
+
         private void FRM_PlayingField_Load(object sender, EventArgs e)
         {
             _game.Prepare();
@@ -90,20 +93,20 @@ namespace BrawlTCG_alpha
         void ShowCards(Player player, bool show)
         {
             ZoneControl playerHand = GetMyZone(ZoneTypes.Hand, player);
-            foreach (CardControl card in playerHand.CardsControls)
+            foreach (CardControl cardControl in playerHand.CardsControls)
             {
                 if (show)
                 {
-                    if (!card.IsOpen)
+                    if (!cardControl.Card.IsOpen)
                     {
-                        card.FlipCard();
+                        cardControl.FlipCard();
                     }
                 }
                 else
                 {
-                    if (card.IsOpen)
+                    if (cardControl.Card.IsOpen)
                     {
-                        card.FlipCard();
+                        cardControl.FlipCard();
                     }
                 }
             }
@@ -113,7 +116,7 @@ namespace BrawlTCG_alpha
             ZoneControl zone = GetMyZone(zoneType, player);
             foreach (CardControl card in zone.CardsControls)
             {
-                if (enable)
+                if (enable && card.Card.IsOpen)
                 {
                     card.Enabled = true;
                 }
@@ -147,6 +150,10 @@ namespace BrawlTCG_alpha
             {
                 foreach (CardControl cardControl in zoneControl.CardsControls.ToList())
                 {
+                    if (cardControl.Card is LegendCard legendCard && legendCard.IsTapped)
+                    {
+                        cardControl.Enabled = false;
+                    }
                     cardControl.Invalidate();
                     cardControl.Update();
                     cardControl.CheckIfDead();
@@ -174,6 +181,20 @@ namespace BrawlTCG_alpha
                 }
             }
         }
+        private void UntapPlayerCards(Player player)
+        {
+            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
+            foreach (CardControl cardControl in zone.CardsControls)
+            {
+                if (!cardControl.Card.IsOpen)
+                {
+                    cardControl.Card.IsOpen = true;
+                    cardControl.Invalidate();
+                    cardControl.Update();
+                }
+            }
+        }
+
 
 
 
@@ -474,7 +495,7 @@ namespace BrawlTCG_alpha
             {
                 RemoveCardControl(cardControlOld, GetMyZone(oldZoneType, player));
 
-                CardControl cardControl = new CardControl(card, isOpen: cardControlOld.IsOpen, owner: player, players: _game.GetPlayers())
+                CardControl cardControl = new CardControl(card, isOpen: cardControlOld.Card.IsOpen, owner: player, players: _game.GetPlayers())
                 {
                     Location = new Point(0, 0) // rearrange it
                 };
