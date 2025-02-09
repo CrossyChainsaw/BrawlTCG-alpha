@@ -22,6 +22,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         Orb,
         Greatsword,
         BattleBoots,
+        Hammer,
     }
 
     internal class WeaponCard : Card

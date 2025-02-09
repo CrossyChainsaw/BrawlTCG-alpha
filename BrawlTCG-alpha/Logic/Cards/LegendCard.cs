@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
+    enum Stats
+    {
+        Health,
+        Power,
+    }
     internal class LegendCard : Card
     {
         public int BaseHealth { get; internal set; }
@@ -166,6 +171,18 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             IsOpen = false;
             MessageBox.Show($"{this.Name} is now tapped");
+        }
+        public void ModifyStat(Stats stat, int modifyAmount)
+        {
+            if (stat == Stats.Health)
+            {
+                BaseHealth += modifyAmount;
+                CurrentHP += modifyAmount;
+            }
+            else if (stat == Stats.Power)
+            {
+                Power += modifyAmount;
+            }
         }
     }
 }

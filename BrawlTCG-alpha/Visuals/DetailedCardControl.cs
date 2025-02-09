@@ -125,6 +125,7 @@ namespace BrawlTCG_alpha.Visuals
                                 OnCardClicked();
                                 // Attack
                                 attack.Effect.Invoke(legendCard, otherPlayer, attack);
+                                // update player information delegate
                                 // Notify
                                 MessageBox.Show($"{otherPlayer.Name} just took damage");
                                 // Check if dead

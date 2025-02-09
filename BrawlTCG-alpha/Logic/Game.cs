@@ -116,7 +116,7 @@ namespace BrawlTCG_alpha.Logic
             // stage start turn effect
             if (ActiveStageCard != null)
             {
-                List<LegendCard> legends = GetAllLegendsOnPlayingField();
+                List<LegendCard> legends = GetAllMyLegendsOnThePlayingField(ActivePlayer);
                 ActiveStageCard.StartTurnEffect.Invoke(legends);
             }
 
@@ -172,6 +172,15 @@ namespace BrawlTCG_alpha.Logic
                 {
                     legends.Add(legend);
                 }
+            }
+            return legends;
+        }
+        public List<LegendCard> GetAllMyLegendsOnThePlayingField(Player player)
+        {
+            List<LegendCard> legends = new List<LegendCard>();
+            foreach (LegendCard legend in player.PlayingField)
+            {
+                legends.Add(legend);
             }
             return legends;
         }
