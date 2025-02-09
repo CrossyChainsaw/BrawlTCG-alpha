@@ -20,9 +20,9 @@ namespace BrawlTCG_alpha.Visuals
         public List<Player> Players { get; internal set; }
         public event Func<Task<bool>>? CardReleased;
 
-        bool _enemyIsAttacking = false;
         Attack _enemyAttack;
         LegendCard _enemyLegend;
+        DetailedCardControl _enemyDetailedCardControl;
 
         Image _backSideImage = Properties.Resources.BrawlLogo;
 
@@ -43,14 +43,14 @@ namespace BrawlTCG_alpha.Visuals
             Size = new Size(CARD_WIDTH, CARD_HEIGHT); // Default card size
             BackColor = Color.White; // Background color of the card
             Font = new Font("Arial", 12, FontStyle.Bold);
-            // You can customize the behavior when clicked, for example
+            Owner = owner;
+            CardsControls = new List<CardControl>();
+            Players = players;
+            // Events
             this.Click += (sender, e) =>
             {
                 OnCardClicked();
             };
-            Owner = owner;
-            CardsControls = new List<CardControl>();
-            Players = players;
             this.MouseDown += (sender, e) =>
             {
                 if (_canDrag)
@@ -101,6 +101,10 @@ namespace BrawlTCG_alpha.Visuals
                 {
                     DrawLegendCard(g, legendCard);
                 }
+                else if (Card is StageCard stageCard)
+                {
+                    DrawStageCard(g, stageCard);
+                }
                 else
                 {
                     DrawCard(g);
@@ -108,7 +112,7 @@ namespace BrawlTCG_alpha.Visuals
             }
             else
             {
-                DrawCardBack(g);
+                DrawCardBackSide(g);
             }
             DrawCardBorder(g);
 
@@ -159,8 +163,55 @@ namespace BrawlTCG_alpha.Visuals
                 Brush textBrush = new SolidBrush(Card.TextColor);
                 g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
                 g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.HitPoints}", Font, textBrush, new PointF(5, Height - 71));
+                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(5, Height - 71));
                 g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF(5, Height - 48));
+            }
+            void DrawStageCard(Graphics g, StageCard stageCard)
+            {
+                Brush brush = new SolidBrush(stageCard.CardColor);
+                g.FillRectangle(brush, 0, 0, Width, Height);
+
+                // Define the aspect ratio (4:3 for LegendCard)
+                float aspectRatio = 4f / 3f;
+                int maxWidth = Width - 20;
+                int maxHeight = Height - 60;
+
+                int newWidth = maxWidth;
+                int newHeight = (int)(newWidth / aspectRatio);
+
+                // Adjust if the height exceeds the available space
+                if (newHeight > maxHeight)
+                {
+                    newHeight = maxHeight;
+                    newWidth = (int)(newHeight * aspectRatio);
+                }
+
+                // Center the image
+                int x = 10 + (maxWidth - newWidth) / 2;
+                int y = 10 + (maxHeight - newHeight) / 2;
+
+                // Rounded corners for the image
+                int cornerRadius = 15; // Adjust for more or less rounding
+                GraphicsPath roundedImagePath = new GraphicsPath();
+                roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90); // Top-left
+                roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90); // Top-right
+                roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90); // Bottom-right
+                roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90); // Bottom-left
+                roundedImagePath.CloseFigure();
+
+                // Clip the drawing area to the rounded rectangle
+                g.SetClip(roundedImagePath);
+
+                // Draw the image with rounded corners
+                g.DrawImage(stageCard.Image, new Rectangle(x, y, newWidth, newHeight));
+
+                // Reset the clipping region to its default state
+                g.ResetClip();
+
+                // Draw text elements
+                Brush textBrush = new SolidBrush(Card.TextColor);
+                g.DrawString(stageCard.Name, Font, textBrush, new PointF(5, 5));
+                g.DrawString(stageCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
             }
             void DrawCard(Graphics g)
             {
@@ -171,7 +222,7 @@ namespace BrawlTCG_alpha.Visuals
                 g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
                 g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
             }
-            void DrawCardBack(Graphics g)
+            void DrawCardBackSide(Graphics g)
             {
                 g.FillRectangle(Brushes.LightBlue, 0, 0, Width, Height);
                 g.DrawImage(_backSideImage, new Rectangle(10, 30, Width - 20, Height - 60));
@@ -193,7 +244,7 @@ namespace BrawlTCG_alpha.Visuals
         }
         CardControl OnCardClicked()
         {
-            if (!_enemyIsAttacking)
+            if (_enemyDetailedCardControl == null)
             {
                 _isDragging = false;
                 if (!_mouseMoved)
@@ -206,56 +257,33 @@ namespace BrawlTCG_alpha.Visuals
                     }
                 }
             }
-            else if (_enemyIsAttacking)
+            else if (_enemyDetailedCardControl.IsAttacking)
             {
                 if (this.Card is LegendCard legend)
                 {
+                    // Remove the enemy card off the screen
+                    _enemyDetailedCardControl.OnCardClicked();
+
+                    // Apply the Damage
                     _enemyAttack.Effect.Invoke(_enemyLegend, legend, _enemyAttack);
                     this.Invalidate();
                     this.Update();
+
+                    // Notify someone took damage
                     MessageBox.Show($"{this.Card.Name} just took damage");
-                    Console.WriteLine("hi");
-                    // if legend is dead remove from playing field and rearrange cards
-                    if (legend.CurrentHP <= 0)
-                    {
-                        FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
-                        // move stacked cards to discard pile
-                        foreach (Card card in legend.StackedCards.ToList())
-                        {
-                            legend.StackedCards.Remove(card);
-                            this.Owner.DiscardPile.Add(card);
-                        }
-                        // Delete stacked Cards visually
-                        foreach (CardControl cardControl in this.CardsControls.ToList())
-                        {
-                            parentForm.Controls.Remove(cardControl);
-                            // add to discard pile visually
-                        }
 
-                        // move legend card to discard pile
-                        this.Owner.PlayingField.Remove(Card);
-                        this.Owner.DiscardPile.Add(Card);
+                    // CHECK IF DEAD
+                    CheckIfDead();
 
-                        // delete legend from playing field
-                        ZoneControl myZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
-                        parentForm.RemoveCardControl(this, myZone);
-
-                        // Rearrange playing field
-                        if (Owner.PlayingField.Count > 0)
-                        {
-                            parentForm.ArrangeCardsInField(Owner);
-                        }
-
-                        this.Dispose();
-                    }
-
-                    EnemyIsAttacking(false, null, null);
+                    // enemy stops attacking
+                    EnemyIsAttacking(null, null, null);
                 }
                 else
                 {
                     MessageBox.Show("You are attacking a Non-legend card bruh\nTry Again.");
                 }
             }
+
             return this;
 
             // Local Methods
@@ -299,11 +327,48 @@ namespace BrawlTCG_alpha.Visuals
                 }
             }
         }
-        public void EnemyIsAttacking(bool isAttacking, Attack attack, LegendCard enemyLegend)
+        public void EnemyIsAttacking(Attack attack, LegendCard enemyLegend, DetailedCardControl? detailedCardControl = null)
         {
-            _enemyIsAttacking = isAttacking;
             _enemyAttack = attack;
             _enemyLegend = enemyLegend;
+            _enemyDetailedCardControl = detailedCardControl;
+        }
+        public void CheckIfDead()
+        {
+            LegendCard legend = (LegendCard)this.Card;
+            // if legend is dead remove from playing field and rearrange cards
+            if (legend.CurrentHP <= 0)
+            {
+                FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
+                // move stacked cards to discard pile
+                foreach (Card card in legend.StackedCards.ToList())
+                {
+                    legend.StackedCards.Remove(card);
+                    this.Owner.DiscardPile.Add(card);
+                }
+                // Delete stacked Cards visually
+                foreach (CardControl cardControl in this.CardsControls.ToList())
+                {
+                    parentForm.Controls.Remove(cardControl);
+                    // add to discard pile visually
+                }
+
+                // move legend card to discard pile
+                this.Owner.PlayingField.Remove(Card);
+                this.Owner.DiscardPile.Add(Card);
+
+                // delete legend from playing field
+                ZoneControl myZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
+                parentForm.RemoveCardControl(this, myZone);
+
+                // Rearrange playing field
+                if (Owner.PlayingField.Count > 0)
+                {
+                    parentForm.ArrangeCardsInField(Owner);
+                }
+
+                this.Dispose();
+            }
         }
     }
 }

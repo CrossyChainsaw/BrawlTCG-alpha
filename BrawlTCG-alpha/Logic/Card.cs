@@ -32,7 +32,7 @@ namespace BrawlTCG_alpha.Logic
         public Color TextColor { get; internal set; }
 
         static Color MagicColor = Color.DarkViolet;
-        static Color NatureColor = Color.DarkTurquoise; // DarkTurquoise
+        static Color NatureColor = Color.Teal; // DarkTurquoise
         static Color FireColor = Color.DarkRed;
         static Color CosmicColor = Color.DarkBlue;
 

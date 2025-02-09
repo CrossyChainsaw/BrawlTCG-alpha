@@ -153,6 +153,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IronLady {
+            get {
+                object obj = ResourceManager.GetObject("IronLady", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap LawOfTheLand {
             get {
                 object obj = ResourceManager.GetObject("LawOfTheLand", resourceCulture);
@@ -173,9 +183,29 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Mustafar {
+            get {
+                object obj = ResourceManager.GetObject("Mustafar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Orion {
             get {
                 object obj = ResourceManager.GetObject("Orion", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SearingBlade {
+            get {
+                object obj = ResourceManager.GetObject("SearingBlade", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

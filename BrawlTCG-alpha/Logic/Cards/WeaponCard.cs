@@ -9,6 +9,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 {
     enum Weapons
     {
+        Any,
         Blasters,
         RocketLance,
         Spear,
@@ -20,7 +21,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         Cannon,
         Orb,
         Greatsword,
-        BattleBoots
+        BattleBoots,
     }
 
     internal class WeaponCard : Card

@@ -85,7 +85,7 @@ namespace BrawlTCG_alpha.Visuals
                 Brush textBrush = new SolidBrush(Card.TextColor);
                 g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
                 g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.HitPoints}", Font, textBrush, new PointF(Width - 100, 5));
+                g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(Width - 100, 5));
                 SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
                 g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((Width - attSize.Width) / 2, 5));
 
@@ -96,9 +96,14 @@ namespace BrawlTCG_alpha.Visuals
                 foreach (Attack attack in legendAttacks)
                 {
                     // Init. Button
+                    int damage = attack.AttackModifier + legendCard.Power;
+                    if (damage <= 0)
+                    {
+                        damage = 0;
+                    }
                     Button attackButton = new Button
                     {
-                        Text = $"{attack.Name} ({attack.AttackModifier + legendCard.Power} Damage)\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
+                        Text = $"{attack.Name} ({damage} Damage)\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
                         Location = new Point((Width - (Width - 20)) / 2, attackButtonY),
                         Size = new Size(Width - 20, 50),
                         Font = new Font("Arial", 9, FontStyle.Bold),
@@ -113,9 +118,16 @@ namespace BrawlTCG_alpha.Visuals
                             IsAttacking = true;
                             Player otherPlayer = GetOtherPlayer(Owner);
 
+                            // if there are no legends attack the player
                             if (otherPlayer.PlayingField.Count == 0)
                             {
+                                // Remove Card
+                                OnCardClicked();
+                                // Attack
                                 attack.Effect.Invoke(legendCard, otherPlayer, attack);
+                                // Notify
+                                MessageBox.Show($"{otherPlayer.Name} just took damage");
+                                // Check if dead
                                 if (otherPlayer.Health <= 0 )
                                 {
                                     MessageBox.Show($"{otherPlayer.Name} has been defeated");
@@ -129,16 +141,16 @@ namespace BrawlTCG_alpha.Visuals
                                 ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
                                 foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
                                 {
-                                    cardControl.EnemyIsAttacking(true, attack, legendCard);
+                                    cardControl.EnemyIsAttacking(attack, legendCard, this);
                                 }
 
-                                MessageBox.Show("Choose an opposing Legend");
                                 // now the player will click on an opposing card.
                             }
                             foreach (Button attackButton in attackButtons.ToList())
                             {
                                 attackButton.Enabled = false;
                             }
+                            attackButton.BackColor = Color.LightGreen;
                         }
                         else
                         {
@@ -150,16 +162,70 @@ namespace BrawlTCG_alpha.Visuals
                     // Add To UI
                     Controls.Add(attackButton);
 
+
+
+                    // ENABLE ATTACK BUTTONS IF ABLE TO PLAY
                     // Check if the attack can be played
-                    // Check weapon one requirement
-                    bool canPlayAttack = legendCard.StackedCards.Count(c => c is WeaponCard wc && wc.Weapon == attack.WeaponOne) >= attack.WeaponOneAmount;
-                    // Check weapon two requirement if there is 
-                    if (attack.WeaponTwo != null)
+                    bool canPlayAttack = false;
+
+                    // Count the number of WeaponOne cards in the stacked cards
+                    int weaponOneCount;
+
+                    if (attack.WeaponOne == Weapons.Any)
                     {
-                        canPlayAttack &= legendCard.StackedCards.Count(c => c is WeaponCard wc && wc.Weapon == attack.WeaponTwo) >= attack.WeaponTwoAmount;
+                        // Count all weapons if WeaponOne is 'Any'
+                        weaponOneCount = legendCard.StackedCards
+                            .Count(card => card is WeaponCard);
                     }
+                    else
+                    {
+                        // Count specific weapon type
+                        weaponOneCount = legendCard.StackedCards
+                            .Count(card => card is WeaponCard wc && wc.Weapon == attack.WeaponOne);
+                    }
+
+                    // Check if the count meets the required amount for WeaponOne
+                    if (weaponOneCount >= attack.WeaponOneAmount)
+                    {
+                        canPlayAttack = true;
+
+                        // If there is a second weapon requirement, check that as well
+                        if (attack.WeaponTwo != null)
+                        {
+                            int weaponTwoCount;
+
+                            if (attack.WeaponTwo == Weapons.Any)
+                            {
+                                // Count all weapons if WeaponTwo is 'Any'
+                                weaponTwoCount = legendCard.StackedCards
+                                    .Count(card => card is WeaponCard);
+                            }
+                            else
+                            {
+                                // Count specific weapon type
+                                weaponTwoCount = legendCard.StackedCards
+                                    .Count(card => card is WeaponCard wc && wc.Weapon == attack.WeaponTwo);
+                            }
+
+                            // The attack can only be played if both weapon requirements are met
+                            if (weaponTwoCount < attack.WeaponTwoAmount)
+                            {
+                                canPlayAttack = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // If WeaponOne requirement is not met, the attack can't be played
+                        canPlayAttack = false;
+                    }
+
                     // Enable or disable the button based on weapon availability
                     attackButton.Enabled = canPlayAttack;
+
+
+
+
 
                     // Change Y for next attack button
                     attackButtonY += 50;
@@ -181,7 +247,6 @@ namespace BrawlTCG_alpha.Visuals
                 g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
             }
         }
-
         internal void OnCardClicked()
         {
             Form parentForm = this.FindForm();

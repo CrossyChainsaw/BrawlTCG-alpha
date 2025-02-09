@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+using BrawlTCG_alpha.Logic.Cards;
 using BrawlTCG_alpha.Visuals;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,10 @@ namespace BrawlTCG_alpha.Logic
         public Player TopPlayer { get; private set; }
         public Player ActivePlayer { get; private set; }
         public Player InactivePlayer { get; private set; }
+
+        public event Action UI_InitializeZones;
+        public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
+        public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action UI_Multi_InitializeDeckPiles;
         public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
@@ -23,8 +28,9 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player, ZoneTypes, bool> UI_EnableCards;
         public event Action UI_Multi_DisableCardsOnEssenceZones;
         public event Action<Player> UI_UpdatePlayerInformation;
-        public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
         public event Action<string> UI_PopUpNotification;
+        public event Action<Player> UI_EnemyStopsAttacking;
+        public StageCard ActiveStageCard;
         bool _bottomPlayerTurn = false;
 
         public Game(Player playerOne, Player playerTwo)
@@ -34,6 +40,9 @@ namespace BrawlTCG_alpha.Logic
         }
         public void Prepare()
         {
+            // Setup all the zones visually
+            UI_InitializeZones.Invoke();
+
             // Define Players
             RandomizeStartingPlayer();
 
@@ -73,9 +82,11 @@ namespace BrawlTCG_alpha.Logic
 
         public void SwitchTurn()
         {
+            // END TURN
+            // ...
+
             // Switch the Turn
             _bottomPlayerTurn = !_bottomPlayerTurn;
-            ActivePlayer.PlayedEssenceCardThisTurn(false);
             if (ActivePlayer == BottomPlayer)
             {
                 ActivePlayer = TopPlayer;
@@ -86,13 +97,30 @@ namespace BrawlTCG_alpha.Logic
                 ActivePlayer = BottomPlayer;
                 InactivePlayer = TopPlayer;
             }
+            // Reset Variables
+            ActivePlayer.PlayedEssenceCardThisTurn(false);
+            // Hide Enemy Hand and Disable it
             UI_ShowCards(InactivePlayer, false);
             UI_EnableCards(InactivePlayer, ZoneTypes.Hand, false);
+            // Show Player Hand and Enable it
             UI_ShowCards(ActivePlayer, true);
             UI_EnableCards(ActivePlayer, ZoneTypes.Hand, true);
+            // Enable all the cards on the field
             UI_EnableCards(ActivePlayer, ZoneTypes.PlayingField, true);
             UI_EnableCards(InactivePlayer, ZoneTypes.PlayingField, true);
 
+            // START TURN
+            // stage start turn effect
+            if (ActiveStageCard != null)
+            {
+                List<LegendCard> legends = GetAllLegendsOnPlayingField();
+                ActiveStageCard.StartTurnEffect.Invoke(legends);
+            }
+
+            // Reset the CardControl on click features
+            UI_EnemyStopsAttacking.Invoke(ActivePlayer);
+            // Update legends information in playing field
+            UI_UpdateCardControlInPlayingFieldInformation.Invoke();
         }
         void DrawCardFromDeck(Player player)
         {
@@ -130,6 +158,23 @@ namespace BrawlTCG_alpha.Logic
         public List<Player> GetPlayers()
         {
             return [ActivePlayer, InactivePlayer];
+        }
+        public List<LegendCard> GetAllLegendsOnPlayingField()
+        {
+            List<Player> players = GetPlayers();
+            List<LegendCard> legends = new List<LegendCard>();
+            foreach (Player player in players)
+            {
+                foreach (LegendCard legend in player.PlayingField)
+                {
+                    legends.Add(legend);
+                }
+            }
+            return legends;
+        }
+        public void SetStageCard(StageCard stage)
+        {
+            ActiveStageCard = stage;
         }
     }
 }

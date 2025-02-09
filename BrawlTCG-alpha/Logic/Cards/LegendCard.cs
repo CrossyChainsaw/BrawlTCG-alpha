@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrawlTCG_alpha.Visuals;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 {
     internal class LegendCard : Card
     {
-        public int HitPoints { get; internal set; }
+        public int BaseHealth { get; internal set; }
         public int CurrentHP { get; internal set; }
         public int Power { get; internal set; }
         public int Dexterity { get; internal set; }
@@ -23,6 +24,9 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Attack Attack2 { get; private set; }
         public Attack Attack3 { get; private set; }
         public Attack Attack4 { get; private set; }
+        public bool IsTapped { get; private set; }
+
+        public event Action<LegendCard, WeaponCard> UI_BurnWeaponCard;
 
         public LegendCard(
             // Card
@@ -61,8 +65,8 @@ namespace BrawlTCG_alpha.Logic.Cards
             Dexterity = dexterity;
             Defense = defense;
             Speed = speed;
-            HitPoints = Defense + Speed;
-            CurrentHP = HitPoints;
+            BaseHealth = Defense + Speed;
+            CurrentHP = BaseHealth;
             PrimaryWeapon = primaryWeapon;
             SecondaryWeapon = secondaryWeapon;
             // Card Optional
@@ -124,29 +128,45 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             CurrentHP -= damage;
         }
+        public void GainHealth(int healing)
+        {
+            CurrentHP += healing;
+            if (CurrentHP > BaseHealth)
+            {
+                CurrentHP = BaseHealth;
+            }
+        }
         public List<Attack> GetAttacks()
         {
             return new List<Attack> { Attack1, Attack2, Attack3, Attack4 }
                 .Where(attack => attack != null)
                 .ToList();
         }
-        public void BurnWeapon(Weapons weapon, int burnAmount)
+        public void BurnWeapon(Weapons? attackWeapon, int? burnAmount)
         {
-            // remove card from legend
-            int cardsBurned = 0;
-            foreach (Card card in StackedCards.ToList())
+            if (attackWeapon != null)
             {
-                if (card is WeaponCard wepCard && wepCard.Weapon == weapon)
+                int cardsBurned = 0;
+
+                // Iterate over a copy of the list to avoid modification issues
+                for (int i = 0; i < StackedCards.Count && cardsBurned < burnAmount; i++)
                 {
-                    StackedCards.Remove(wepCard);
-                    // add card to discard pile
-                    cardsBurned++;
-                    if (cardsBurned == burnAmount)
+                    if (StackedCards[i] is WeaponCard wepCard)
                     {
-                        break;
+                        if (wepCard.Weapon == attackWeapon || attackWeapon == Weapons.Any)
+                        StackedCards.RemoveAt(i);
+                        cardsBurned++;
+                        i--; // Adjust index because we've removed an item
+                        UI_BurnWeaponCard.Invoke(this, wepCard);
                     }
                 }
             }
         }
+        public void TapOut()
+        {
+            IsTapped = true;
+            MessageBox.Show($"{this.Name} is now tapped");
+        }
+
     }
 }
