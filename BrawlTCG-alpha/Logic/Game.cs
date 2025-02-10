@@ -12,11 +12,15 @@ namespace BrawlTCG_alpha.Logic
 {
     internal class Game
     {
+        // Properties
         public Player BottomPlayer { get; private set; }
         public Player TopPlayer { get; private set; }
         public Player ActivePlayer { get; private set; }
         public Player InactivePlayer { get; private set; }
+        public bool SomeoneIsAttacking { get; private set; }
+        public Attack SelectedAttack { get; private set; }
 
+        // VISUALS
         public event Action UI_InitializeZones;
         public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
@@ -31,6 +35,7 @@ namespace BrawlTCG_alpha.Logic
         public event Action<string> UI_PopUpNotification;
         public event Action<Player> UI_EnemyStopsAttacking;
         public event Action<Player> UI_UntapPlayerCards;
+        // Fields
         public StageCard ActiveStageCard;
         bool _bottomPlayerTurn = false;
 
@@ -60,6 +65,12 @@ namespace BrawlTCG_alpha.Logic
 
             // Obtain first Essence card and display visually - and disable them
             ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
@@ -187,6 +198,16 @@ namespace BrawlTCG_alpha.Logic
         public void SetStageCard(StageCard stage)
         {
             ActiveStageCard = stage;
+        }
+        public void StartAttack(Attack attack)
+        {
+            SomeoneIsAttacking = true;
+            SelectedAttack = attack;
+        }
+        public void StopAttack()
+        {
+            SomeoneIsAttacking = false;
+            SelectedAttack = null;
         }
     }
 }

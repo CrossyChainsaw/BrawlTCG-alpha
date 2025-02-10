@@ -21,7 +21,7 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard Artemis = new LegendCard("Artemis", 3, "Legend", Elements.Cosmic, Properties.Resources.Artemis, 5, 5, 4, 8, Weapons.RocketLance, Weapons.Scythe, attack1: AttackCatalogue.Scythe_Slash.Clone(), attack2: AttackCatalogue.Scythe_Gimp.Clone(), attack3: AttackCatalogue.Lance_Flamethrower.Clone());
         public static LegendCard Orion = new LegendCard("Orion", 3, "Legend", Elements.Cosmic, Properties.Resources.Orion, 4, 6, 6, 6, Weapons.RocketLance, Weapons.Spear, attack1: AttackCatalogue.Spear_Stab.Clone(), attack3: AttackCatalogue.Lance_Flamethrower.Clone());
         public static LegendCard BriarRose = new LegendCard("Briar Rose", 3, "Legend", Elements.Nature, Properties.Resources.BriarRose, 6, 7, 4, 5, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab.Clone(), attack2: AttackCatalogue.Any_Seduce.Clone()); // speed stance
-        public static LegendCard ForestGuardian = new LegendCard("Forest Guardian", 2, "Legend", Elements.Nature, Properties.Resources.ElvenhollowMagyar, 1, 4, 11, 4, Weapons.Hammer, Weapons.Greatsword, attack1: AttackCatalogue.Greatsword_Swing.Clone(), attack2:AttackCatalogue.Greatsword_Swing.Clone());
+        public static LegendCard ForestGuardian = new LegendCard("Forest Guardian", 2, "Legend", Elements.Nature, Properties.Resources.ElvenhollowMagyar, 1, 4, 11, 4, Weapons.Hammer, Weapons.Greatsword, attack1: AttackCatalogue.Greatsword_Swing.Clone(), attack2:AttackCatalogue.Greatsword_String.Clone());
         public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 3, "Legend", Elements.Magic, Properties.Resources.FaerieQueen, 7, 7, 4, 4, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab.Clone(), attack2: AttackCatalogue.Greatsword_Swing.Clone(), attack3: AttackCatalogue.Greatsword_String.Clone(), attack4: AttackCatalogue.Arcadia_PinkRoses.Clone()); // base stance
         public static LegendCard Enchantress = new LegendCard("Enchantress", 4, "Legend", Elements.Magic, Properties.Resources.Enchantress, 0, 4, 11, 7, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Enchantress_EnchantHealth.Clone(), attack2: AttackCatalogue.Enchantress_EnchantPower.Clone(), attack3: AttackCatalogue.Enchantress_CurseHealth.Clone(), attack4: AttackCatalogue.Enchantress_CursePower.Clone());
         public static LegendCard DarkMage = new LegendCard("Dark Mage", 5, "Legend", Elements.Magic, Properties.Resources.DarkMage, 11, 4, 5, 7, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Scythe_Slash.Clone());
@@ -65,6 +65,10 @@ namespace BrawlTCG_alpha.Logic
             FaerieQueen.Clone(),
             BriarRose.Clone(),
             BriarRose.Clone(),
+            BriarRose.Clone(),
+            BriarRose.Clone(),
+            ForestGuardian.Clone(),
+            ForestGuardian.Clone(),
             ForestGuardian.Clone(),
             ForestGuardian.Clone(),
 
@@ -120,14 +124,23 @@ namespace BrawlTCG_alpha.Logic
             Essence.Clone(),
             Essence.Clone(),
             Essence.Clone(),
+            Essence.Clone(),
+            Essence.Clone(),
+            Essence.Clone(),
+            Essence.Clone(),
+            Essence.Clone(),
 
             // Stages
+            Mustafar.Clone(),
+            Mustafar.Clone(),
             Mustafar.Clone(),
 
             // Weapons
             ShootingStar.Clone(),
             ShootingStar.Clone(),
             ShootingStar.Clone(),
+            ShootingStar.Clone(),
+            StarryScythe.Clone(),
             StarryScythe.Clone(),
             StarryScythe.Clone(),
             StarryScythe.Clone(),
@@ -141,8 +154,13 @@ namespace BrawlTCG_alpha.Logic
             Artemis.Clone(),
             Artemis.Clone(),
             Artemis.Clone(),
+            Orion.Clone(),
+            Orion.Clone(),
             IronLady.Clone(),
             IronLady.Clone(),
+            IronLady.Clone(),
+            DarkMage.Clone(),
+            DarkMage.Clone(),
             DarkMage.Clone(),
             DarkMage.Clone(),
             Enchantress.Clone(),

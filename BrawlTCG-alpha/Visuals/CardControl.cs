@@ -24,6 +24,10 @@ namespace BrawlTCG_alpha.Visuals
         DetailedCardControl _enemyDetailedCardControl;
 
         Image _backSideImage = Properties.Resources.BrawlLogo;
+        public event Action<CardControl> CardClicked; // Event to notify when this card is clicked
+
+        public event Action<Player> UI_ArrangeCardsInPlayingField;
+        Game _game;
 
         // Variables for dragging
         const int CARD_WIDTH = 150;
@@ -35,7 +39,7 @@ namespace BrawlTCG_alpha.Visuals
         Point _locationBeforeDragging;
 
         // Methods
-        public CardControl(Card card, bool isOpen = false, Player? owner = null, List<Player> players = null)
+        public CardControl(Game game, Card card, Action<Player> UI_arrangeCardsFunction, bool isOpen = false, Player? owner = null, List<Player> players = null)
         {
             Card = card;
             this.Card.IsOpen = isOpen;
@@ -45,6 +49,9 @@ namespace BrawlTCG_alpha.Visuals
             Owner = owner;
             CardsControls = new List<CardControl>();
             Players = players;
+            _game = game;
+            // Delegates
+            UI_ArrangeCardsInPlayingField += UI_arrangeCardsFunction;
             // Events
             this.Click += (sender, e) =>
             {
@@ -243,7 +250,7 @@ namespace BrawlTCG_alpha.Visuals
         }
         CardControl OnCardClicked()
         {
-            if (_enemyDetailedCardControl == null)
+            if (!_game.SomeoneIsAttacking)
             {
                 _isDragging = false;
                 if (!_mouseMoved)
@@ -256,44 +263,20 @@ namespace BrawlTCG_alpha.Visuals
                     }
                 }
             }
-            else if (_enemyDetailedCardControl.IsAttacking)
-            {
-                if (this.Card is LegendCard legend)
-                {
-                    // Remove the enemy card off the screen
-                    _enemyDetailedCardControl.OnCardClicked();
-
-                    // Apply the Damage
-                    _enemyAttack.Effect.Invoke(_enemyLegend, legend, _enemyAttack);
-                    this.Invalidate();
-                    this.Update();
-
-                    // Notify someone took damage
-                    MessageBox.Show($"{this.Card.Name} just took damage");
-
-                    // CHECK IF DEAD
-                    CheckIfDead();
-
-                    // enemy stops attacking
-                    EnemyIsAttacking(null, null, null);
-                }
-                else
-                {
-                    MessageBox.Show("You are attacking a Non-legend card bruh\nTry Again.");
-                }
-            }
 
             return this;
 
             // Local Methods
             void RenderLegendCard(Form parentForm)
             {
+                FRM_PlayingField frm = (FRM_PlayingField)parentForm;
                 // Init Card
-                DetailedCardControl legendCardControl = new DetailedCardControl(this.Card, Owner, Players, this)
+                DetailedCardControl legendCardControl = new DetailedCardControl(_game, this.Card, Owner, Players, this, UI_ArrangeCardsInPlayingField)
                 {
                     Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
                     Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
                 };
+                legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInformation;
                 // UI
                 parentForm.Controls.Add(legendCardControl);
                 legendCardControl.BringToFront();
@@ -312,7 +295,7 @@ namespace BrawlTCG_alpha.Visuals
 
                 foreach (Card weaponCard in stackedCards)
                 {
-                    DetailedCardControl weaponCardControl = new DetailedCardControl(weaponCard, Owner, Players, this)
+                    DetailedCardControl weaponCardControl = new DetailedCardControl(_game, weaponCard, Owner, Players, this, UI_ArrangeCardsInPlayingField)
                     {
                         Size = new Size(cardWidth, cardHeight),
                         Location = new Point(startX, startY)
@@ -326,19 +309,26 @@ namespace BrawlTCG_alpha.Visuals
                 }
             }
         }
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            CardClicked?.Invoke(this); // Trigger the event and pass THIS CardControl
+        }
         public void EnemyIsAttacking(Attack attack, LegendCard enemyLegend, DetailedCardControl? detailedCardControl = null)
         {
             _enemyAttack = attack;
             _enemyLegend = enemyLegend;
             _enemyDetailedCardControl = detailedCardControl;
         }
+
         public void CheckIfDead()
         {
             LegendCard legend = (LegendCard)this.Card;
+
             // if legend is dead remove from playing field and rearrange cards
-            if (legend.CurrentHP <= 0)
+            FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
+            if (legend.CurrentHP <= 0 && parentForm != null) // if parentform is null it has already been removed
             {
-                FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
                 // move stacked cards to discard pile
                 foreach (Card card in legend.StackedCards.ToList())
                 {
@@ -349,6 +339,8 @@ namespace BrawlTCG_alpha.Visuals
                 foreach (CardControl cardControl in this.CardsControls.ToList())
                 {
                     parentForm.Controls.Remove(cardControl);
+                    cardControl.Invalidate();
+                    cardControl.Update();
                     // add to discard pile visually
                 }
 
@@ -363,7 +355,7 @@ namespace BrawlTCG_alpha.Visuals
                 // Rearrange playing field
                 if (Owner.PlayingField.Count > 0)
                 {
-                    parentForm.ArrangeCardsInField(Owner);
+                    UI_ArrangeCardsInPlayingField(Owner);
                 }
 
                 this.Dispose();

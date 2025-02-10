@@ -41,7 +41,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                 {
                     if (weaponCard.Element == attackingLegend.Element)
                     {
-                        MessageBox.Show($"Matching Element: {weaponCard.Element}");
                         foundMatches++;
                         if (foundMatches == requiredMatches)
                         {
@@ -61,7 +60,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                     {
                         if (weaponCard.Element == attackingLegend.Element)
                         {
-                            MessageBox.Show($"Matching Element: {weaponCard.Element}");
                             foundMatches2++;
                             if (foundMatches2 == requiredMatches)
                             {
