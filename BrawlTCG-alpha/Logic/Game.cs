@@ -173,6 +173,18 @@ namespace BrawlTCG_alpha.Logic
         {
             return [ActivePlayer, InactivePlayer];
         }
+        public Player GetOtherPlayer(Player p)
+        {
+            if (BottomPlayer == p)
+            {
+                return TopPlayer;
+            }
+            else if (TopPlayer == p)
+            {
+                return BottomPlayer;
+            }
+            throw new Exception();
+        }
         public List<LegendCard> GetAllLegendsOnPlayingField()
         {
             List<Player> players = GetPlayers();
