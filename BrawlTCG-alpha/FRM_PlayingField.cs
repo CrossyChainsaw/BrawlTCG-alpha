@@ -433,7 +433,7 @@ namespace BrawlTCG_alpha
                 {
                     // Arrange Cards
                     zone.CardsControls[i].Location = new Point(startX + i * (CARD_WIDTH + spacing), zone.Location.Y + 10);
-                    zone.CardsControls[i].EnableDragging(false);
+                    zone.CardsControls[i].SetCanDrag(false);
 
                     // Arrange Stacked Cards
                     if (zone.CardsControls[i].Card is LegendCard legendCard)
@@ -596,7 +596,7 @@ namespace BrawlTCG_alpha
                                 Location = new Point(legendCardControl.Location.X, legendCardControl.Location.Y - (20 * legendCard.StackedCards.Count)) // make sure we stack weapon cards on weapon cards visually
                             };
                             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
-                            cardControl.EnableDragging(false);
+                            cardControl.SetCanDrag(false);
 
                             // Add to UI
                             Controls.Add(cardControl);
@@ -673,7 +673,7 @@ namespace BrawlTCG_alpha
                         // move it to the owners discard pile
                     }
                     _game.SetStageCard(card);
-                    stageCardControl.EnableDragging(false);
+                    stageCardControl.SetCanDrag(false);
                     return true;
                 }
                 else
