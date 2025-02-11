@@ -30,7 +30,7 @@ namespace BrawlTCG_alpha.Visuals
             BackColor = card.CardColor;
             ForeColor = card.TextColor;
             Font = new Font("Arial", 12, FontStyle.Bold);
-            this.Click += (sender, e) => OnCardClicked();
+            this.Click += (sender, e) => OnDetailedCardClicked();
             CardsControls = new List<CardControl>();
             attackButtons = new List<Button>();
             Owner = owner;
@@ -153,7 +153,6 @@ namespace BrawlTCG_alpha.Visuals
                                 foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
                                 {
                                     cardControl.CardClicked += OnEnemyCardControlClicked; // Subscribing to the click event
-                                    //cardControl.EnemyIsAttacking(attack, legendCard, this);
                                 }
 
                                 // now the player will click on an opposing card and attack it
@@ -167,7 +166,7 @@ namespace BrawlTCG_alpha.Visuals
                         }
                         else
                         {
-                            OnCardClicked();
+                            OnDetailedCardClicked();
                             _game.StopAttack();
                         }
                     };
@@ -264,7 +263,7 @@ namespace BrawlTCG_alpha.Visuals
         void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
         {
             // Remove Card
-            OnCardClicked();
+            OnDetailedCardClicked();
             // Attack
             attack.Effect.Invoke(legendCard, otherPlayer, attack);
             UI_UpdatePlayerInformation(otherPlayer);
@@ -279,46 +278,72 @@ namespace BrawlTCG_alpha.Visuals
 
         private void OnEnemyCardControlClicked(CardControl clickedCard)
         {
+            _ = this.Controls;
             if (_game.SomeoneIsAttacking)
             {
                 AttackLegendCard((LegendCard)this.Card, clickedCard);
             }
         }
-        internal void OnCardClicked()
+        private bool isRemoved = false; // Prevent double removal
+
+        internal void OnDetailedCardClicked()
         {
+            if (isRemoved) return; // Already removed, skip
+            isRemoved = true;
+
             Form parentForm = this.FindForm();
             if (parentForm != null)
             {
                 RemoveThisFromScreen(parentForm);
             }
 
-            void RemoveThisFromScreen(Form parentForm)
+            if (_game.SomeoneIsAttacking)
             {
-                // remove card from screen
-                parentForm.Controls.Remove(this);
-                this.Invalidate();
-                this.Update();
-
-                // remove weps from screen too
-                if (Card is LegendCard legendCard)
-                {
-                    foreach (Card weaponCard in legendCard.StackedCards)
-                    {
-                        Control controlToRemove = parentForm.Controls
-                            .OfType<DetailedCardControl>()
-                            .FirstOrDefault(c => c.Card == weaponCard);
-
-                        if (controlToRemove != null)
-                        {
-                            parentForm.Controls.Remove(controlToRemove);
-                            controlToRemove.Dispose();
-                        }
-                    }
-                }
-
-                this.Dispose();
+                OriginalCardControl.Enabled = true;
+                _game.StopAttack();
             }
         }
+
+        private void RemoveThisFromScreen(Form parentForm)
+        {
+            // 1️⃣ Unsubscribe from CardClicked events to avoid memory leaks
+            FRM_PlayingField playingField = parentForm as FRM_PlayingField;
+            if (playingField != null)
+            {
+                foreach (Player player in Players)
+                {
+                    ZoneControl opponentZone = playingField.GetMyZone(ZoneTypes.PlayingField, player);
+                    foreach (CardControl cardControl in opponentZone.CardsControls)
+                    {
+                        cardControl.CardClicked -= OnEnemyCardControlClicked;
+                    }
+                }
+            }
+
+            // 2️⃣ Remove this DetailedCardControl
+            parentForm.Controls.Remove(this);
+            this.Invalidate();
+            this.Update();
+            this.Dispose();
+
+            // 3️⃣ Also remove stacked weapons if it's a LegendCard
+            if (Card is LegendCard legendCard)
+            {
+                foreach (Card weaponCard in legendCard.StackedCards)
+                {
+                    Control controlToRemove = parentForm.Controls
+                        .OfType<DetailedCardControl>()
+                        .FirstOrDefault(c => c.Card == weaponCard);
+
+                    if (controlToRemove != null)
+                    {
+                        parentForm.Controls.Remove(controlToRemove);
+                        controlToRemove.Dispose();
+                    }
+                }
+            }
+        }
+
         Player GetOtherPlayer(Player player)
         {
             foreach (Player p in Players)
@@ -375,8 +400,6 @@ namespace BrawlTCG_alpha.Visuals
         void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
         {
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
-            // Remove Detailed card off screen
-            OnCardClicked();
 
             // Apply the Damage
             _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack);
@@ -384,13 +407,15 @@ namespace BrawlTCG_alpha.Visuals
             enemyCardControl.Update();
 
             // Notify someone took damage
-            MessageBox.Show($"{enemyCardControl.Card.Name} just took damage");
+            //MessageBox.Show($"{enemyCardControl.Card.Name} just took damage");
 
             // CHECK IF DEAD
             enemyCardControl.CheckIfDead();
 
             // Stop Attacking
             _game.StopAttack();
+            // Remove Detailed card off screen
+            OnDetailedCardClicked();
         }
     }
 }

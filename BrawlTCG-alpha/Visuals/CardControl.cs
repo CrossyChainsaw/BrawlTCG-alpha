@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -248,7 +249,7 @@ namespace BrawlTCG_alpha.Visuals
             Card.IsOpen = !Card.IsOpen;
             Invalidate();
         }
-        CardControl OnCardClicked()
+        void OnCardClicked()
         {
             if (!_game.SomeoneIsAttacking)
             {
@@ -263,8 +264,6 @@ namespace BrawlTCG_alpha.Visuals
                     }
                 }
             }
-
-            return this;
 
             // Local Methods
             void RenderLegendCard(Form parentForm)
