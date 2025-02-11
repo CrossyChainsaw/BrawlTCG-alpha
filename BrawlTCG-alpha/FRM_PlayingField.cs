@@ -44,7 +44,6 @@ namespace BrawlTCG_alpha
             _game.UI_UpdateCardsInDeckPile += UpdateCardsInDeckPile;
             _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
             _game.UI_UpdatePlayerInformation += UpdatePlayerInformation;
-            _game.UI_EnemyStopsAttacking += EnemyStopsAttacking;
             _game.UI_UntapPlayerCards += UntapPlayerCards;
             // Multi
             _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
@@ -346,14 +345,6 @@ namespace BrawlTCG_alpha
                 }
             }
         } 
-        void EnemyStopsAttacking(Player player)
-        {
-            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
-            foreach (CardControl cardControl in zone.CardsControls)
-            {
-                cardControl.EnemyIsAttacking(null, null, null);
-            }
-        }
         // LegendCard.cs
         void BurnWeaponCard(LegendCard legendCard, WeaponCard wepCard)
         {

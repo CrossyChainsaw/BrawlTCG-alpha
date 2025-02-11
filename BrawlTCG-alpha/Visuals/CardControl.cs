@@ -18,9 +18,6 @@ namespace BrawlTCG_alpha.Visuals
         const int CARD_HEIGHT = 200;
 
         // Fields
-        private Attack _enemyAttack;
-        private LegendCard _enemyLegend;
-        private DetailedCardControl _enemyDetailedCardControl;
         private Image _backSideImage = Properties.Resources.BrawlLogo;
         private bool _isDragging = false;
         private bool _mouseMoved = false;
@@ -41,8 +38,7 @@ namespace BrawlTCG_alpha.Visuals
         public event Action<Player> UI_ArrangeCardsInPlayingField;
 
         // Methods
-        public CardControl(Game game, Card card, Action<Player> UI_arrangeCardsFunction,
-            bool isOpen = false, Player? owner = null, List<Player> players = null)
+        public CardControl(Game game, Card card, Action<Player> UI_arrangeCardsFunction, bool isOpen = false, Player? owner = null, List<Player> players = null)
         {
             // Initialize properties
             Card = card;
@@ -85,6 +81,8 @@ namespace BrawlTCG_alpha.Visuals
                 }
             };
         }
+        
+        
         // Override
         protected override void OnClick(EventArgs e)
         {
@@ -119,6 +117,8 @@ namespace BrawlTCG_alpha.Visuals
             PaintCardBorder(g);
 
         }
+        
+        
         // Paint
         void PaintLegendCard(Graphics g, LegendCard legendCard)
         {
@@ -334,18 +334,8 @@ namespace BrawlTCG_alpha.Visuals
             }
         }
 
+
         // Combat
-        public void FlipCard()
-        {
-            Card.IsOpen = !Card.IsOpen;
-            Invalidate();
-        }
-        public void EnemyIsAttacking(Attack attack, LegendCard enemyLegend, DetailedCardControl? detailedCardControl = null)
-        {
-            _enemyAttack = attack;
-            _enemyLegend = enemyLegend;
-            _enemyDetailedCardControl = detailedCardControl;
-        }
         public void CheckIfDead()
         {
             LegendCard legend = (LegendCard)this.Card;
@@ -385,6 +375,11 @@ namespace BrawlTCG_alpha.Visuals
 
                 this.Dispose();
             }
+        }
+        public void FlipCard()
+        {
+            Card.IsOpen = !Card.IsOpen;
+            Invalidate();
         }
     }
 }

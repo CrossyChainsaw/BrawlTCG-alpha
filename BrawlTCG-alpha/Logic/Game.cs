@@ -33,7 +33,6 @@ namespace BrawlTCG_alpha.Logic
         public event Action UI_Multi_DisableCardsOnEssenceZones;
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<string> UI_PopUpNotification;
-        public event Action<Player> UI_EnemyStopsAttacking;
         public event Action<Player> UI_UntapPlayerCards;
         // Fields
         public StageCard ActiveStageCard;
@@ -131,8 +130,6 @@ namespace BrawlTCG_alpha.Logic
                 ActiveStageCard.StartTurnEffect.Invoke(legends);
             }
 
-            // Reset the CardControl on click features
-            UI_EnemyStopsAttacking.Invoke(ActivePlayer);
             // Update legends information in playing field
             UI_UpdateCardControlInPlayingFieldInformation.Invoke();
         }
