@@ -331,6 +331,7 @@ namespace BrawlTCG_alpha.Visuals
             return elementalDamageBoost;
         }
 
+
         // Removes from this UI
         void RemoveThisFromScreen(Form parentForm)
         {
@@ -371,6 +372,7 @@ namespace BrawlTCG_alpha.Visuals
                 }
             }
         }
+
 
         // Events
         void OnEnemyCardControlClicked(CardControl clickedCard)
