@@ -68,7 +68,7 @@ namespace BrawlTCG_alpha
         }
 
 
-        // Game.cs
+        // Inside Game.cs
         void UpdateCardsInDeckPile(Player player)
         {
             // If you have no cards in your deck pile, make the deck pile dissapear
@@ -479,6 +479,7 @@ namespace BrawlTCG_alpha
             }
         }
 
+
         // Frontend Logic
         List<ZoneControl> GetZones(ZoneTypes targetZoneType)
         {
@@ -516,6 +517,7 @@ namespace BrawlTCG_alpha
             return null;
         }
 
+        
         // Play Cards
         internal async Task<bool> TryToSnapCard(CardControl cardControl, Card card, Player player)
         {
