@@ -233,7 +233,6 @@ namespace BrawlTCG_alpha.Visuals
             // Enable or disable the attack button based on whether all conditions are met
             attackButton.Enabled = canPlayAttack;
         }
-
         private int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
         {
             int weaponCount = 0;
