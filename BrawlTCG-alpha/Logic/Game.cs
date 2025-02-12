@@ -67,6 +67,16 @@ namespace BrawlTCG_alpha.Logic
             ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
@@ -210,6 +220,7 @@ namespace BrawlTCG_alpha.Logic
         }
         public void StartAttack(Attack attack)
         {
+            // ideally disable cards here
             SomeoneIsAttacking = true;
             SelectedAttack = attack;
         }

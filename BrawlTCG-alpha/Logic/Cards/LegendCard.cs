@@ -143,6 +143,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public List<Attack> GetAttacks()
         {
+            // this technique is called LINQ
             return new List<Attack> { Attack1, Attack2, Attack3, Attack4 }
                 .Where(attack => attack != null)
                 .ToList();

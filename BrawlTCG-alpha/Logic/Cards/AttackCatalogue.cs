@@ -168,13 +168,13 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack Enchantress_EnchantPower = new Attack("Enchant Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack) =>
         {
-            int modifyAmount = 2;
+            int modifyAmount = 1;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
-        });
+        }, friendlyFire: true);
         public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack) =>
         {
-            int modifyAmount = 2;
+            int modifyAmount = 1;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
-        });
+        }, friendlyFire: true);
     }
 }

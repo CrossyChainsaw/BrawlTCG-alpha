@@ -19,9 +19,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         public int? WeaponTwoAmount { get; private set; }
         public int WeaponOneBurnAmount { get; private set; }
         public int WeaponTwoBurnAmount { get; private set; }
+        public bool FriendlyFire { get; private set; }
 
 
-        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0)
+        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0, bool friendlyFire = false)
         {
             // Req
             Name = name;
@@ -34,6 +35,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             WeaponTwoAmount = weaponTwoAmount;
             WeaponOneBurnAmount = weaponOneBurnAmount;
             WeaponTwoBurnAmount = weaponTwoBurnAmount;
+            FriendlyFire = friendlyFire;
         }
         public void Execute(LegendCard attacker, object target)
         {
@@ -48,7 +50,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public Attack Clone()
         {
-            return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount);
+            return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount, FriendlyFire);
         }
 
     }

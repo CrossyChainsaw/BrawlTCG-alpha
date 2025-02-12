@@ -15,7 +15,7 @@ namespace BrawlTCG_alpha
     public partial class FRM_PlayingField : Form
     {
         // Any sort of relation to logic
-        Player player1 = new Player("John", CardCatalogue.CloneList(CardCatalogue.GsDeck));
+        Player player1 = new Player("John", CardCatalogue.CloneList(CardCatalogue.CosmicDeck2));
         Player player2 = new Player("Jane", CardCatalogue.CloneList(CardCatalogue.GsDeck));
 
         // Visuals

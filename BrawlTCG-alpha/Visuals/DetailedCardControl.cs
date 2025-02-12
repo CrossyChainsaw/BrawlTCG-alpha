@@ -159,7 +159,7 @@ namespace BrawlTCG_alpha.Visuals
                     if (!_game.SomeoneIsAttacking)
                     {
                         _game.StartAttack(attack);
-                        OriginalCardControl.Enabled = false; // prevents from attacking twice
+                        OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
 
                         // ATTACK THE PLAYER
@@ -174,10 +174,21 @@ namespace BrawlTCG_alpha.Visuals
                             // Let the enemy cards know that we are attacking
                             // Enable enemy cards to be able to be clicked to take damage
                             FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
-                            ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
-                            foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
+                            if (attack.FriendlyFire == false)
                             {
-                                cardControl.CardClicked += OnEnemyCardControlClicked; // Subscribing to the click event
+                                ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
+                                foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
+                                {
+                                    cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                }
+                            }
+                            else if (attack.FriendlyFire == true)
+                            {
+                                ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
+                                foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
+                                {
+                                    cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                }
                             }
 
                             // now the player will click on an opposing card and attack it
@@ -351,7 +362,7 @@ namespace BrawlTCG_alpha.Visuals
                     ZoneControl opponentZone = playingField.GetMyZone(ZoneTypes.PlayingField, player);
                     foreach (CardControl cardControl in opponentZone.CardsControls)
                     {
-                        cardControl.CardClicked -= OnEnemyCardControlClicked;
+                        cardControl.CardClicked -= OnClickCardControlDuringAttack;
                     }
                 }
             }
@@ -382,9 +393,8 @@ namespace BrawlTCG_alpha.Visuals
 
 
         // Events
-        void OnEnemyCardControlClicked(CardControl clickedCard)
+        void OnClickCardControlDuringAttack(CardControl clickedCard)
         {
-            _ = this.Controls;
             if (_game.SomeoneIsAttacking)
             {
                 AttackLegendCard((LegendCard)this.Card, clickedCard);
