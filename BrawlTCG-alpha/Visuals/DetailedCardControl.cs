@@ -15,10 +15,10 @@ namespace BrawlTCG_alpha.Visuals
         public Player Owner;
         public List<Player> Players;
         public CardControl OriginalCardControl;
-        private bool isRemoved = false; // Prevent double removal
+        bool _isRemoved = false;
         private Game _game;
         private List<Button> attackButtons;
-        public bool IsAttacking = false;
+        bool _isAttacking = false;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
 
@@ -210,6 +210,8 @@ namespace BrawlTCG_alpha.Visuals
         }
         void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
         {
+            // only enable them if this is your legend
+
             // Assume the attack can be played unless we find a reason it can't
             bool canPlayAttack = true;
 
@@ -255,8 +257,6 @@ namespace BrawlTCG_alpha.Visuals
         // Attack
         void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
         {
-            // Remove Card
-            OnDetailedCardClicked();
             // Attack
             attack.Effect.Invoke(legendCard, otherPlayer, attack);
             UI_UpdatePlayerInformation(otherPlayer);
@@ -267,6 +267,10 @@ namespace BrawlTCG_alpha.Visuals
             {
                 MessageBox.Show($"{otherPlayer.Name} has been defeated");
             }
+            // Stop Attacking
+            _game.StopAttack();
+            // Remove Card
+            OnDetailedCardClicked();
         }
         void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
         {
@@ -385,8 +389,8 @@ namespace BrawlTCG_alpha.Visuals
         }
         void OnDetailedCardClicked()
         {
-            if (isRemoved) return; // Already removed, skip
-            isRemoved = true;
+            if (_isRemoved) return; // Already removed, skip
+            _isRemoved = true;
 
             Form parentForm = this.FindForm();
             if (parentForm != null)
