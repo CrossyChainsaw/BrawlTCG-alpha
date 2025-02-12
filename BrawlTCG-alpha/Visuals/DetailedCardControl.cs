@@ -15,10 +15,9 @@ namespace BrawlTCG_alpha.Visuals
         public Player Owner;
         public List<Player> Players;
         public CardControl OriginalCardControl;
+        Game _game;
+        List<Button> _attackButtons;
         bool _isRemoved = false;
-        private Game _game;
-        private List<Button> attackButtons;
-        bool _isAttacking = false;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
 
@@ -35,13 +34,14 @@ namespace BrawlTCG_alpha.Visuals
             Font = new Font("Arial", 12, FontStyle.Bold);
             this.Click += (sender, e) => OnDetailedCardClicked();
             CardsControls = new List<CardControl>();
-            attackButtons = new List<Button>();
+            _attackButtons = new List<Button>();
             Owner = owner;
             Players = players;
             OriginalCardControl = originalCardControl;
             UI_ArrangeCardsInPlayingField = arrangeCards;
             _game = game;
         }
+
 
         // Paint Cards
         protected override void OnPaint(PaintEventArgs e)
@@ -183,7 +183,7 @@ namespace BrawlTCG_alpha.Visuals
                             // now the player will click on an opposing card and attack it
                             _game.StartAttack(attack);
                         }
-                        foreach (Button attackButton in attackButtons.ToList())
+                        foreach (Button attackButton in _attackButtons.ToList())
                         {
                             attackButton.Enabled = false;
                         }
@@ -195,7 +195,7 @@ namespace BrawlTCG_alpha.Visuals
                         _game.StopAttack();
                     }
                 };
-                attackButtons.Add(attackButton);
+                _attackButtons.Add(attackButton);
                 // Add To UI
                 Controls.Add(attackButton);
 
@@ -211,31 +211,37 @@ namespace BrawlTCG_alpha.Visuals
         void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
         {
             // only enable them if this is your legend
-
-            // Assume the attack can be played unless we find a reason it can't
-            bool canPlayAttack = true;
-
-            // Check if WeaponOne requirement is met
-            int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
-            if (weaponOneCount < attack.WeaponOneAmount)
+            if (Owner == _game.ActivePlayer)
             {
-                canPlayAttack = false; // WeaponOne requirement is not met
-            }
+                // Assume the attack can be played unless we find a reason it can't
+                bool canPlayAttack = true;
 
-            // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
-            if (attack.WeaponTwo != null)
-            {
-                int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
-                if (weaponTwoCount < attack.WeaponTwoAmount)
+                // Check if WeaponOne requirement is met
+                int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
+                if (weaponOneCount < attack.WeaponOneAmount)
                 {
-                    canPlayAttack = false; // WeaponTwo requirement is not met
+                    canPlayAttack = false; // WeaponOne requirement is not met
                 }
-            }
 
-            // Enable or disable the attack button based on whether all conditions are met
-            attackButton.Enabled = canPlayAttack;
+                // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
+                if (attack.WeaponTwo != null)
+                {
+                    int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
+                    if (weaponTwoCount < attack.WeaponTwoAmount)
+                    {
+                        canPlayAttack = false; // WeaponTwo requirement is not met
+                    }
+                }
+
+                // Enable or disable the attack button based on whether all conditions are met
+                attackButton.Enabled = canPlayAttack;
+            }
+            else
+            {
+                attackButton.Enabled = false;
+            }
         }
-        private int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
+        int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
         {
             int weaponCount = 0;
 
@@ -280,9 +286,6 @@ namespace BrawlTCG_alpha.Visuals
             _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack);
             enemyCardControl.Invalidate();
             enemyCardControl.Update();
-
-            // Notify someone took damage
-            //MessageBox.Show($"{enemyCardControl.Card.Name} just took damage");
 
             // CHECK IF DEAD
             enemyCardControl.CheckIfDead();
