@@ -165,8 +165,8 @@ namespace BrawlTCG_alpha.Visuals
                         OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
 
-                        // ATTACK THE PLAYER
-                        if (otherPlayer.PlayingField.Count == 0) // friendly fire attack dont need this!!!
+                        // ATTACK THE PLAYER - This checks if // there are no cards enemy field // not a friendly fire attack // more than 0 damage (otherwise its probably status)
+                        if (otherPlayer.PlayingField.Count == 0 && attack.FriendlyFire == false && AttackCatalogue.CalculateDamage(legendCard, attack) > 0)
                         {
                             AttackThePlayer(legendCard, otherPlayer, attack);
                             _game.StopAttack();

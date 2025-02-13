@@ -23,7 +23,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
             attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
-        static int CalculateDamage(LegendCard attackingLegend, Attack attack)
+        public static int CalculateDamage(LegendCard attackingLegend, Attack attack)
         {
             int damage = attackingLegend.Power + attack.AttackModifier;
             if (damage < 0)
