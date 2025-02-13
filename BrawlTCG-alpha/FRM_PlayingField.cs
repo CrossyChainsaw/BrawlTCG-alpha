@@ -357,8 +357,12 @@ namespace BrawlTCG_alpha
                     {
                         if (wepCardControl.Card == wepCard)
                         {
-                            Controls.Remove(wepCardControl);
+                            // Remove Logically
                             cardControl.CardsControls.Remove(wepCardControl);
+                            // Remove Visually
+                            Controls.Remove(wepCardControl);
+                            // Add to discard pile
+                            AddCardToDiscardPile(player, wepCardControl);
                         }
                     }
                 }
@@ -749,6 +753,12 @@ namespace BrawlTCG_alpha
             ZoneControl playingFieldZone = GetMyZone(ZoneTypes.PlayingField, player);
             RemoveCardControl(cardControl, playingFieldZone);
 
+            // Add to UI and Zone
+            AddCardToDiscardPile(player, cardControl);
+        }
+
+        void AddCardToDiscardPile(Player player, CardControl cardControl)
+        {
             // Add to UI and Zone
             ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, player);
             CardControl cardControl1 = CreateCardControl(player, discardPileZone, cardControl.Card, true);
