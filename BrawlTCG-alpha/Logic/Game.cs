@@ -12,6 +12,9 @@ namespace BrawlTCG_alpha.Logic
 {
     internal class Game
     {
+        // Fields
+        const int STARTING_ESSENCE = 9;
+        
         // Properties
         public Player BottomPlayer { get; private set; }
         public Player TopPlayer { get; private set; }
@@ -22,7 +25,7 @@ namespace BrawlTCG_alpha.Logic
 
         // VISUALS
         public event Action UI_InitializeZones;
-        public event Action<Player, Card, ZoneTypes, ZoneTypes> UI_ChangeCardZone;
+        public event Action<Player, Card> UI_ChangeCardZoneFromDeckToHand;
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action UI_Multi_InitializeDeckPiles;
         public event Action<Player> UI_InitializeCardsInHand;
@@ -36,6 +39,7 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UntapPlayerCards;
         // Fields
         public StageCard ActiveStageCard;
+        public Player ActiveStageCardOwner;
         bool _bottomPlayerTurn = false;
 
         public Game(Player playerOne, Player playerTwo)
@@ -63,24 +67,11 @@ namespace BrawlTCG_alpha.Logic
             UI_InitializeCardsInHand.Invoke(InactivePlayer);
 
             // Obtain first Essence card and display visually - and disable them
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-            InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            for (int i = 0; i < STARTING_ESSENCE; i++)
+            {
+                ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+                InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+            }
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
             UI_Multi_DisableCardsOnEssenceZones.Invoke();
@@ -149,7 +140,7 @@ namespace BrawlTCG_alpha.Logic
             Card? card = ActivePlayer.DrawCardFromDeck();
             if (card != null)
             {
-                UI_ChangeCardZone.Invoke(player, card, ZoneTypes.Deck, ZoneTypes.Hand);
+                UI_ChangeCardZoneFromDeckToHand.Invoke(player, card);
                 UI_UpdateCardsInDeckPile.Invoke(player);
             }
         }
@@ -214,9 +205,10 @@ namespace BrawlTCG_alpha.Logic
             }
             return legends;
         }
-        public void SetStageCard(StageCard stage)
+        public void SetStageCard(Player owner, StageCard stage)
         {
             ActiveStageCard = stage;
+            ActiveStageCardOwner = owner;
         }
         public void StartAttack(Attack attack)
         {
@@ -228,6 +220,12 @@ namespace BrawlTCG_alpha.Logic
         {
             SomeoneIsAttacking = false;
             SelectedAttack = null;
+        }
+        public void AddCardToDiscardPile(Player player, Card card)
+        {
+            player.DiscardPile.Add(card);
+
+            // add card to discard pile visually
         }
     }
 }
