@@ -14,7 +14,8 @@ namespace BrawlTCG_alpha.Logic
         // Fields
         const int STARTING_HEALTH = 20;
         const int STARTING_HAND_CARDS = 20;
-        const int STARTING_ESSENCE = 1;
+        
+        // Properties
         public string Name { get; private set; }
         public int Health { get; private set; }
         public int Essence { get; private set; }
@@ -30,7 +31,7 @@ namespace BrawlTCG_alpha.Logic
         {
             Name = name;
             Health = STARTING_HEALTH;
-            Essence = STARTING_ESSENCE;
+            Essence = 0;
             Deck = deck;
             Hand = new List<Card>();
             PlayingField = new List<Card>();
