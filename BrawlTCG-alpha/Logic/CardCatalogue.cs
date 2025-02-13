@@ -41,6 +41,7 @@ namespace BrawlTCG_alpha.Logic
 
         // Decks
         public static List<Card> GsDeck = new List<Card>() {
+            // Essence
             Essence.Clone(),
             Essence.Clone(),
             Essence.Clone(),
