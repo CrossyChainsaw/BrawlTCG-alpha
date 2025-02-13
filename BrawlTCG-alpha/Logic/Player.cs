@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 20;
-        const int STARTING_HAND_CARDS = 20;
+        const int STARTING_HAND_CARDS = 7; // 7?
         
         // Properties
         public string Name { get; private set; }
@@ -72,6 +72,7 @@ namespace BrawlTCG_alpha.Logic
         {
             Essence = Essence - card.Cost;
         }
+        /// <summary>Remove Card from Hand, Add Card to Essence Field or PlayingField if it's that card</summary>
         public void PlayCard(Card card)
         {
             if (card is EssenceCard essenceCard)

@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     internal class Game
     {
         // Fields
-        const int STARTING_ESSENCE = 9;
+        const int STARTING_ESSENCE = 1;
         
         // Properties
         public Player BottomPlayer { get; private set; }
