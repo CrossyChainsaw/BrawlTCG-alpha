@@ -150,6 +150,9 @@ namespace BrawlTCG_alpha.Logic
             GalaxyLance.Clone(),
             ScryingGlass.Clone(),
             ScryingGlass.Clone(),
+            RemnantOfFate.Clone(),
+            RemnantOfFate.Clone(),
+            RemnantOfFate.Clone(),
 
             // Legends
             Artemis.Clone(),

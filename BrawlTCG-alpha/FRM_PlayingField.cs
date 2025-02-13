@@ -361,7 +361,9 @@ namespace BrawlTCG_alpha
                             cardControl.CardsControls.Remove(wepCardControl);
                             // Remove Visually
                             Controls.Remove(wepCardControl);
-                            // Add to discard pile
+                            // Add to discard pile logically
+                            player.DiscardPile.Add(wepCard);
+                            // Add to discard pile visually 
                             AddCardToDiscardPile(player, wepCardControl);
                         }
                     }

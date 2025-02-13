@@ -285,53 +285,57 @@ namespace BrawlTCG_alpha.Visuals
                     if (Card is LegendCard legendCard)
                     {
                         Form parentForm = this.FindForm();
-                        RenderLegendCard(parentForm);
-                        RenderWeaponCards(legendCard, parentForm);
+                        DetailedCardControl dcc = RenderLegendCard(parentForm);
+                        RenderWeaponCards(legendCard, parentForm, dcc);
                     }
                 }
             }
 
             // Local Methods
-        }
-        void RenderLegendCard(Form parentForm)
-        {
-            FRM_PlayingField frm = (FRM_PlayingField)parentForm;
-            // Init Card
-            DetailedCardControl legendCardControl = new DetailedCardControl(_game, this.Card, Owner, Players, this, UI_ArrangeCardsInPlayingField)
+            DetailedCardControl RenderLegendCard(Form parentForm)
             {
-                Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
-                Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
-            };
-            legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
-            // UI
-            parentForm.Controls.Add(legendCardControl);
-            legendCardControl.BringToFront();
-        }
-        void RenderWeaponCards(LegendCard legendCard, Form parentForm)
-        {
-            List<Card> stackedCards = legendCard.StackedCards;
-
-            int spacing = 20;                      // Spacing between cards
-            int cardWidth = (int)(CARD_WIDTH * 1.5);
-            int cardHeight = (int)(CARD_HEIGHT * 1.5);
-
-            // Start from the right edge of the form
-            int startX = parentForm.ClientSize.Width - cardWidth - spacing;
-            int startY = parentForm.ClientSize.Height - cardHeight - spacing; // 20 px from bottom
-
-            foreach (Card weaponCard in stackedCards)
-            {
-                DetailedCardControl weaponCardControl = new DetailedCardControl(_game, weaponCard, Owner, Players, this, UI_ArrangeCardsInPlayingField)
+                FRM_PlayingField frm = (FRM_PlayingField)parentForm;
+                // Init Card
+                DetailedCardControl legendCardControl = new DetailedCardControl(_game, this.Card, Owner, Players, this, UI_ArrangeCardsInPlayingField)
                 {
-                    Size = new Size(cardWidth, cardHeight),
-                    Location = new Point(startX, startY)
+                    Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
+                    Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
                 };
+                legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
+                // UI
+                parentForm.Controls.Add(legendCardControl);
+                legendCardControl.BringToFront();
 
-                parentForm.Controls.Add(weaponCardControl);
-                weaponCardControl.BringToFront();
+                return legendCardControl;
+            }
+            void RenderWeaponCards(LegendCard legendCard, Form parentForm, DetailedCardControl dcc)
+            {
+                List<Card> stackedCards = legendCard.StackedCards;
 
-                // Move to the left for the next card
-                startX -= cardWidth / 2 + spacing;
+                int spacing = 20;                      // Spacing between cards
+                int cardWidth = (int)(CARD_WIDTH * 1.5);
+                int cardHeight = (int)(CARD_HEIGHT * 1.5);
+
+                // Start from the right edge of the form
+                int startX = parentForm.ClientSize.Width - cardWidth - spacing;
+                int startY = parentForm.ClientSize.Height - cardHeight - spacing; // 20 px from bottom
+
+                foreach (Card weaponCard in stackedCards)
+                {
+                    DetailedCardControl weaponCardControl = new DetailedCardControl(_game, weaponCard, Owner, Players, this, UI_ArrangeCardsInPlayingField)
+                    {
+                        Size = new Size(cardWidth, cardHeight),
+                        Location = new Point(startX, startY),
+                    };
+                    // Add to Memory
+                    dcc.WeaponCardControls.Add(weaponCardControl);
+                    // Add to UI
+                    parentForm.Controls.Add(weaponCardControl);
+                    weaponCardControl.BringToFront();
+
+                    // Move to the left for the next card
+                    startX -= cardWidth / 2 + spacing;
+                }
             }
         }
 

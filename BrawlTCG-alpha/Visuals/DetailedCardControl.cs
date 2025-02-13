@@ -20,6 +20,8 @@ namespace BrawlTCG_alpha.Visuals
         bool _isRemoved = false;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
+        public List<DetailedCardControl> WeaponCardControls { get; internal set; } // the big weapons when showing details
+
 
         // Events
         public event Action<Player> UI_UpdatePlayerInformation;
@@ -34,6 +36,7 @@ namespace BrawlTCG_alpha.Visuals
             Font = new Font("Arial", 12, FontStyle.Bold);
             this.Click += (sender, e) => OnDetailedCardClicked();
             CardsControls = new List<CardControl>();
+            WeaponCardControls = new List<DetailedCardControl>();
             _attackButtons = new List<Button>();
             Owner = owner;
             Players = players;
@@ -163,7 +166,7 @@ namespace BrawlTCG_alpha.Visuals
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
 
                         // ATTACK THE PLAYER
-                        if (otherPlayer.PlayingField.Count == 0)
+                        if (otherPlayer.PlayingField.Count == 0) // friendly fire attack dont need this!!!
                         {
                             AttackThePlayer(legendCard, otherPlayer, attack);
                             _game.StopAttack();
@@ -367,28 +370,26 @@ namespace BrawlTCG_alpha.Visuals
                 }
             }
 
-            // 2️⃣ Remove this DetailedCardControl
+
+            // Remove stacked weapons
+            if (Card is LegendCard legendCard)
+            {
+                foreach (DetailedCardControl dcc in WeaponCardControls.ToList())
+                {
+                    // Logically
+                    WeaponCardControls.Remove(dcc);
+                    // Visually
+                    parentForm.Controls.Remove(dcc);
+                    dcc.Dispose();
+                }
+            }
+
+
+            // Remove this DetailedCardControl
             parentForm.Controls.Remove(this);
             this.Invalidate();
             this.Update();
             this.Dispose();
-
-            // 3️⃣ Also remove stacked weapons if it's a LegendCard
-            if (Card is LegendCard legendCard)
-            {
-                foreach (Card weaponCard in legendCard.StackedCards)
-                {
-                    Control controlToRemove = parentForm.Controls
-                        .OfType<DetailedCardControl>()
-                        .FirstOrDefault(c => c.Card == weaponCard);
-
-                    if (controlToRemove != null)
-                    {
-                        parentForm.Controls.Remove(controlToRemove);
-                        controlToRemove.Dispose();
-                    }
-                }
-            }
         }
 
 
