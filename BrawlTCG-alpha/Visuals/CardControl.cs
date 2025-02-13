@@ -36,6 +36,7 @@ namespace BrawlTCG_alpha.Visuals
         public event Func<Task<bool>>? CardReleased;
         public event Action<CardControl> CardClicked; // Event to notify when this card is clicked
         public event Action<Player> UI_ArrangeCardsInPlayingField;
+        public event Action<Player, CardControl> UI_AddCardToDiscardPile;
 
         // Methods
         public CardControl(Game game, Card card, Action<Player> UI_arrangeCardsFunction, bool isOpen = false, Player? owner = null, List<Player> players = null)
@@ -81,8 +82,8 @@ namespace BrawlTCG_alpha.Visuals
                 }
             };
         }
-        
-        
+
+
         // Override
         protected override void OnClick(EventArgs e)
         {
@@ -117,8 +118,8 @@ namespace BrawlTCG_alpha.Visuals
             PaintCardBorder(g);
 
         }
-        
-        
+
+
         // Paint
         void PaintLegendCard(Graphics g, LegendCard legendCard)
         {
@@ -301,7 +302,7 @@ namespace BrawlTCG_alpha.Visuals
                 Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
                 Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
             };
-            legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInformation;
+            legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
             // UI
             parentForm.Controls.Add(legendCardControl);
             legendCardControl.BringToFront();
@@ -344,28 +345,33 @@ namespace BrawlTCG_alpha.Visuals
             FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
             if (legend.CurrentHP <= 0 && parentForm != null) // if parentform is null it has already been removed
             {
-                // move stacked cards to discard pile
-                foreach (Card card in legend.StackedCards.ToList())
+                // correct hp
+                legend.CurrentHP = 0;
+
+                // Remove stacked cards
+                int n = legend.StackedCards.Count;
+                for (int i = 0; i < n; i++)
                 {
+                    // Remove card logically
+                    Card card = legend.StackedCards[0];
                     legend.StackedCards.Remove(card);
                     this.Owner.DiscardPile.Add(card);
-                }
-                // Delete stacked Cards visually
-                foreach (CardControl cardControl in this.CardsControls.ToList())
-                {
-                    parentForm.Controls.Remove(cardControl);
-                    cardControl.Invalidate();
-                    cardControl.Update();
-                    // add to discard pile visually
+
+                    // Delete card visually
+                    CardControl cardControl = this.CardsControls[0];
+                    this.CardsControls.Remove(cardControl);
+                    UI_AddCardToDiscardPile(Owner, cardControl);
                 }
 
-                // move legend card to discard pile
+
+
+                // move legend card to discard pile logically
                 this.Owner.PlayingField.Remove(Card);
                 this.Owner.DiscardPile.Add(Card);
+                // visually
+                UI_AddCardToDiscardPile(Owner, this);
 
-                // delete legend from playing field
-                ZoneControl myZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
-                parentForm.RemoveCardControl(this, myZone);
+
 
                 // Rearrange playing field
                 if (Owner.PlayingField.Count > 0)

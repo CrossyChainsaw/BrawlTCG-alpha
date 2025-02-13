@@ -9,6 +9,8 @@ using System.Configuration;
 using System.IO.Packaging;
 using System.Numerics;
 using System.Security.Policy;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace BrawlTCG_alpha
 {
@@ -36,14 +38,14 @@ namespace BrawlTCG_alpha
             // Give all the functions to the game class so that the game class controls the entire game.
             // Single
             _game.UI_InitializeZones += InitializeZones;
-            _game.UI_ChangeCardZoneFromDeckToHand += ChangeCardZoneToHandZone;
+            _game.UI_ChangeCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
             _game.UI_EnableCards += EnableCards;
             _game.UI_ShowCards += ShowCards;
             _game.UI_InitializeCardsInHand += InitializeCardsInHand;
             _game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
             _game.UI_UpdateCardsInDeckPile += UpdateCardsInDeckPile;
             _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
-            _game.UI_UpdatePlayerInformation += UpdatePlayerInformation;
+            _game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             _game.UI_UntapPlayerCards += UntapPlayerCards;
             // Multi
             _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
@@ -79,7 +81,7 @@ namespace BrawlTCG_alpha
                 {
                     if (cardControl.Owner == player)
                     {
-                        // Remove both from the screen and from memory
+                        // Remove from screen and zone
                         RemoveCardControl(cardControl, zone);
                     }
                 }
@@ -220,11 +222,7 @@ namespace BrawlTCG_alpha
                 {
                     foreach (Card card in player.Deck)
                     {
-                        CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, owner: player)
-                        {
-                            Location = new Point(zone.Location.X + 10, zone.Location.Y + 10),
-                        };
-                        cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+                        CardControl cardControl = CreateCardControl(player, zone, card, false);
 
                         AddCardControl(cardControl, zone);
                     }
@@ -275,6 +273,7 @@ namespace BrawlTCG_alpha
                         Location = new Point(startX + i * (CARD_WIDTH + spacing), handZone.Location.Y + 10),
                     };
                     cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+                    cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
 
                     // Add the card to the controls and bring it to the front
                     AddCardControl(cardControl, handZone);
@@ -315,6 +314,7 @@ namespace BrawlTCG_alpha
                         Location = new Point(startX + i * (CARD_WIDTH + spacing), essenceZone.Location.Y + 10),
                     };
                     cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+                    cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
 
                     // Add the card to the controls and bring it to the front
                     AddCardControl(cardControl, essenceZone);
@@ -322,13 +322,13 @@ namespace BrawlTCG_alpha
             }
         }
         // needs a rework, only used to change a card from deck to hand
-        void ChangeCardZoneToHandZone(Player player, Card card)
+        void MoveCardFromDeckZoneToHandZone(Player player, Card card)
         {
             // set variables
             ZoneTypes oldZoneType = ZoneTypes.Deck;
             ZoneTypes targetZoneType = ZoneTypes.Hand;
 
-            // function
+            // Find CardControl
             CardControl? cardControlOld = GetCardControl(player, oldZoneType, card);
             if (cardControlOld != null)
             {
@@ -336,37 +336,10 @@ namespace BrawlTCG_alpha
                 RemoveCardControl(cardControlOld, GetMyZone(oldZoneType, player));
 
                 // Reinitailize in new zone
-                CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: cardControlOld.Card.IsOpen, owner: player, players: _game.GetPlayers())
-                {
-                    Location = new Point(0, 0) // rearrange it
-                };
-                cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
-
-                AddCardControl(cardControl, GetMyZone(targetZoneType, player));
+                ZoneControl handZone = GetMyZone(targetZoneType, player);
+                CardControl cardControl = CreateCardControl(player, handZone, card, false, _game.GetPlayers());
+                AddCardControl(cardControl, handZone);
                 ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-            }
-        }
-        void ChangeCardZoneToDiscardPileZone(Player player, Card card)
-        {
-            // set variables
-            ZoneTypes oldZoneType = ZoneTypes.Stage;
-            ZoneTypes targetZoneType = ZoneTypes.DiscardPile;
-
-            // function
-            CardControl? cardControlOld = GetCardControl(player, oldZoneType, card);
-            if (cardControlOld != null)
-            {
-                // Remove from old zone
-                RemoveCardControl(cardControlOld, GetMyZone(oldZoneType, player));
-
-                // Reinitailize in new zone
-                CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: true, owner: player, players: _game.GetPlayers())
-                {
-                    Location = new Point(10, 10) // <- erm
-                };
-
-                // Add to UI
-                AddCardControl(cardControl, GetMyZone(targetZoneType, player));
             }
         }
         // LegendCard.cs
@@ -392,19 +365,21 @@ namespace BrawlTCG_alpha
             }
         }
         // Multiple
-        internal void UpdatePlayerInformation(Player player)
+        internal void UpdatePlayerInfo(Player player)
         {
             ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
             zone.Label.Text = $"{player.Name}\nHealth: {player.Health}\nEssence: {player.Essence}";
         }
 
+
         // Visual UI Functions
-        /// <summary>Removes the Deck Pile if you have 0 cards in your deck pile</summary>
+        /// <summary>Removes from UI and Zone</summary>
         internal void RemoveCardControl(CardControl cardControl, ZoneControl zone)
         {
             Controls.Remove(cardControl);
             zone.CardsControls.Remove(cardControl);
         }
+        /// <summary>Adds to UI and Zone</summary>
         void AddCardControl(CardControl cardControl, ZoneControl zone)
         {
             Controls.Add(cardControl);
@@ -540,6 +515,10 @@ namespace BrawlTCG_alpha
             }
             return null;
         }
+        internal ZoneControl GetStageZone()
+        {
+            return GetZones(ZoneTypes.Stage)[0];
+        }
 
 
         // Play Cards
@@ -600,7 +579,7 @@ namespace BrawlTCG_alpha
                             // Stack Card
                             legendCard.StackCard(weaponCard);
                             player.PlayCard(weaponCard); // play in memory
-                            UpdatePlayerInformation(player);
+                            UpdatePlayerInfo(player);
 
                             // play in UI
                             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
@@ -613,6 +592,7 @@ namespace BrawlTCG_alpha
                                 Location = new Point(legendCardControl.Location.X, legendCardControl.Location.Y - (20 * legendCard.StackedCards.Count)) // make sure we stack weapon cards on weapon cards visually
                             };
                             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+                            cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
                             cardControl.SetCanDrag(false);
 
                             // Add to UI
@@ -676,7 +656,7 @@ namespace BrawlTCG_alpha
         }
         bool TryPlayStageCard(Player player, StageCard card, CardControl cardControlOld)
         {
-            ZoneControl stageZone = GetZones(ZoneTypes.Stage)[0];
+            ZoneControl stageZone = GetStageZone();
             if (IsMouseInZone(stageZone))
             {
                 if (player.Essence >= card.Cost)
@@ -684,18 +664,7 @@ namespace BrawlTCG_alpha
                     // First remove the old card if there is one
                     if (_game.ActiveStageCard != null)
                     {
-                        // Add card to discard pile
-                        StageCard oldStageCard = _game.ActiveStageCard;
-                        Player oldOwner = _game.ActiveStageCardOwner;
-                        _game.AddCardToDiscardPile(oldOwner, oldStageCard);
-                        // add to discard pile visually
-
-                        // Remove from UI
-                        foreach (CardControl cardControl in stageZone.CardsControls.ToList())
-                        {
-                            stageZone.CardsControls.Remove(cardControl);
-                            break;
-                        }
+                        MoveOldStageCardToDiscardPile(stageZone);
                     }
                     // Play the card in the zone on screen
                     CardControl stageCardControl = PlayCardInStageZone(player, card, cardControlOld, stageZone);
@@ -711,6 +680,24 @@ namespace BrawlTCG_alpha
                 }
             }
             return false;
+
+        }
+        void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
+        {
+            // Find CardControl
+            CardControl stageCardCardControl = stageZone.CardsControls[0];
+            // Remove from UI
+            stageZone.CardsControls.Remove(stageCardCardControl);
+
+            // Add card to discard pile
+            StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
+            Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
+            _game.AddCardToDiscardPile(oldOwner, oldStageCard);
+
+            // add to discard pile visually
+            ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
+            stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count*3);
+            AddCardControl(stageCardCardControl, discardPileZone);
         }
         bool TryPlayEssenceCard(Player player, Card card, CardControl cardControlOld)
         {
@@ -748,6 +735,19 @@ namespace BrawlTCG_alpha
             zoneBounds = this.RectangleToClient(zoneBounds);
             return zoneBounds.Contains(mousePos);
         }
+        /// <summary>Delete from UI and Zone, Add to UI and Zone</summary>
+        void MoveCardControlFromPlayingFieldToDiscardPile(Player player, CardControl cardControl)
+        {
+            // Remove from UI and Zone
+            ZoneControl playingFieldZone = GetMyZone(ZoneTypes.PlayingField, player);
+            RemoveCardControl(cardControl, playingFieldZone);
+
+            // Add to UI and Zone
+            ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, player);
+            CardControl cardControl1 = CreateCardControl(player, discardPileZone, cardControl.Card, true);
+            cardControl1.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count*3));
+            AddCardControl(cardControl1, discardPileZone);
+        }
 
 
         /// <summary>Handles playing cards visually and logically</summary>
@@ -762,6 +762,7 @@ namespace BrawlTCG_alpha
                 Location = new Point(targetZone.Location.X + 10, targetZone.Location.Y + 10)
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+            cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
 
             AddCardControl(cardControl, targetZone);
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
@@ -777,7 +778,7 @@ namespace BrawlTCG_alpha
                 legendCard.UI_BurnWeaponCard += BurnWeaponCard;
             }
 
-            UpdatePlayerInformation(player);
+            UpdatePlayerInfo(player);
             return cardControl;
         }
         CardControl PlayCardInStageZone(Player player, Card card, CardControl cardControlOld, ZoneControl stageZone)
@@ -789,15 +790,23 @@ namespace BrawlTCG_alpha
             RemoveCardControl(cardControlOld, handZone);
 
             // Create the new control in the correct zone and position
-            CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: true, owner: player, players: _game.GetPlayers())
-            {
-                Location = new Point(stageZone.Location.X + 10, stageZone.Location.Y + 10)
-            };
-            cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+            CardControl cardControl = CreateCardControl(player, stageZone, card, true, _game.GetPlayers());
+
             // Add it in the UI
             AddCardControl(cardControl, stageZone);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
 
             // Return the new Control
+            return cardControl;
+        }
+        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, List<Player> players = null)
+        {
+            CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: isOpen, owner: player, players: players)
+            {
+                Location = new Point(zone.Location.X + 10, zone.Location.Y + 10),
+            };
+            cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
+            cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
             return cardControl;
         }
     }
