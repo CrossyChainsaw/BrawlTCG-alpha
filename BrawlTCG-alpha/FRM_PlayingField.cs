@@ -309,7 +309,7 @@ namespace BrawlTCG_alpha
                     Card card = player.EssenceField[i];
 
                     // Create the card control and position it based on the calculated X and fixed Y
-                    CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: true)
+                    CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: true, players: _game.GetPlayers())
                     {
                         Location = new Point(startX + i * (CARD_WIDTH + spacing), essenceZone.Location.Y + 10),
                     };
@@ -337,7 +337,7 @@ namespace BrawlTCG_alpha
 
                 // Reinitailize in new zone
                 ZoneControl handZone = GetMyZone(targetZoneType, player);
-                CardControl cardControl = CreateCardControl(player, handZone, card, false, _game.GetPlayers());
+                CardControl cardControl = CreateCardControl(player, handZone, card, false);
                 AddCardControl(cardControl, handZone);
                 ArrangeCards(player, ZoneTypes.Hand, player.Hand);
             }
@@ -594,7 +594,7 @@ namespace BrawlTCG_alpha
 
                                 // Create a weapon card behind the legend card
                                 CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
-                                CardControl cardControl = new CardControl(_game, weaponCard, ArrangeCardsInPlayingField, true, player) // create the weapon card same loc as legendcard
+                                CardControl cardControl = new CardControl(_game, weaponCard, ArrangeCardsInPlayingField, true, player, players: _game.GetPlayers()) // create the weapon card same loc as legendcard
                                 {
                                     Location = new Point(legendCardControl.Location.X, legendCardControl.Location.Y - (20 * legendCard.StackedCards.Count)) // make sure we stack weapon cards on weapon cards visually
                                 };
@@ -757,6 +757,7 @@ namespace BrawlTCG_alpha
 
             // Add to UI and Zone
             AddCardToDiscardPile(player, cardControl);
+            cardControl.Enabled = false;
         }
 
         void AddCardToDiscardPile(Player player, CardControl cardControl)
@@ -779,7 +780,7 @@ namespace BrawlTCG_alpha
             RemoveCardControl(cardControlOld, handZone);
 
             // Add Visually
-            CardControl cardControl = CreateCardControl(player, targetZone, card, true, _game.GetPlayers());
+            CardControl cardControl = CreateCardControl(player, targetZone, card, true);
             AddCardControl(cardControl, targetZone);
 
             // Update info for essence
@@ -795,7 +796,7 @@ namespace BrawlTCG_alpha
             RemoveCardControl(cardControlOld, handZone);
 
             // Create the new control in the correct zone and position
-            CardControl cardControl = CreateCardControl(player, stageZone, card, true, _game.GetPlayers());
+            CardControl cardControl = CreateCardControl(player, stageZone, card, true);
 
             // Add it in the UI
             AddCardControl(cardControl, stageZone);
@@ -804,9 +805,9 @@ namespace BrawlTCG_alpha
             // Return the new Control
             return cardControl;
         }
-        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, List<Player> players = null)
+        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen)
         {
-            CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: isOpen, owner: player, players: players)
+            CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: isOpen, owner: player, players: _game.GetPlayers())
             {
                 Location = new Point(zone.Location.X + 10, zone.Location.Y + 10),
             };

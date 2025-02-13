@@ -117,7 +117,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
-
+        public static Attack Orb_Throw = new Attack("Orb Throw", 3, Weapons.Orb, 1, execute: (attacker, target, attack) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        }, weaponOneBurnAmount: 1);
         public static Attack Greatsword_Swing = new Attack("Great Swing", 0, Weapons.Greatsword, 1, execute: (attacker, target, attack) =>
         {
             DefaultAttack(attacker, target, attack);
@@ -176,5 +179,9 @@ namespace BrawlTCG_alpha.Logic.Cards
             int modifyAmount = 1;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
         }, friendlyFire: true);
+        public static Attack DeathCap_Storm = new Attack("Storm", 0, Weapons.Orb, 3, weaponOneBurnAmount: 3, execute: (attacker, target, attack) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        }, multiHit: true);
     }
 }

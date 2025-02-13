@@ -172,30 +172,44 @@ namespace BrawlTCG_alpha.Visuals
                             _game.StopAttack();
                         }
                         // PREPARE FOR A LEGEND ATTACK
-                        else
+                        else if (otherPlayer.PlayingField.Count > 0)
                         {
-                            // Let the enemy cards know that we are attacking
-                            // Enable enemy cards to be able to be clicked to take damage
                             FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
-                            if (attack.FriendlyFire == false)
+                            if (attack.MultiHit)
                             {
+                                // Attack Everyone
                                 ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
-                                foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
+                                foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls.ToList())
                                 {
-                                    cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                    // Start Attacking
+                                    _game.StartAttack(attack);
+                                    AttackLegendCard(legendCard, cardControl);
                                 }
                             }
-                            else if (attack.FriendlyFire == true)
+                            else
                             {
-                                ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
-                                foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
+                                // Let the enemy cards know that we are attacking
+                                // Enable enemy cards to be able to be clicked to take damage
+                                if (attack.FriendlyFire == false)
                                 {
-                                    cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                    ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
+                                    foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
+                                    {
+                                        cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                    }
                                 }
-                            }
+                                else if (attack.FriendlyFire == true)
+                                {
+                                    ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
+                                    foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
+                                    {
+                                        cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                                    }
+                                }
 
-                            // now the player will click on an opposing card and attack it
-                            _game.StartAttack(attack);
+                                // now the player will click on an opposing card and attack it
+                                _game.StartAttack(attack);
+                            }
                         }
                         foreach (Button attackButton in _attackButtons.ToList())
                         {
