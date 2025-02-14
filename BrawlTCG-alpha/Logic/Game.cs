@@ -86,10 +86,14 @@ namespace BrawlTCG_alpha.Logic
             // Before you start
             UI_EnableCards.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
             DrawCardFromDeck(ActivePlayer); // draw card
-            UI_ShowCards(ActivePlayer, true); // enable your cards
+            ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
             ActivePlayer.GetEssence();
             UI_UpdatePlayerInformation.Invoke(ActivePlayer);
             return Task.CompletedTask;
+        }
+        public void ShowCards()
+        {
+            UI_ShowCards(ActivePlayer, true);
         }
 
         public void SwitchTurn()
@@ -139,7 +143,7 @@ namespace BrawlTCG_alpha.Logic
             // Update legends information in playing field
             UI_UpdateCardControlInPlayingFieldInformation.Invoke();
         }
-        void DrawCardFromDeck(Player player)
+        public void DrawCardFromDeck(Player player)
         {
             // Logic
             Card? card = ActivePlayer.DrawCardFromDeck();

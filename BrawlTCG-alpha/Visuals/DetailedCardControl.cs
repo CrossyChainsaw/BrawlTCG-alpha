@@ -261,11 +261,11 @@ namespace BrawlTCG_alpha.Visuals
                         OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
 
-
                         // THESE ATTACKS DON'T ATTACK
                         if (attack.InstaEffect)
                         {
-                            attack.Effect(legendCard, null, attack, _game.ActivePlayer);
+                            // Attack
+                            attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game);
                             // Stop Attacking
                             _game.StopAttack();
                             // Remove Card
@@ -383,6 +383,23 @@ namespace BrawlTCG_alpha.Visuals
                     }
                     return emojis;
                 }
+                void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
+                {
+                    // Attack
+                    attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game);
+                    UI_UpdatePlayerInformation(otherPlayer);
+                    // Notify
+                    MessageBox.Show($"{otherPlayer.Name} just took damage");
+                    // Check if dead
+                    if (otherPlayer.Health <= 0)
+                    {
+                        MessageBox.Show($"{otherPlayer.Name} has been defeated");
+                    }
+                    // Stop Attacking
+                    _game.StopAttack();
+                    // Remove Card
+                    OnDetailedCardClicked();
+                }
             }
         }
         int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
@@ -405,29 +422,12 @@ namespace BrawlTCG_alpha.Visuals
 
 
         // Attack
-        void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
-        {
-            // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer);
-            UI_UpdatePlayerInformation(otherPlayer);
-            // Notify
-            MessageBox.Show($"{otherPlayer.Name} just took damage");
-            // Check if dead
-            if (otherPlayer.Health <= 0)
-            {
-                MessageBox.Show($"{otherPlayer.Name} has been defeated");
-            }
-            // Stop Attacking
-            _game.StopAttack();
-            // Remove Card
-            OnDetailedCardClicked();
-        }
         void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
         {
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
             // Apply the Damage
-            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer);
+            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer, _game);
             enemyCardControl.Invalidate();
             enemyCardControl.Update();
 

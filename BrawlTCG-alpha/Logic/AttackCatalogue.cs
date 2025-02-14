@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             else
                 throw new Exception("Invalid target.");
 
+            // Burn Cards
             attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
             attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
@@ -113,92 +115,100 @@ namespace BrawlTCG_alpha.Logic.Cards
             attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
             attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
-        public static void DrawCards(LegendCard attacker, object target, Attack attack, Player activePlayer, int nCards)
+        public static void DrawCards(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, int nCards)
         {
+            // Draw the Cards
             for (int i = 0; i < nCards; i++)
             {
-                activePlayer.DrawCardFromDeck();
+                game.DrawCardFromDeck(activePlayer);
             }
+            // Show the Cards
+            game.ShowCards();
+            // Burn Weapons
+            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
 
 
         // Default Weapon Attacks
-        public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack Orb_Throw = new Attack("Orb Throw", 3, Weapons.Orb, 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Orb_Throw = new Attack("Orb Throw", 3, Weapons.Orb, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         }, weaponOneBurnAmount: 1);
-        public static Attack Greatsword_Swing = new Attack("Great Swing", 0, Weapons.Greatsword, 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Greatsword_Swing = new Attack("Great Swing", 0, Weapons.Greatsword, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
 
-        public static Attack Greatsword_String = new Attack("Stab, Slice, Swing", 5, Weapons.Greatsword, 3, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Greatsword_String = new Attack("Stab, Slice, Swing", 5, Weapons.Greatsword, 3, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
 
-        public static Attack Scythe_Slash = new Attack("Scythe Slash", 1, Weapons.Scythe, 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Scythe_Slash = new Attack("Scythe Slash", 1, Weapons.Scythe, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
 
-        public static Attack Scythe_Gimp = new Attack("Scythe Gimp", int.MaxValue, Weapons.Scythe, 3, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Scythe_Gimp = new Attack("Scythe Gimp", int.MaxValue, Weapons.Scythe, 3, execute: (attacker, target, attack, activePlayer, game) =>
         {
             OneHitKO(attacker, target, attack);
         }, weaponOneBurnAmount: 2);
 
-        public static Attack Lance_Flamethrower = new Attack("Flamethrower", 3, Weapons.RocketLance, 2, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Lance_Flamethrower = new Attack("Flamethrower", 3, Weapons.RocketLance, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack Any_Seduce = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Any_Seduce = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             TapEnemyCard(attacker, target, attack);
         });
-        public static Attack Spear_BurnForCard = new Attack("Draw a Card", -1000, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Any_BurnForCard = new Attack("Draw a Card", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            DrawCards(attacker, target, attack, activePlayer, 2);
+            DrawCards(attacker, target, attack, activePlayer, game, nCards: 2);
         }, instaEffect: true);
 
 
+
+
         // Signature Attacks
-        public static Attack Arcadia_PinkRoses = new Attack("Pink Roses", 4, Weapons.Spear, 1, weaponTwo: Weapons.Greatsword, weaponTwoAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Arcadia_PinkRoses = new Attack("Pink Roses", 4, Weapons.Spear, 1, weaponTwo: Weapons.Greatsword, weaponTwoAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack Artemis_IronLady_MeltDown = new Attack("Meltdown", 7, Weapons.Scythe, 1, weaponOneBurnAmount: 1, weaponTwo: Weapons.RocketLance, weaponTwoAmount: 1, weaponTwoBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Artemis_IronLady_MeltDown = new Attack("Meltdown", 7, Weapons.Scythe, 1, weaponOneBurnAmount: 1, weaponTwo: Weapons.RocketLance, weaponTwoAmount: 1, weaponTwoBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack Enchantress_CursePower = new Attack("Curse Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Enchantress_CursePower = new Attack("Curse Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = -2;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         });
-        public static Attack Enchantress_CurseHealth = new Attack("Curse HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Enchantress_CurseHealth = new Attack("Curse HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = -2;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
         });
-        public static Attack Enchantress_EnchantPower = new Attack("Enchant Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Enchantress_EnchantPower = new Attack("Enchant Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = 1;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         }, friendlyFire: true);
-        public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = 1;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
         }, friendlyFire: true);
-        public static Attack DeathCap_Storm = new Attack("Storm", 0, Weapons.Orb, 3, weaponOneBurnAmount: 3, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack DeathCap_Storm = new Attack("Storm", 0, Weapons.Orb, 3, weaponOneBurnAmount: 3, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         }, multiHit: true);
-        public static Attack Heatblast_Burn = new Attack("Burn", 0, Weapons.Blasters, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer) =>
+        public static Attack Heatblast_Burn = new Attack("Burn", 0, Weapons.Blasters, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack, burn: true);
         });

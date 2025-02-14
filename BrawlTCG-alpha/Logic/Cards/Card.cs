@@ -14,6 +14,7 @@ enum Elements
     Cosmic,
     Water,
     Wild,
+    Shadow
 }
 
 namespace BrawlTCG_alpha.Logic
@@ -36,6 +37,8 @@ namespace BrawlTCG_alpha.Logic
         static Color NatureColor = Color.Teal; // DarkTurquoise
         static Color FireColor = Color.DarkRed;
         static Color CosmicColor = Color.DarkBlue;
+        static Color ShadowColor = Color.FromArgb(30, 30, 30);
+
 
 
         public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
@@ -74,6 +77,10 @@ namespace BrawlTCG_alpha.Logic
             {
                 return CosmicColor;
             }
+            else if (element == Elements.Shadow)
+            {
+                return ShadowColor;
+            }
             throw new Exception("This element has no color");
         }
         public static Color SetTextColor(Elements element)
@@ -82,7 +89,7 @@ namespace BrawlTCG_alpha.Logic
             {
                 return Color.Black;
             }
-            else if (element == Elements.Cosmic)
+            else if (element == Elements.Cosmic || element == Elements.Shadow)
             {
                 return Color.White;
             }

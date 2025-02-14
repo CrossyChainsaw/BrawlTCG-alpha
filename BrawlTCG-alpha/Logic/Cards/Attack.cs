@@ -12,7 +12,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public string Name { get; private set; }
         public Weapons WeaponOne { get; private set; }
         public int WeaponOneAmount { get; private set; }
-        public Action<LegendCard, object, Attack, Player> Effect { get; private set; }
+        public Action<LegendCard, object, Attack, Player, Game> Effect { get; private set; }
         public int AttackModifier { get; private set; }
         // Opt.
         public Weapons? WeaponTwo { get; private set; }
@@ -25,7 +25,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         //public string Description { get; private set; }
 
 
-        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack, Player> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0, bool friendlyFire = false, bool multiHit = false, bool instaEffect = false)
+        public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack, Player, Game> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0, bool friendlyFire = false, bool multiHit = false, bool instaEffect = false)
         {
             // Req
             Name = name;
@@ -43,21 +43,21 @@ namespace BrawlTCG_alpha.Logic.Cards
             MultiHit = multiHit;
             InstaEffect = instaEffect;
         }
-        public void Execute(LegendCard attacker, object target, Player activePlayer)
-        {
-            if (target is LegendCard legendCard)
-            {
-                Effect(attacker, legendCard, this, activePlayer);
-            }
-            else
-            {
-                throw new Exception();
-            }
-        }
-        public Attack Clone()
-        {
-            return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount, FriendlyFire);
-        }
+        //public void Execute(LegendCard attacker, object target, Player activePlayer, Game? game = null)
+        //{
+        //    if (target is LegendCard legendCard)
+        //    {
+        //        Effect(attacker, legendCard, this, activePlayer, game);
+        //    }
+        //    else
+        //    {
+        //        throw new Exception();
+        //    }
+        //}
+        //public Attack Clone()
+        //{
+        //    return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount, FriendlyFire);
+        //}
 
     }
 }

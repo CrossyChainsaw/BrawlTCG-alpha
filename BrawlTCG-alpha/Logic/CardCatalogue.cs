@@ -27,7 +27,7 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard Enchantress = new LegendCard("Enchantress", 4, Elements.Magic, Properties.Resources.Enchantress, 0, 4, 18, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Enchantress_EnchantHealth, attack2: AttackCatalogue.Enchantress_EnchantPower, attack3: AttackCatalogue.Enchantress_CurseHealth, attack4: AttackCatalogue.Enchantress_CursePower);
         public static LegendCard DarkMage = new LegendCard("Dark Mage", 5, Elements.Magic, Properties.Resources.DarkMage, 11, 4, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Scythe_Slash);
         public static LegendCard Heatblast = new LegendCard("Heatblast", 4, Elements.Fire, Properties.Resources.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Heatblast_Burn);
-        public static LegendCard Some_Legend = new LegendCard("Some_LEgend", 4, Elements.Fire, Properties.Resources.BrawlLogo, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: AttackCatalogue.Spear_BurnForCard);
+        public static LegendCard MasterThief = new LegendCard("Master Thief", 2, Elements.Shadow, Properties.Resources.BrawlLogo, 5, 5, 5, 0, Weapons.Spear, Weapons.Katars, attack1: AttackCatalogue.Any_BurnForCard);
 
         // ALL WEAPON CARDS
         // Axe
@@ -209,25 +209,19 @@ namespace BrawlTCG_alpha.Logic
             Enchantress.Clone(),
         };
         public static List<Card> TestDeck = new List<Card>() {
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
-            Some_Legend.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
+            MasterThief.Clone(),
             MagmaSpear.Clone(),
             MagmaSpear.Clone(),
             MagmaSpear.Clone(),
