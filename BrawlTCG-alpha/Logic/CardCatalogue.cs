@@ -66,7 +66,7 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard DarkMage = new LegendCard("Dark Mage", 5, Elements.Magic, Properties.Resources.DarkMage, 11, 4, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Scythe_Slash);
         //nai
         //nix
-        //
+        //magyar
 
         // Shadow
         public static LegendCard MasterThief = new LegendCard("Master Thief", 2, Elements.Shadow, Properties.Resources.BrawlLogo, 5, 5, 5, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AttackCatalogue.Any_BurnForCard);

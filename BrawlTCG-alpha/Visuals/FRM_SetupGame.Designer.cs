@@ -39,7 +39,6 @@
             button1.TabIndex = 0;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // FRM_SetupGame
             // 
@@ -49,6 +48,7 @@
             Controls.Add(button1);
             Name = "FRM_SetupGame";
             Text = "FRM_SetupGame";
+            WindowState = FormWindowState.Maximized;
             ResumeLayout(false);
         }
 
