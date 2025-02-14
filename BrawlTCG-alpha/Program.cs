@@ -1,3 +1,5 @@
+using BrawlTCG_alpha.Visuals;
+
 namespace BrawlTCG_alpha
 {
     internal static class Program
@@ -11,7 +13,7 @@ namespace BrawlTCG_alpha
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new FRM_PlayingField());
+            Application.Run(new FRM_SetupGame());
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BrawlTCG_alpha
 {
-    partial class FRM_PlayingField
+    partial class FRM_Game
     {
         /// <summary>
         ///  Required designer variable.

@@ -57,6 +57,10 @@ namespace BrawlTCG_alpha.Visuals
                 int attackButtonY = PaintLegendCard(g, legendCard);
                 AddAttackButtons(legendCard, attackButtonY);
             }
+            else if (Card is WeaponCard weaponCard)
+            {
+                PaintWeaponCard(g);
+            }
             else
             {
                 PaintAnyOtherCard(g);
@@ -108,13 +112,96 @@ namespace BrawlTCG_alpha.Visuals
         }
         void PaintAnyOtherCard(Graphics g)
         {
-            Font font = new Font("Arial", 16, FontStyle.Bold);
             Brush cardBrush = new SolidBrush(Card.CardColor);
             g.FillRectangle(cardBrush, 0, 0, Width, Height);
-            g.DrawImage(Card.Image, new Rectangle(10, 30, Width - 20, Height - 60));
+
+            // Keep the original proportions of the image
+            float aspectRatio = (float)Card.Image.Width / Card.Image.Height;
+
+            // Define the maximum size for the image
+            int maxWidth = Width - 20;  // Padding of 10 on each side (left/right)
+            int maxHeight = Height - 60; // Padding of 30 (top/bottom)
+
+            // Calculate the width and height based on the aspect ratio and the available space
+            int imageWidth = maxWidth;
+            int imageHeight = (int)(imageWidth / aspectRatio);
+
+            // If the image height exceeds the available space, adjust it
+            if (imageHeight > maxHeight)
+            {
+                imageHeight = maxHeight;
+                imageWidth = (int)(imageHeight * aspectRatio);
+            }
+
+            // Center the image within the control
+            int x = (Width - imageWidth) / 2;
+            int y = 30;
+
+            // Draw the image (scaled to fit within the available space)
+            g.DrawImage(Card.Image, new Rectangle(x, y, imageWidth, imageHeight));
+
+            // Calculate space for the description text
+            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
+            int descriptionWidth = Width - 20;         // Padding on the left/right
+
+            // Draw the card's description (aligned to the left)
             Brush textBrush = new SolidBrush(Card.TextColor);
-            g.DrawString(Card.Name, font, textBrush, new PointF(5, 5));
-            g.DrawString(Card.Cost.ToString(), font, textBrush, new PointF(Width - 25, Height - 33));
+            StringFormat textFormat = new StringFormat();
+            textFormat.Alignment = StringAlignment.Near; // Align to the left
+
+            // You can adjust the font size or layout based on the description length
+            g.DrawString(Card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, Height - descriptionTop - 10), textFormat);
+
+            // Draw the card's name and cost (as before)
+            g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
+            g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
+        }
+        void PaintWeaponCard(Graphics g)
+        {
+            Brush cardBrush = new SolidBrush(Card.CardColor);
+            g.FillRectangle(cardBrush, 0, 0, Width, Height);
+
+            // Keep the original proportions of the image
+            float aspectRatio = (float)Card.Image.Width / Card.Image.Height;
+
+            // Define the maximum size for the image
+            int maxWidth = Width - 60;  // Padding of 10 on each side (left/right) // make 60
+            int maxHeight = Height - 60; // Padding of 30 (top/bottom)
+
+            // Calculate the width and height based on the aspect ratio and the available space
+            int imageWidth = maxWidth;
+            int imageHeight = (int)(imageWidth / aspectRatio);
+
+            // If the image height exceeds the available space, adjust it
+            if (imageHeight > maxHeight)
+            {
+                imageHeight = maxHeight;
+                imageWidth = (int)(imageHeight * aspectRatio);
+            }
+
+            // Center the image within the control
+            int x = (Width - imageWidth) / 2;
+            int y = (Height - imageHeight) / 2;
+
+            // Draw the image (scaled to fit within the available space)
+            g.DrawImage(Card.Image, new Rectangle(x, y, imageWidth, imageHeight));
+
+            // Calculate space for the description text
+            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
+            int descriptionWidth = Width - 30;         // Padding on the left/right
+
+            // Draw the card's description (aligned to the left)
+            Brush textBrush = new SolidBrush(Card.TextColor);
+            StringFormat textFormat = new StringFormat();
+            textFormat.Alignment = StringAlignment.Near; // Align to the left
+
+            // You can adjust the font size or layout based on the description length
+            g.DrawString(Card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, Height - descriptionTop - 10), textFormat);
+
+
+            // Draw the card's name and cost (as before)
+            g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
+            g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
         }
         void PaintBorder(Graphics g)
         {
@@ -148,15 +235,24 @@ namespace BrawlTCG_alpha.Visuals
                     damageString = $"{damage} Damage";
                 }
 
+                // Weapon Description - check burn amount - check multi hit
+                string weaponDescription = attack.WeaponTwo != null
+                ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)} + {attack.WeaponTwoAmount}x {attack.WeaponTwo} {GetBurnWeaponEmojis(attack.WeaponTwoBurnAmount)}"
+                : $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)}";
+                weaponDescription += attack.MultiHit ? "- Hits All" : "";
+
+                // Create the button
                 Button attackButton = new Button
                 {
-                    Text = $"{attack.Name} ({damageString})\n{(attack.WeaponTwo != null ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} + {attack.WeaponTwoAmount}x {attack.WeaponTwo}" : $"{attack.WeaponOneAmount}x {attack.WeaponOne}")}",
+                    Text = $"" +
+                    $"{attack.Name} ({damageString})\n" + weaponDescription,
                     Location = new Point((Width - (Width - 20)) / 2, attackButtonY),
                     Size = new Size(Width - 20, 50),
                     Font = new Font("Arial", 9, FontStyle.Bold),
                     BackColor = Color.LightGray,
                     TextAlign = ContentAlignment.MiddleCenter
                 };
+                // Add click event
                 attackButton.Click += (sender, e) =>
                 {
                     if (!_game.SomeoneIsAttacking)
@@ -165,8 +261,18 @@ namespace BrawlTCG_alpha.Visuals
                         OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
 
+
+                        // THESE ATTACKS DON'T ATTACK
+                        if (attack.InstaEffect)
+                        {
+                            attack.Effect(legendCard, null, attack, _game.ActivePlayer);
+                            // Stop Attacking
+                            _game.StopAttack();
+                            // Remove Card
+                            OnDetailedCardClicked();
+                        }
                         // ATTACK THE PLAYER - This checks if // there are no cards enemy field // not a friendly fire attack // more than 0 damage (otherwise its probably status)
-                        if (otherPlayer.PlayingField.Count == 0 && attack.FriendlyFire == false && AttackCatalogue.CalculateDamage(legendCard, attack) > 0)
+                        else if (otherPlayer.PlayingField.Count == 0 && attack.FriendlyFire == false && AttackCatalogue.CalculateDamage(legendCard, attack) > 0)
                         {
                             AttackThePlayer(legendCard, otherPlayer, attack);
                             _game.StopAttack();
@@ -174,7 +280,7 @@ namespace BrawlTCG_alpha.Visuals
                         // PREPARE FOR A LEGEND ATTACK
                         else if (otherPlayer.PlayingField.Count > 0)
                         {
-                            FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
+                            FRM_Game parentForm = (FRM_Game)this.FindForm();
                             if (attack.MultiHit)
                             {
                                 // Attack Everyone
@@ -234,39 +340,49 @@ namespace BrawlTCG_alpha.Visuals
 
                 // Change Y for next attack button
                 attackButtonY += 50;
-            }
-        }
-        void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
-        {
-            // only enable them if this is your legend
-            if (Owner == _game.ActivePlayer)
-            {
-                // Assume the attack can be played unless we find a reason it can't
-                bool canPlayAttack = true;
 
-                // Check if WeaponOne requirement is met
-                int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
-                if (weaponOneCount < attack.WeaponOneAmount)
+                void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
                 {
-                    canPlayAttack = false; // WeaponOne requirement is not met
-                }
-
-                // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
-                if (attack.WeaponTwo != null)
-                {
-                    int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
-                    if (weaponTwoCount < attack.WeaponTwoAmount)
+                    // only enable them if this is your legend
+                    if (Owner == _game.ActivePlayer)
                     {
-                        canPlayAttack = false; // WeaponTwo requirement is not met
+                        // Assume the attack can be played unless we find a reason it can't
+                        bool canPlayAttack = true;
+
+                        // Check if WeaponOne requirement is met
+                        int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
+                        if (weaponOneCount < attack.WeaponOneAmount)
+                        {
+                            canPlayAttack = false; // WeaponOne requirement is not met
+                        }
+
+                        // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
+                        if (attack.WeaponTwo != null)
+                        {
+                            int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
+                            if (weaponTwoCount < attack.WeaponTwoAmount)
+                            {
+                                canPlayAttack = false; // WeaponTwo requirement is not met
+                            }
+                        }
+
+                        // Enable or disable the attack button based on whether all conditions are met
+                        attackButton.Enabled = canPlayAttack;
+                    }
+                    else
+                    {
+                        attackButton.Enabled = false;
                     }
                 }
-
-                // Enable or disable the attack button based on whether all conditions are met
-                attackButton.Enabled = canPlayAttack;
-            }
-            else
-            {
-                attackButton.Enabled = false;
+                string GetBurnWeaponEmojis(int nBurn)
+                {
+                    string emojis = "";
+                    for (int i = 0; i < nBurn; i++)
+                    {
+                        emojis += "🔥";
+                    }
+                    return emojis;
+                }
             }
         }
         int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
@@ -292,7 +408,7 @@ namespace BrawlTCG_alpha.Visuals
         void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
         {
             // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack);
+            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer);
             UI_UpdatePlayerInformation(otherPlayer);
             // Notify
             MessageBox.Show($"{otherPlayer.Name} just took damage");
@@ -311,7 +427,7 @@ namespace BrawlTCG_alpha.Visuals
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
             // Apply the Damage
-            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack);
+            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer);
             enemyCardControl.Invalidate();
             enemyCardControl.Update();
 
@@ -371,7 +487,7 @@ namespace BrawlTCG_alpha.Visuals
         void RemoveThisFromScreen(Form parentForm)
         {
             // 1️⃣ Unsubscribe from CardClicked events to avoid memory leaks
-            FRM_PlayingField playingField = parentForm as FRM_PlayingField;
+            FRM_Game playingField = parentForm as FRM_Game;
             if (playingField != null)
             {
                 foreach (Player player in Players)

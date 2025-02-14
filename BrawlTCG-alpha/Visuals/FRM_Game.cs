@@ -14,12 +14,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace BrawlTCG_alpha
 {
-    public partial class FRM_PlayingField : Form
+    public partial class FRM_Game : Form
     {
-        // Any sort of relation to logic
-        Player player1 = new Player("John", CardCatalogue.CloneList(CardCatalogue.CosmicDeck2));
-        Player player2 = new Player("Jane", CardCatalogue.CloneList(CardCatalogue.GsDeck));
-
         // Visuals
         const int BASE_OFFSET_LEFT = 20;
         const int CARD_WIDTH = 150;
@@ -29,7 +25,7 @@ namespace BrawlTCG_alpha
         Game _game;
 
         // Methods & Events
-        public FRM_PlayingField()
+        internal FRM_Game(Player player1, Player player2)
         {
             InitializeComponent();
             _game = new Game(player1, player2);
@@ -483,6 +479,10 @@ namespace BrawlTCG_alpha
                     }
                 }
             }
+        }
+        void RearrangeMyStackedCards()
+        {
+
         }
 
 

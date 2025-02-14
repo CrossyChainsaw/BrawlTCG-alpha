@@ -38,11 +38,10 @@ namespace BrawlTCG_alpha.Logic
         static Color CosmicColor = Color.DarkBlue;
 
 
-        public Card(string name, int cost, string description, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
+        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
         {
             Name = name;
             Cost = cost;
-            Description = description;
             Element = element;
             Image = image;
             CardColor = SetCardColor(element);

@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 20;
-        const int STARTING_HAND_CARDS = 3; // 7?
+        const int STARTING_HAND_CARDS = 20; // 7?
         
         // Properties
         public string Name { get; private set; }

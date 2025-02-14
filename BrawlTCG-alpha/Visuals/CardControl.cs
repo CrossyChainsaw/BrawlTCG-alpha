@@ -282,19 +282,38 @@ namespace BrawlTCG_alpha.Visuals
                 _isDragging = false;
                 if (!_mouseMoved)
                 {
+                    Form parentForm = this.FindForm();
                     if (Card is LegendCard legendCard)
                     {
-                        Form parentForm = this.FindForm();
                         DetailedCardControl dcc = RenderLegendCard(parentForm);
                         RenderWeaponCards(legendCard, parentForm, dcc);
+                    }
+                    else
+                    {
+                        RenderCard(parentForm);
                     }
                 }
             }
 
             // Local Methods
+            DetailedCardControl RenderCard(Form parentForm)
+            {
+                FRM_Game frm = (FRM_Game)parentForm;
+                // Init Card
+                DetailedCardControl dcc = new DetailedCardControl(_game, this.Card, Owner, Players, this, UI_ArrangeCardsInPlayingField)
+                {
+                    Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
+                    Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
+                };
+                // UI
+                parentForm.Controls.Add(dcc);
+                dcc.BringToFront();
+
+                return dcc;
+            }
             DetailedCardControl RenderLegendCard(Form parentForm)
             {
-                FRM_PlayingField frm = (FRM_PlayingField)parentForm;
+                FRM_Game frm = (FRM_Game)parentForm;
                 // Init Card
                 DetailedCardControl legendCardControl = new DetailedCardControl(_game, this.Card, Owner, Players, this, UI_ArrangeCardsInPlayingField)
                 {
@@ -346,13 +365,13 @@ namespace BrawlTCG_alpha.Visuals
             LegendCard legend = (LegendCard)this.Card;
 
             // if legend is dead remove from playing field and rearrange cards
-            FRM_PlayingField parentForm = (FRM_PlayingField)this.FindForm();
+            FRM_Game parentForm = (FRM_Game)this.FindForm();
             if (legend.CurrentHP <= 0 && parentForm != null) // if parentform is null it has already been removed
             {
                 // correct hp
                 legend.CurrentHP = 0;
 
-                // Remove stacked cards
+                // Remove stacked cards - logically the stacked card is still here but the control is removed
                 int n = legend.StackedCards.Count;
                 for (int i = 0; i < n; i++)
                 {

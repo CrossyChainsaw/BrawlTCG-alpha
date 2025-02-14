@@ -14,7 +14,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_ESSENCE = 10;
-        
+
         // Properties
         public Player BottomPlayer { get; private set; }
         public Player TopPlayer { get; private set; }
@@ -125,10 +125,15 @@ namespace BrawlTCG_alpha.Logic
 
             // START TURN
             // stage start turn effect
+            List<LegendCard> legends = GetAllMyLegendsOnThePlayingField(ActivePlayer);
             if (ActiveStageCard != null)
             {
-                List<LegendCard> legends = GetAllMyLegendsOnThePlayingField(ActivePlayer);
                 ActiveStageCard.StartTurnEffect.Invoke(legends);
+            }
+            // burn damage
+            foreach (LegendCard legend in legends)
+            {
+                legend.TakeBurnDamage();
             }
 
             // Update legends information in playing field

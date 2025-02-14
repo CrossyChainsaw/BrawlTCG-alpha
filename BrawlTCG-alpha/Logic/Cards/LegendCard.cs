@@ -14,12 +14,16 @@ namespace BrawlTCG_alpha.Logic.Cards
     }
     internal class LegendCard : Card
     {
+        // Constants
+        const int BURN_DAMAGE = 1;
+        // Properties
         public int BaseHealth { get; internal set; }
         public int CurrentHP { get; internal set; }
         public int Power { get; internal set; }
         public int Dexterity { get; internal set; }
         public int Defense { get; internal set; }
         public int Speed { get; internal set; }
+        public bool IsBurned { get; internal set; }
         public Weapons PrimaryWeapon { get; internal set; }
         public Weapons SecondaryWeapon { get; internal set; }
         public List<Card> StackedCards { get; internal set; }
@@ -32,12 +36,12 @@ namespace BrawlTCG_alpha.Logic.Cards
         public bool IsTapped { get; private set; }
 
         public event Action<LegendCard, WeaponCard> UI_BurnWeaponCard;
+        public event Action<LegendCard> UI_RearrangeMyStackedCards;
 
         public LegendCard(
             // Card
             string name,
             int cost,
-            string description,
             Elements element,
             Image image,
             // LegendCard
@@ -57,12 +61,11 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack attack2 = null,
             Attack attack3 = null,
             Attack attack4 = null
-        ) : base(name, cost, description, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        ) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
             Name = name;
             Cost = cost;
-            Description = description;
             Element = element;
             Image = image;
             // LegenCard
@@ -86,6 +89,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack4 = attack4;
             // Other
             StackedCards = new List<Card>();
+            IsBurned = false;
         }
 
         public override Card Clone()
@@ -93,7 +97,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             return new LegendCard(
                 Name,
                 Cost,
-                Description,
                 Element,
                 Image,
                 Power,
@@ -152,19 +155,25 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             if (attackWeapon != null)
             {
+                // burn cards
                 int cardsBurned = 0;
-
-                // Iterate over a copy of the list to avoid modification issues
                 for (int i = 0; i < StackedCards.Count && cardsBurned < burnAmount; i++)
                 {
                     if (StackedCards[i] is WeaponCard wepCard)
                     {
                         if (wepCard.Weapon == attackWeapon || attackWeapon == Weapons.Any)
-                        StackedCards.RemoveAt(i);
-                        cardsBurned++;
-                        i--; // Adjust index because we've removed an item
-                        UI_BurnWeaponCard.Invoke(this, wepCard);
+                        {
+                            StackedCards.RemoveAt(i);
+                            cardsBurned++;
+                            UI_BurnWeaponCard.Invoke(this, wepCard);
+                            i--; // Adjust index because we've removed an item
+                        }
                     }
+                }
+                // rearrange legend stacked cards
+                if (cardsBurned > 0)
+                {
+
                 }
             }
         }
@@ -172,6 +181,21 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             IsOpen = false;
             MessageBox.Show($"{this.Name} is now tapped");
+        }
+        public void SetBurn(bool burn)
+        {
+            if (Element != Elements.Fire)
+            {
+                IsBurned = burn;
+            }
+        } // also add a fire emoji bottom left that would be nice
+        /// <summary>Take burn damage if -> IsBurned == true</summary>
+        public void TakeBurnDamage()
+        {
+            if (IsBurned)
+            {
+                LoseHealth(BURN_DAMAGE);
+            }
         }
         public void ModifyStat(Stats stat, int modifyAmount)
         {

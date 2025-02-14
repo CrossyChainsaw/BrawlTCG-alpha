@@ -27,14 +27,16 @@ namespace BrawlTCG_alpha.Logic.Cards
 
     internal class WeaponCard : Card
     {
+        // Properties
         public Weapons Weapon { get; internal set; }
 
-        public WeaponCard(string name, int cost, string description, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null) : base(name, cost, description, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        // Methods
+        public WeaponCard(string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
             Name = name;
             Cost = cost;
-            Description = description;
+            Description = GetWeaponCardDescription(weapon);
             Element = element;
             Image = image;
             // Weapon Card
@@ -43,12 +45,32 @@ namespace BrawlTCG_alpha.Logic.Cards
             StartTurnEffect = startTurnEffect;
             EndTurnEffect = endTurnEffect;
             WhenPlayedEffect = whenPlayedEffect;
-            
-        }
 
+        }
+        string GetWeaponCardDescription(Weapons weapon)
+        {
+            return $"Play this on {GetArticle(weapon.ToString())} {weapon.ToString()} Legend to unlock attacks";
+        }
+        public string GetArticle(string word)
+        {
+            // Convert the first letter of the word to lowercase
+            word = word.Trim().ToLower();
+
+            // Define a list of vowels
+            string vowels = "aeiou";
+
+            // Check if the first letter of the word is a vowel sound
+            if (vowels.Contains(word[0]))
+            {
+                return "an";
+            }
+
+            // Otherwise, use "a"
+            return "a";
+        }
         public override Card Clone()
         {
-            return new WeaponCard(Name, Cost, Description, Element, Image, Weapon, StartTurnEffect, EndTurnEffect, WhenPlayedEffect);
+            return new WeaponCard(Name, Cost, Element, Image, Weapon, StartTurnEffect, EndTurnEffect, WhenPlayedEffect);
         }
     }
 }
