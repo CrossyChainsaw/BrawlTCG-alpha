@@ -43,6 +43,7 @@ namespace BrawlTCG_alpha
             _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
             _game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             _game.UI_UntapPlayerCards += UntapPlayerCards;
+            _game.UI_AddCardToHandZone += AddCardToHandZone;
             // Multi
             _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
             _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
@@ -332,12 +333,17 @@ namespace BrawlTCG_alpha
                 RemoveCardControl(cardControlOld, GetMyZone(oldZoneType, player));
 
                 // Reinitailize in new zone
-                ZoneControl handZone = GetMyZone(targetZoneType, player);
-                CardControl cardControl = CreateCardControl(player, handZone, card, false);
-                AddCardControl(cardControl, handZone);
-                ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+                AddCardToHandZone(player, card);
             }
         }
+        internal void AddCardToHandZone(Player player, Card card)
+        {
+            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+            CardControl cardControl = CreateCardControl(player, handZone, card, false);
+            AddCardControl(cardControl, handZone);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+        }
+
         // LegendCard.cs
         void BurnWeaponCard(LegendCard legendCard, WeaponCard wepCard)
         {
@@ -551,6 +557,11 @@ namespace BrawlTCG_alpha
                 bool result = TryPlayWeaponCard(player, weaponCard, cardControl);
                 return result;
             }
+            else if (card is BattleCard battleCard)
+            {
+                bool result = TryPlayBattleCard(player, battleCard, cardControl);
+                return result;
+            }
             return false;
 
             // Local Functions
@@ -733,6 +744,69 @@ namespace BrawlTCG_alpha
                 }
                 return false;
             }
+            bool TryPlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld)
+            {
+                // get opponent
+                Player enemy = _game.GetOtherPlayer(player);
+                ZoneControl enemyPlayingFieldZone = GetMyZone(ZoneTypes.PlayingField, enemy);
+
+                if (IsMouseInZone(enemyPlayingFieldZone))
+                {
+                    if (player.Essence >= battleCard.Cost)
+                    {
+                        // Try to get the card control you are hovering over
+                        CardControl targetCardControl = null;
+                        foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
+                        {
+                            if (IsMouseOnCardControl(cardControl))
+                            {
+                                targetCardControl = cardControl;
+                                break;
+                            }
+                        }
+                        // if none, return a failed drag
+                        if (targetCardControl == null)
+                        {
+                            return false;
+                        }
+
+                        // Apply the damage
+
+                        // does the legend even have this weapon?
+                        if (targetCardControl.Card is LegendCard legendCard)
+                        {
+                            battleCard.WhenPlayedEffect.Invoke(legendCard);
+                            targetCardControl.Invalidate();
+                            targetCardControl.CheckIfDead();
+                            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+
+                            // remove card from hand into DP logically
+                            player.PlayCard(battleCard); // play in memory
+
+                            // remove card from hand visually
+                            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+                            RemoveCardControl(cardControlOld, handZone);
+
+                            // Add to UI and Zone
+                            AddCardToDiscardPile(player, cardControl);
+                            cardControl.Enabled = false;
+
+                            return true;
+                        }
+                        else
+                        {
+                            MessageBox.Show($"You cannot play this BattleCard on this Card");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Not enough Essence");
+                    }
+                }
+                return false;
+            }
+
         }
         bool IsMouseInZone(ZoneControl zone)
         {

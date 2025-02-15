@@ -77,6 +77,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             CurrentHP = BaseHealth;
             PrimaryWeapon = primaryWeapon;
             SecondaryWeapon = secondaryWeapon;
+            Description = $"{BaseHealth,4}hp {power,4}att {primaryWeapon,20} {secondaryWeapon,20}";
             // Card Optional
             StartTurnEffect = startTurnEffect;
             EndTurnEffect = endTurnEffect;

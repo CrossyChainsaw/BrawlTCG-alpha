@@ -38,6 +38,7 @@ namespace BrawlTCG_alpha.Visuals
         public event Action<Player> UI_ArrangeCardsInPlayingField;
         public event Action<Player, CardControl> UI_AddCardToDiscardPile;
 
+
         // Methods
         public CardControl(Game game, Card card, Action<Player> UI_arrangeCardsFunction, bool isOpen = false, Player? owner = null, List<Player> players = null)
         {
@@ -90,6 +91,7 @@ namespace BrawlTCG_alpha.Visuals
             base.OnClick(e);
             CardClicked?.Invoke(this); // Trigger the event and pass THIS CardControl
         }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             // Vars for paint
@@ -118,6 +120,7 @@ namespace BrawlTCG_alpha.Visuals
             PaintCardBorder(g);
 
         }
+
 
 
         // Paint
@@ -170,6 +173,7 @@ namespace BrawlTCG_alpha.Visuals
             g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(5, Height - 71));
             g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF(5, Height - 48));
         }
+
         void PaintStageCard(Graphics g, StageCard stageCard)
         {
             Brush brush = new SolidBrush(stageCard.CardColor);
@@ -217,6 +221,7 @@ namespace BrawlTCG_alpha.Visuals
             g.DrawString(stageCard.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(stageCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
         }
+
         void PaintAnyOtherCard(Graphics g)
         {
             Brush cardBrush = new SolidBrush(Card.CardColor);
@@ -226,16 +231,19 @@ namespace BrawlTCG_alpha.Visuals
             g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
         }
+
         void PaintCardBackSide(Graphics g)
         {
             g.FillRectangle(Brushes.LightBlue, 0, 0, Width, Height);
             g.DrawImage(_backSideImage, new Rectangle(10, 30, Width - 20, Height - 60));
         }
+
         void PaintCardBorder(Graphics g)
         {
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
         }
+
 
 
         // Dragging Logic
@@ -245,6 +253,7 @@ namespace BrawlTCG_alpha.Visuals
             _mouseOffset = e.Location;  // Remember where the mouse was clicked relative to the card
             _locationBeforeDragging = this.Location;
         }
+
         void DragCard(MouseEventArgs e)
         {
             _mouseMoved = true;
@@ -252,6 +261,7 @@ namespace BrawlTCG_alpha.Visuals
             this.Left += e.X - _mouseOffset.X;
             this.Top += e.Y - _mouseOffset.Y;
         }
+
         async Task EndDragging()
         {
             _isDragging = false;
@@ -268,10 +278,12 @@ namespace BrawlTCG_alpha.Visuals
                 this.Location = _locationBeforeDragging;
             }
         }
+
         public void SetCanDrag(bool enable)
         {
             _canDrag = enable;
         }
+
 
 
         // Render When Clicked
@@ -359,6 +371,7 @@ namespace BrawlTCG_alpha.Visuals
         }
 
 
+
         // Combat
         public void CheckIfDead()
         {
@@ -405,6 +418,7 @@ namespace BrawlTCG_alpha.Visuals
                 this.Dispose();
             }
         }
+
         public void FlipCard()
         {
             Card.IsOpen = !Card.IsOpen;

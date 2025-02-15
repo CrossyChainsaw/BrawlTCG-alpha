@@ -128,7 +128,14 @@ namespace BrawlTCG_alpha.Logic.Cards
             attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
             attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
-
+        public static void GenerateBombCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game)
+        {
+            Card card = CardCatalogue.BouncyBomb.Clone();
+            // add to hand
+            game.AddCardToHandZone(activePlayer, card);
+            // flip to show
+            game.ShowCards();
+        }
 
         // Default Weapon Attacks
         public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -159,7 +166,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             OneHitKO(attacker, target, attack);
         }, weaponOneBurnAmount: 2);
 
-        public static Attack Lance_Flamethrower = new Attack("Flamethrower", 3, Weapons.RocketLance, 2, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Lance_Flamethrower = new Attack("Flamethrower", 4, Weapons.RocketLance, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
@@ -167,7 +174,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             TapEnemyCard(attacker, target, attack);
         });
-        public static Attack Any_BurnForCard = new Attack("Draw a Card", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Any_BurnForCard = new Attack("Draw two Cards", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DrawCards(attacker, target, attack, activePlayer, game, nCards: 2);
         }, instaEffect: true);
@@ -212,5 +219,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack, burn: true);
         });
+        public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", 0, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            // draw a bomb
+            GenerateBombCard(attacker, target, attack, activePlayer, game);
+        }, instaEffect: true);
     }
 }

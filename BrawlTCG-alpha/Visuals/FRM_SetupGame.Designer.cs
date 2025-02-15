@@ -49,6 +49,7 @@
             Name = "FRM_SetupGame";
             Text = "FRM_SetupGame";
             WindowState = FormWindowState.Maximized;
+            Load += FRM_SetupGame_Load;
             ResumeLayout(false);
         }
 

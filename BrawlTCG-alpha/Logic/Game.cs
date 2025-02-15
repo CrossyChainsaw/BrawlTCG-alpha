@@ -37,6 +37,7 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<string> UI_PopUpNotification;
         public event Action<Player> UI_UntapPlayerCards;
+        public event Action<Player, Card> UI_AddCardToHandZone;
         // Fields
         public StageCard ActiveStageCard;
         public Player ActiveStageCardOwner;
@@ -235,6 +236,13 @@ namespace BrawlTCG_alpha.Logic
             player.DiscardPile.Add(card);
 
             // add card to discard pile visually
+        }
+        public void AddCardToHandZone(Player player, Card card)
+        {
+            // logically
+            player.AddCardToHand(card);
+            // visually
+            UI_AddCardToHandZone.Invoke(player, card);
         }
     }
 }

@@ -83,6 +83,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BouncyBomb {
+            get {
+                object obj = ResourceManager.GetObject("BouncyBomb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap BrawlLogo {
             get {
                 object obj = ResourceManager.GetObject("BrawlLogo", resourceCulture);
@@ -233,6 +243,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap MasterThief {
+            get {
+                object obj = ResourceManager.GetObject("MasterThief", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Mustafar {
             get {
                 object obj = ResourceManager.GetObject("Mustafar", resourceCulture);
@@ -306,6 +326,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap ShootingStar {
             get {
                 object obj = ResourceManager.GetObject("ShootingStar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Sleight_of_Hand {
+            get {
+                object obj = ResourceManager.GetObject("Sleight_of_Hand", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

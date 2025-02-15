@@ -2,12 +2,8 @@
 using BrawlTCG_alpha.Logic.Cards;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BrawlTCG_alpha.Visuals
@@ -27,12 +23,16 @@ namespace BrawlTCG_alpha.Visuals
     public partial class FRM_SetupGame : Form
     {
         private ListView listAvailableCards, listDeck;
-        private Button btnAddCard, btnRemoveCard, btnSaveDeck;
+        private Button btnAddCard, btnRemoveCard, btnSaveDeck, btnSwitchPlayer, btnStartGame;
         private ComboBox cmbFilterType, cmbFilterElement;
         private PictureBox picCardPreview;
-        private Dictionary<string, int> deck = new Dictionary<string, int>();
+        private List<Card> player1Deck = new List<Card>();
+        private List<Card> player2Deck = new List<Card>();
         private List<Card> availableCards;
         private const int MAX_COPIES = 4;
+        private bool isPlayer1Turn = true; // Track whose turn it is to build the deck
+        private bool isPlayer1DeckSaved = false;
+        private bool isPlayer2DeckSaved = false;
 
         public FRM_SetupGame()
         {
@@ -42,157 +42,132 @@ namespace BrawlTCG_alpha.Visuals
             LoadCards();
         }
 
+
+
         private void InitializeComponents()
         {
-            // 📜 Available Cards List (increased width and size)
-            listAvailableCards = new ListView { Location = new Point(20, 50), Size = new Size(500, 400), View = View.Details, FullRowSelect = true };
+            // Initialize components (no change)
+            listAvailableCards = new ListView { Location = new Point(20, 50), Size = new Size(800, 400), View = View.Details, FullRowSelect = true };
             listAvailableCards.Columns.Add("Card Name", 150);
             listAvailableCards.Columns.Add("Cost", 70);
-            listAvailableCards.Columns.Add("Description", 180);
             listAvailableCards.Columns.Add("Element", 80);
+            listAvailableCards.Columns.Add("Description", 480);
             listAvailableCards.SelectedIndexChanged += ListAvailableCards_SelectedIndexChanged;
             Controls.Add(listAvailableCards);
 
-            // 🎴 Selected Deck List (shifted to the right of available cards)
-            listDeck = new ListView { Location = new Point(540, 50), Size = new Size(300, 400), View = View.Details, FullRowSelect = true };
+            listDeck = new ListView { Location = new Point(840, 50), Size = new Size(300, 400), View = View.Details, FullRowSelect = true };
             listDeck.Columns.Add("Card Name", 200);
             listDeck.Columns.Add("Copies", 80);
             Controls.Add(listDeck);
 
-            // ➕ Add Button (aligned with listDeck)
-            btnAddCard = new Button { Text = "➕ Add", Location = new Point(540, 460), Size = new Size(100, 30) };
+            btnAddCard = new Button { Text = "➕ Add", Location = new Point(840, 460), Size = new Size(100, 30) };
             btnAddCard.Click += BtnAddCard_Click;
             Controls.Add(btnAddCard);
 
-            // ➖ Remove Button (below Add button)
-            btnRemoveCard = new Button { Text = "➖ Remove", Location = new Point(540, 500), Size = new Size(100, 30) };
+            btnRemoveCard = new Button { Text = "➖ Remove", Location = new Point(840, 500), Size = new Size(100, 30) };
             btnRemoveCard.Click += BtnRemoveCard_Click;
             Controls.Add(btnRemoveCard);
 
-            // 💾 Save Deck Button (below Remove button)
-            btnSaveDeck = new Button { Text = "💾 Save Deck", Location = new Point(540, 540), Size = new Size(100, 30) };
+            btnSaveDeck = new Button { Text = "💾 Save Deck", Location = new Point(840, 540), Size = new Size(100, 30) };
             btnSaveDeck.Click += BtnSaveDeck_Click;
             Controls.Add(btnSaveDeck);
 
-            // 🔍 Filter by Type (top left corner)
+            btnStartGame = new Button { Text = "🎮 Start Game", Location = new Point(840, 580), Size = new Size(100, 30) };
+            btnStartGame.Click += BtnStartGame_Click;
+            Controls.Add(btnStartGame);
+
+
+            btnSwitchPlayer = new Button { Text = "Switch to Player 2", Location = new Point(20, 460), Size = new Size(150, 30) };
+            btnSwitchPlayer.Click += BtnSwitchPlayer_Click;
+            Controls.Add(btnSwitchPlayer);
+
             cmbFilterType = new ComboBox { Location = new Point(20, 20), Width = 150 };
             cmbFilterType.Items.AddRange(new string[] { "All", "Legend", "Stage", "Move", "Essence" });
             cmbFilterType.SelectedIndex = 0;
             cmbFilterType.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
             Controls.Add(cmbFilterType);
 
-            // 🔥 Filter by Element (next to Filter by Type)
             cmbFilterElement = new ComboBox { Location = new Point(180, 20), Width = 140 };
-            cmbFilterElement.Items.Add("All"); // Add "All" as the first option
-            cmbFilterElement.Items.AddRange(Enum.GetNames(typeof(Elements))); // Add enum names
-            cmbFilterElement.SelectedIndex = 0; // Set "All" as the default selected item
+            cmbFilterElement.Items.Add("All");
+            cmbFilterElement.Items.AddRange(Enum.GetNames(typeof(Elements)));
+            cmbFilterElement.SelectedIndex = 0;
             cmbFilterElement.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
             Controls.Add(cmbFilterElement);
 
-
-            // 🖼️ Card Preview (right of the filters)
-            picCardPreview = new PictureBox { Location = new Point(340, 460), Size = new Size(180, 240), BorderStyle = BorderStyle.FixedSingle };
+            picCardPreview = new PictureBox { Location = new Point(640, 460), Size = new Size(180, 240), BorderStyle = BorderStyle.FixedSingle };
             Controls.Add(picCardPreview);
         }
 
         private void LoadCards()
         {
             availableCards = new List<Card>
-    {
-        // Essence
-        CardCatalogue.Essence.Clone(),
-
-        // Stages
-        CardCatalogue.Mustafar.Clone(),
-        CardCatalogue.Fangwild.Clone(),
-
-        // Fire Legend Cards
-        CardCatalogue.IronLady.Clone(),
-        CardCatalogue.Heatblast.Clone(),
-
-        // Cosmic Legend Cards
-        CardCatalogue.Artemis.Clone(),
-        CardCatalogue.Orion.Clone(),
-
-        // Nature Legend Cards
-        CardCatalogue.BriarRose.Clone(),
-        CardCatalogue.ForestGuardian.Clone(),
-        CardCatalogue.DeathCap.Clone(),
-
-        // Magic Legend Cards
-        CardCatalogue.FaerieQueen.Clone(),
-        CardCatalogue.Enchantress.Clone(),
-        CardCatalogue.DarkMage.Clone(),
-
-        // Shadow Legend Cards
-        CardCatalogue.MasterThief.Clone(),
-
-        // Wild Legend Cards
-        // You can add the missing cards for Wild types here like Beardvar, Asuri, etc.
-
-        // Weapon Cards
-        CardCatalogue.BlazingFire.Clone(),
-        CardCatalogue.SleightOfHand.Clone(),
-        CardCatalogue.LawOfTheLand.Clone(),
-        CardCatalogue.GalaxyLance.Clone(),
-        CardCatalogue.RemnantOfFate.Clone(),
-        CardCatalogue.SacredRelic.Clone(),
-        CardCatalogue.ScryingGlass.Clone(),
-        CardCatalogue.SearingBlade.Clone(),
-        CardCatalogue.ShootingStar.Clone(),
-        CardCatalogue.StarryScythe.Clone(),
-        CardCatalogue.MagmaSpear.Clone(),
-        CardCatalogue.PiercingRegret.Clone()
-    };
+            {
+                // Essence
+                CardCatalogue.Essence.Clone(),
+                // Stages
+                CardCatalogue.Mustafar.Clone(),
+                CardCatalogue.Fangwild.Clone(),
+                // Fire Legend Cards
+                CardCatalogue.IronLady.Clone(),
+                CardCatalogue.Heatblast.Clone(),
+                // Cosmic Legend Cards
+                CardCatalogue.Artemis.Clone(),
+                CardCatalogue.Orion.Clone(),
+                // Nature Legend Cards
+                CardCatalogue.BriarRose.Clone(),
+                CardCatalogue.ForestGuardian.Clone(),
+                CardCatalogue.DeathCap.Clone(),
+                // Magic Legend Cards
+                CardCatalogue.FaerieQueen.Clone(),
+                CardCatalogue.Enchantress.Clone(),
+                CardCatalogue.DarkMage.Clone(),
+                // Shadow Legend Cards
+                CardCatalogue.MasterThief.Clone(),
+                // Wild Legend Cards (add more here if needed)
+                // Weapon Cards
+                CardCatalogue.BlazingFire.Clone(),
+                CardCatalogue.SleightOfHand.Clone(),
+                CardCatalogue.LawOfTheLand.Clone(),
+                CardCatalogue.GalaxyLance.Clone(),
+                CardCatalogue.RemnantOfFate.Clone(),
+                CardCatalogue.SacredRelic.Clone(),
+                CardCatalogue.ScryingGlass.Clone(),
+                CardCatalogue.SearingBlade.Clone(),
+                CardCatalogue.ShootingStar.Clone(),
+                CardCatalogue.StarryScythe.Clone(),
+                CardCatalogue.MagmaSpear.Clone(),
+                CardCatalogue.PiercingRegret.Clone()
+            };
 
             PopulateAvailableCards();
         }
-
 
         private void PopulateAvailableCards()
         {
             listAvailableCards.Items.Clear();
 
-            // Get the selected type filter (e.g., "All", "Legend", etc.)
             string filterType = cmbFilterType.SelectedItem.ToString();
+            CardElementFilter filterElement = cmbFilterElement.SelectedItem.ToString() == "All" ? CardElementFilter.All : (CardElementFilter)Enum.Parse(typeof(CardElementFilter), cmbFilterElement.SelectedItem.ToString());
 
-            // Get the selected element filter using the new enum
-            CardElementFilter filterElement;
-            if (cmbFilterElement.SelectedItem.ToString() == "All")
-            {
-                filterElement = CardElementFilter.All; // 'All' in the new filter enum
-            }
-            else
-            {
-                filterElement = (CardElementFilter)Enum.Parse(typeof(CardElementFilter), cmbFilterElement.SelectedItem.ToString());
-            }
-
-            // Loop through the available cards
             foreach (var card in availableCards)
             {
-                // Check if card matches the selected type and element filter
                 bool matchesType = filterType == "All" || card.GetType().Name.Contains(filterType);
-
-                // If the element filter is 'All', then any card element is allowed
                 bool matchesElement = filterElement == CardElementFilter.All || card.Element.ToString() == filterElement.ToString();
 
-                // Only add the card if it matches the filters
                 if (matchesType && matchesElement)
                 {
                     ListViewItem item = new ListViewItem(new string[]
                     {
-                card.Name,
-                card.Cost.ToString(),
-                card.Description,
-                card.Element.ToString()
+                        card.Name,
+                        card.Cost.ToString(),
+                        card.Element.ToString(),
+                        card.Description,
                     });
                     item.Tag = card;
                     listAvailableCards.Items.Add(item);
                 }
             }
         }
-
-
 
         private void BtnAddCard_Click(object sender, EventArgs e)
         {
@@ -201,18 +176,28 @@ namespace BrawlTCG_alpha.Visuals
             var selectedCard = (Card)listAvailableCards.SelectedItems[0].Tag;
             string cardName = selectedCard.Name;
 
-            if (deck.ContainsKey(cardName))
+            var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
+
+            // Check if the card already exists in the current deck
+            var existingCard = currentDeck.FirstOrDefault(c => c.Name == cardName);
+
+            if (existingCard != null)
             {
-                if (!(selectedCard is EssenceCard) && deck[cardName] >= MAX_COPIES)
+                // If the card already exists, check the number of copies
+                int cardCount = currentDeck.Count(c => c.Name == cardName);
+                if (!(selectedCard is EssenceCard) && cardCount >= MAX_COPIES)
                 {
                     MessageBox.Show("You can only add up to 4 copies of this card!");
                     return;
                 }
-                deck[cardName]++;
+
+                // Add the card again (duplicate in the list)
+                currentDeck.Add(selectedCard.Clone());
             }
             else
             {
-                deck[cardName] = 1;
+                // If the card doesn't exist in the deck, add it
+                currentDeck.Add(selectedCard.Clone());
             }
 
             PopulateDeck();
@@ -223,24 +208,25 @@ namespace BrawlTCG_alpha.Visuals
             if (listDeck.SelectedItems.Count == 0) return;
 
             string cardName = listDeck.SelectedItems[0].Text;
-            int selectedIndex = listDeck.SelectedItems[0].Index; // Save the index before removing
+            int selectedIndex = listDeck.SelectedItems[0].Index;
 
-            if (deck.ContainsKey(cardName))
+            var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
+
+            // Find the card to remove from the deck
+            var cardToRemove = currentDeck.FirstOrDefault(c => c.Name == cardName);
+
+            if (cardToRemove != null)
             {
-                deck[cardName]--;
-
-                if (deck[cardName] == 0)
-                    deck.Remove(cardName);
+                currentDeck.Remove(cardToRemove);
             }
 
             PopulateDeck();
 
-            // Automatically reselect the same index (if valid)
             if (listDeck.Items.Count > 0)
             {
                 int newIndex = Math.Min(selectedIndex, listDeck.Items.Count - 1);
                 listDeck.Items[newIndex].Selected = true;
-                listDeck.Select(); // Keep focus on the list
+                listDeck.Select();
             }
         }
 
@@ -248,10 +234,19 @@ namespace BrawlTCG_alpha.Visuals
         {
             listDeck.Items.Clear();
 
-            foreach (var entry in deck)
+            var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
+
+            // Group cards by name and display the count
+            var groupedDeck = currentDeck.GroupBy(card => card.Name)
+                                         .Select(group => new { CardName = group.Key, Count = group.Count() });
+
+            foreach (var entry in groupedDeck)
             {
-                listDeck.Items.Add(new ListViewItem(new string[] { entry.Key, entry.Value.ToString() }));
+                listDeck.Items.Add(new ListViewItem(new string[] { entry.CardName, entry.Count.ToString() }));
             }
+
+            // Toggle Save Deck button on deck population
+            ToggleSaveDeckButton();
         }
 
         private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
@@ -259,39 +254,100 @@ namespace BrawlTCG_alpha.Visuals
             if (listAvailableCards.SelectedItems.Count > 0)
             {
                 var card = (Card)listAvailableCards.SelectedItems[0].Tag;
-                if (card.Image != null)
-                {
-                    picCardPreview.SizeMode = PictureBoxSizeMode.Zoom; // Ensures scaling without distortion
-                    picCardPreview.Image = card.Image;
-                }
-                else
-                {
-                    picCardPreview.Image = null; // Clear if no image available
-                }
+                picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
+                picCardPreview.Image = card.Image ?? null;
             }
         }
 
         private void BtnSaveDeck_Click(object sender, EventArgs e)
         {
+            var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
             List<Card> finalDeck = new List<Card>();
 
-            foreach (var entry in deck)
+            foreach (Card card in currentDeck)
             {
-                Card card = availableCards.FirstOrDefault(c => c.Name == entry.Key);
-                if (card != null)
-                {
-                    for (int i = 0; i < entry.Value; i++)
-                        finalDeck.Add(card.Clone());
-                }
+                finalDeck.Add(card.Clone());
             }
 
-            if (!finalDeck.Any(c => c is LegendCard))
+            // Ensure deck contains at least 10 Essence cards
+            int essenceCardCount = currentDeck.Count(c => c is EssenceCard);
+            if (essenceCardCount < 10)
             {
-                MessageBox.Show("Your deck must contain at least one Legend card!");
+                MessageBox.Show("Your deck must contain at least 10 Essence cards!");
                 return;
             }
 
-            MessageBox.Show("Deck saved successfully!");
+            // Ensure deck contains at least 20 cards in total
+            if (currentDeck.Count < 20)
+            {
+                MessageBox.Show("Your deck must contain at least 20 cards!");
+                return;
+            }
+
+            // Save the deck and update the corresponding player status
+            if (isPlayer1Turn)
+            {
+                isPlayer1DeckSaved = true;
+            }
+            else
+            {
+                isPlayer2DeckSaved = true;
+            }
+
+            // Display message and update the button status
+            MessageBox.Show($"{(isPlayer1Turn ? "Player 1" : "Player 2")} deck saved successfully!");
+
+            // Disable/Enable the Start Game button based on the deck save status
+            UpdateStartGameButton();
+        }
+
+        private void UpdateStartGameButton()
+        {
+            // Check if both players have saved their decks
+            btnStartGame.Enabled = isPlayer1DeckSaved && isPlayer2DeckSaved;
+        }
+
+        private void BtnSwitchPlayer_Click(object sender, EventArgs e)
+        {
+            isPlayer1Turn = !isPlayer1Turn;
+            btnSwitchPlayer.Text = isPlayer1Turn ? "Switch to Player 2" : "Switch to Player 1";
+            listDeck.Items.Clear(); // Clear the current deck view when switching players
+            PopulateDeck();
+
+            // Disable the Save Deck button if the current deck doesn't meet the requirements
+            ToggleSaveDeckButton();
+        }
+
+        private void ToggleSaveDeckButton()
+        {
+            var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
+            // Disable the Save Deck button if the current deck doesn't meet the minimum requirements
+            btnSaveDeck.Enabled = currentDeck.Count >= 20 && currentDeck.Count(c => c is EssenceCard) >= 10;
+        }
+
+        private void BtnStartGame_Click(object sender, EventArgs e)
+        {
+            // Check if both players have saved their decks
+            if (player1Deck.Count == 0 || player2Deck.Count == 0)
+            {
+                MessageBox.Show("Both players must have a deck before starting the game!");
+                return;
+            }
+
+            // Transition to the game (here, we can just show a message for now)
+            MessageBox.Show("Game starting with Player 1 and Player 2 decks!");
+
+            Player p1 = new Player("Player 1", player1Deck);
+            Player p2 = new Player("Player 2", player2Deck);
+
+            new FRM_Game(p1, p2).Show();
+            this.Hide(); // Optionally hide the deck builder form
+        }
+
+        private void FRM_SetupGame_Load(object sender, EventArgs e)
+        {
+            // Initially disable the Start Game button
+            btnStartGame.Enabled = false;
         }
     }
 }

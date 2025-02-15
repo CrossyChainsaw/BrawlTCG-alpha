@@ -14,7 +14,7 @@ enum Elements
     Cosmic,
     Water,
     Wild,
-    Shadow
+    Shadow,
 }
 
 namespace BrawlTCG_alpha.Logic
@@ -38,7 +38,6 @@ namespace BrawlTCG_alpha.Logic
         static Color FireColor = Color.DarkRed;
         static Color CosmicColor = Color.DarkBlue;
         static Color ShadowColor = Color.FromArgb(30, 30, 30);
-
 
 
         public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)

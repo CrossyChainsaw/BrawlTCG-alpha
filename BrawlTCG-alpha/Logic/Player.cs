@@ -12,9 +12,9 @@ namespace BrawlTCG_alpha.Logic
     internal class Player
     {
         // Fields
-        const int STARTING_HEALTH = 20;
-        const int STARTING_HAND_CARDS = 10; // 7?
-        
+        const int STARTING_HEALTH = 30;
+        const int STARTING_HAND_CARDS = 7; // 7?
+
         // Properties
         public string Name { get; private set; }
         public int Health { get; private set; }
@@ -68,43 +68,61 @@ namespace BrawlTCG_alpha.Logic
             }
             return null;
         }
-        public void RemoveEssence(Card card)
+        /// <summary>
+        /// For adding a specific card to your hand
+        /// </summary>
+        public void AddCardToHand(Card card)
         {
-            Essence = Essence - card.Cost;
+            Hand.Add(card);
         }
-        /// <summary>Remove Card from Hand, Add Card to Essence Field or PlayingField if it's that card</summary>
-        public void PlayCard(Card card)
-        {
-            if (card is EssenceCard essenceCard)
-            {
-                EssenceField.Add(essenceCard);
-            }
-            else if (card is LegendCard legendCard)
-            {
-                PlayingField.Add(legendCard);
-            }
-            Hand.Remove(card);
-            RemoveEssence(card);
-        }
-        public void GainEssence(int gain)
-        {
-            Essence += gain;
-        }
-        public void LoseHealth(int damage)
-        {
-            Health -= damage;
-        }
-        public bool PlayedEssenceCardThisTurn()
-        {
-            return _playedEssenceCardThisTurn;
-        }
-        public void PlayedEssenceCardThisTurn(bool boolean)
-        {
-            _playedEssenceCardThisTurn = boolean;
-        }
-        public void GetEssence()
-        {
-            this.Essence = EssenceField.Count;
-        }
+    public void RemoveEssence(Card card)
+    {
+        Essence = Essence - card.Cost;
     }
+    /// <summary>Remove Card from Hand, Add Card to Essence Field or PlayingField if it's that card</summary>
+    public void PlayCard(Card card)
+    {
+        if (card is EssenceCard essenceCard)
+        {
+            EssenceField.Add(essenceCard);
+        }
+        else if (card is LegendCard legendCard)
+        {
+            PlayingField.Add(legendCard);
+        }
+        else if (card is BattleCard battleCard)
+        {
+            if (battleCard.OneTimeUse)
+            {
+                DiscardPile.Add(battleCard);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+        Hand.Remove(card);
+        RemoveEssence(card);
+    }
+    public void GainEssence(int gain)
+    {
+        Essence += gain;
+    }
+    public void LoseHealth(int damage)
+    {
+        Health -= damage;
+    }
+    public bool PlayedEssenceCardThisTurn()
+    {
+        return _playedEssenceCardThisTurn;
+    }
+    public void PlayedEssenceCardThisTurn(bool boolean)
+    {
+        _playedEssenceCardThisTurn = boolean;
+    }
+    public void GetEssence()
+    {
+        this.Essence = EssenceField.Count;
+    }
+}
 }

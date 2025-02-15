@@ -124,6 +124,9 @@
   <data name="BlazingFire" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BlazingFire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="BouncyBomb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BouncyBomb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="BrawlLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BrawlLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -169,6 +172,9 @@
   <data name="MagmaSpear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MagmaSpear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MasterThief" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MasterThief.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Mustafar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Mustafar.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -192,6 +198,9 @@
   </data>
   <data name="ShootingStar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ShootingStar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Sleight_of_Hand" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Sleight_of_Hand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SpearIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SpearIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
