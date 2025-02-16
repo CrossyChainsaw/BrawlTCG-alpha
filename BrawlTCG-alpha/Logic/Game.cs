@@ -14,6 +14,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_ESSENCE = 10;
+        const int STARTING_HAND_CARDS = 10; // 7
 
         // Properties
         public Player BottomPlayer { get; private set; }
@@ -25,7 +26,7 @@ namespace BrawlTCG_alpha.Logic
 
         // VISUALS
         public event Action UI_InitializeZones;
-        public event Action<Player, Card> UI_ChangeCardZoneFromDeckToHand;
+        public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action UI_Multi_InitializeDeckPiles;
         public event Action<Player> UI_InitializeCardsInHand;
@@ -62,8 +63,9 @@ namespace BrawlTCG_alpha.Logic
             UI_EnableCards(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
-            ActivePlayer.DrawStartingHandFromDeck();
-            InactivePlayer.DrawStartingHandFromDeck();
+            DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
+            DrawStartingHand(InactivePlayer, STARTING_HAND_CARDS);
+
             UI_InitializeCardsInHand.Invoke(ActivePlayer);
             UI_InitializeCardsInHand.Invoke(InactivePlayer);
 
@@ -76,6 +78,15 @@ namespace BrawlTCG_alpha.Logic
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
             UI_Multi_DisableCardsOnEssenceZones.Invoke();
+        }
+        void DrawStartingHand(Player player, int nCards)
+        {
+            for (int i = 0; i < nCards; i++)
+            {
+                Card card = player.DrawCardFromDeck();
+                UI_MoveCardZoneFromDeckToHand(player, card);
+            }
+
         }
         public void Start()
         {
@@ -150,7 +161,7 @@ namespace BrawlTCG_alpha.Logic
             Card? card = ActivePlayer.DrawCardFromDeck();
             if (card != null)
             {
-                UI_ChangeCardZoneFromDeckToHand.Invoke(player, card);
+                UI_MoveCardZoneFromDeckToHand.Invoke(player, card);
                 UI_UpdateCardsInDeckPile.Invoke(player);
             }
         }

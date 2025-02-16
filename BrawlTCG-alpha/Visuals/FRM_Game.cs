@@ -34,7 +34,7 @@ namespace BrawlTCG_alpha
             // Give all the functions to the game class so that the game class controls the entire game.
             // Single
             _game.UI_InitializeZones += InitializeZones;
-            _game.UI_ChangeCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
+            _game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
             _game.UI_EnableCards += EnableCards;
             _game.UI_ShowCards += ShowCards;
             _game.UI_InitializeCardsInHand += InitializeCardsInHand;
@@ -217,9 +217,10 @@ namespace BrawlTCG_alpha
 
                 if (player.Deck.Count > 0)
                 {
-                    foreach (Card card in player.Deck)
+                    for (int i = 0; i < player.Deck.Count; i++)
                     {
-                        CardControl cardControl = CreateCardControl(player, zone, card, false);
+                        Card card = player.Deck[i];
+                        CardControl cardControl = CreateCardControl(player, zone, card, false, extraPaddingY: i*2);
 
                         AddCardControl(cardControl, zone);
                     }
@@ -323,7 +324,6 @@ namespace BrawlTCG_alpha
         {
             // set variables
             ZoneTypes oldZoneType = ZoneTypes.Deck;
-            ZoneTypes targetZoneType = ZoneTypes.Hand;
 
             // Find CardControl
             CardControl? cardControlOld = GetCardControl(player, oldZoneType, card);
@@ -384,6 +384,7 @@ namespace BrawlTCG_alpha
         /// <summary>Removes from UI and Zone</summary>
         internal void RemoveCardControl(CardControl cardControl, ZoneControl zone)
         {
+            // Remove visually
             Controls.Remove(cardControl);
             zone.CardsControls.Remove(cardControl);
         }
@@ -879,11 +880,12 @@ namespace BrawlTCG_alpha
             // Return the new Control
             return cardControl;
         }
-        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen)
+        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, int extraPaddingX=0, int extraPaddingY=0)
         {
+            int padding = 10; // to center the control we add 10 pixels
             CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: isOpen, owner: player, players: _game.GetPlayers())
             {
-                Location = new Point(zone.Location.X + 10, zone.Location.Y + 10),
+                Location = new Point(zone.Location.X + padding + extraPaddingX, zone.Location.Y + padding + extraPaddingY),
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;

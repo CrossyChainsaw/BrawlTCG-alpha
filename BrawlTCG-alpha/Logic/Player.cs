@@ -13,7 +13,6 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 30;
-        const int STARTING_HAND_CARDS = 7; // 7?
 
         // Properties
         public string Name { get; private set; }
@@ -50,24 +49,19 @@ namespace BrawlTCG_alpha.Logic
                 (Deck[i], Deck[j]) = (Deck[j], Deck[i]);
             }
         }
-        public void DrawStartingHandFromDeck()
-        {
-            for (int i = 0; i < STARTING_HAND_CARDS; i++)
-            {
-                DrawCardFromDeck();
-            }
-        }
         public Card? DrawCardFromDeck()
         {
             if (Deck.Count > 0)
             {
-                Card card = Deck[0];
-                Deck.RemoveAt(0);
+                int lastCardIndex = Deck.Count - 1;
+                Card card = Deck[lastCardIndex]; 
+                Deck.RemoveAt(lastCardIndex);   
                 Hand.Add(card);
                 return card;
             }
             return null;
         }
+
         /// <summary>
         /// For adding a specific card to your hand
         /// </summary>

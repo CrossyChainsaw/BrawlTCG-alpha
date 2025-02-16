@@ -116,7 +116,7 @@ namespace BrawlTCG_alpha.Visuals
                 // Nature Legend Cards
                 CardCatalogue.BriarRose.Clone(),
                 CardCatalogue.ForestGuardian.Clone(),
-                CardCatalogue.DeathCap.Clone(),
+                CardCatalogue.Deathcap.Clone(),
                 // Magic Legend Cards
                 CardCatalogue.FaerieQueen.Clone(),
                 CardCatalogue.Enchantress.Clone(),

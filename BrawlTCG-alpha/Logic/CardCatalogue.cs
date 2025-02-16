@@ -52,8 +52,9 @@ namespace BrawlTCG_alpha.Logic
         // Nature
         public static LegendCard BriarRose = new LegendCard("Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 7, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Any_Seduce); // speed stance
         public static LegendCard ForestGuardian = new LegendCard("Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 15, 0, Weapons.Hammer, Weapons.Greatsword, attack1: AttackCatalogue.Greatsword_Swing, attack2: AttackCatalogue.Greatsword_String);
-        public static LegendCard DeathCap = new LegendCard("Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 10, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Orb_Throw, attack3: AttackCatalogue.DeathCap_Storm);
-        //rayman
+        public static LegendCard Deathcap = new LegendCard("Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 10, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Orb_Throw, attack3: AttackCatalogue.DeathCap_Storm);
+        public static LegendCard Rayman = new LegendCard("Rayman", 5, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AttackCatalogue.Axe_Swing);
+
         //glowbox
         //gnash
         //kor
@@ -66,13 +67,15 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Greatsword_Swing, attack3: AttackCatalogue.Greatsword_String, attack4: AttackCatalogue.Arcadia_PinkRoses); // base stance
         public static LegendCard Enchantress = new LegendCard("Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 18, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Enchantress_EnchantHealth, attack2: AttackCatalogue.Enchantress_EnchantPower, attack3: AttackCatalogue.Enchantress_CurseHealth, attack4: AttackCatalogue.Enchantress_CursePower);
         public static LegendCard DarkMage = new LegendCard("Dark Mage", 5, Elements.Magic, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Scythe_Slash);
+        public static LegendCard PlagueKnight = new LegendCard("Plague Knight", 5, Elements.Magic, Images.PlagueKnight, 0, 0, 0, 0, Weapons.Gauntlets, Weapons.Katars); // healer
         //nai
         //nix
         //magyar
 
+
         // Shadow
         public static LegendCard MasterThief = new LegendCard("Master Thief", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AttackCatalogue.Any_BurnForCard, attack2: AttackCatalogue.MasterThief_GrabBomb);
-        //azoth
+        public static LegendCard Raymesis = new LegendCard("Raymesis", 5, Elements.Shadow, Images.Raymesis, 9, 5, 16, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AttackCatalogue.Axe_Swing);
         //cross
         //jiro
         //dusk
@@ -84,10 +87,10 @@ namespace BrawlTCG_alpha.Logic
         //lucien
 
         // Wild
+        public static LegendCard TheMinotaur = new LegendCard("The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: AttackCatalogue.Axe_Swing, attack2: AttackCatalogue.Hammer_Swing);
         //beardvar
         //gnash
         //asuri
-        //teros
         //asuri
         //ragnir
         //mordex
@@ -105,8 +108,15 @@ namespace BrawlTCG_alpha.Logic
         //tezca
         //reno
 
+        // Ice // arctic? + water?
+        // yeetee teros
+        // christmas skins
+
+
         // ALL WEAPON CARDS
         // Axe
+        public static WeaponCard AxeOfRegrowth = new WeaponCard("Axe of Regrowth", 1, Elements.Nature, Images.Axe_of_Regrowth, Weapons.Axe);
+
         // Battle Boots
         // Blasters
         public static WeaponCard BlazingFire = new WeaponCard("Blazing Fire", 1, Elements.Fire, Images.BlazingFire, Weapons.Blasters);
@@ -117,7 +127,11 @@ namespace BrawlTCG_alpha.Logic
         // Greatsword
         public static WeaponCard LawOfTheLand = new WeaponCard("Law of the Land", 1, Elements.Nature, Images.LawOfTheLand, Weapons.Greatsword);
         // Hammer
+        public static WeaponCard PrimroseMallet = new WeaponCard("Primrose Mallet", 1, Elements.Nature, Images.Primrose_Mallet, Weapons.Hammer);
+
         // Katars
+        public static WeaponCard NightmareClaws = new WeaponCard("Nightmare Claws", 1, Elements.Wild, Images.Nightmare_Claws, Weapons.Katars);
+
         // Lance
         public static WeaponCard GalaxyLance = new WeaponCard("Galaxy Lance", 1, Elements.Cosmic, Images.GalaxyLance, Weapons.RocketLance);
         // Orb
@@ -171,10 +185,10 @@ namespace BrawlTCG_alpha.Logic
             ForestGuardian.Clone(),
             ForestGuardian.Clone(),
             ForestGuardian.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
             Heatblast.Clone(),
             Heatblast.Clone(),
 
@@ -294,40 +308,15 @@ namespace BrawlTCG_alpha.Logic
             MasterThief.Clone(),
             MasterThief.Clone(),
             MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
-            MasterThief.Clone(),
+            TheMinotaur.Clone(),
+            TheMinotaur.Clone(),
+            TheMinotaur.Clone(),
+            TheMinotaur.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            SleightOfHand.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
-            BouncyBomb.Clone(),
+
         };
         public static List<Card> DeathCapDeck = new List<Card>() {
             // Essence
@@ -353,10 +342,10 @@ namespace BrawlTCG_alpha.Logic
             ForestGuardian.Clone(),
             ForestGuardian.Clone(),
             ForestGuardian.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
-            DeathCap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
+            Deathcap.Clone(),
             Heatblast.Clone(),
             Heatblast.Clone(),
 
@@ -374,6 +363,11 @@ namespace BrawlTCG_alpha.Logic
             PiercingRegret.Clone(),
             PiercingRegret.Clone(),
         };
+
+
+        public static List<Card> Deck1 = DeathCapDeck;
+        public static List<Card> Deck2 = TestDeck;
+
 
         public static List<Card> CloneList(List<Card> originalList)
         {

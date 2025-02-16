@@ -121,6 +121,9 @@
   <data name="Artemis" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Artemis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Axe_of_Regrowth" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Axe_of_Regrowth.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="BlazingFire" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BlazingFire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -178,11 +181,26 @@
   <data name="Mustafar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Mustafar.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Nightmare_Claws" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nightmare_Claws.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Orion" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Orion.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PiercingRegret" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PiercingRegret.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PlagueKnight" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\PlagueKnight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Primrose_Mallet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Primrose_Mallet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Rayman" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Rayman.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Raymesis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Raymesis.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RemnantOfFate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RemnantOfFate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -210,5 +228,8 @@
   </data>
   <data name="StarryScythe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StarryScythe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Teros" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Teros.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

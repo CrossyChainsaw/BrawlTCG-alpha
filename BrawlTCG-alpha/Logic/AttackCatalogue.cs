@@ -128,9 +128,9 @@ namespace BrawlTCG_alpha.Logic.Cards
             attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
             attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
-        public static void GenerateBombCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game)
+        public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)
         {
-            Card card = CardCatalogue.BouncyBomb.Clone();
+            Card card = generatedCard;
             // add to hand
             game.AddCardToHandZone(activePlayer, card);
             // flip to show
@@ -156,7 +156,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             DefaultAttack(attacker, target, attack);
         });
 
-        public static Attack Scythe_Slash = new Attack("Scythe Slash", 1, Weapons.Scythe, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Scythe_Slash = new Attack("Scythe Slash", 0, Weapons.Scythe, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });
@@ -179,6 +179,15 @@ namespace BrawlTCG_alpha.Logic.Cards
             DrawCards(attacker, target, attack, activePlayer, game, nCards: 2);
         }, instaEffect: true);
 
+        public static Attack Hammer_Swing = new Attack("Hammer Swing", 1, Weapons.Hammer, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+
+        public static Attack Axe_Swing = new Attack("Axe Swing", 1, Weapons.Axe, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
 
 
 
@@ -221,8 +230,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", 0, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            // draw a bomb
-            GenerateBombCard(attacker, target, attack, activePlayer, game);
+            Card card = CardCatalogue.BouncyBomb.Clone();
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
         }, instaEffect: true);
     }
 }

@@ -38,6 +38,7 @@ namespace BrawlTCG_alpha.Logic
         static Color FireColor = Color.DarkRed;
         static Color CosmicColor = Color.DarkBlue;
         static Color ShadowColor = Color.FromArgb(30, 30, 30);
+        static Color WildColor = Color.Sienna;
 
 
         public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
@@ -80,11 +81,15 @@ namespace BrawlTCG_alpha.Logic
             {
                 return ShadowColor;
             }
+            else if (element == Elements.Wild)
+            {
+                return WildColor;
+            }
             throw new Exception("This element has no color");
         }
         public static Color SetTextColor(Elements element)
         {
-            if (element == Elements.Magic || element == Elements.Fire || element == Elements.Nature)
+            if (element == Elements.Magic || element == Elements.Fire || element == Elements.Nature || element == Elements.Wild)
             {
                 return Color.Black;
             }
