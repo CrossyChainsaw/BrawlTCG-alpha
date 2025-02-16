@@ -223,6 +223,9 @@
   <data name="Sleight_of_Hand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Sleight_of_Hand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Snowball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Snowball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SpearIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SpearIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -237,5 +240,8 @@
   </data>
   <data name="Teros" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Teros.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Vial_of_Crows" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Vial_of_Crows.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

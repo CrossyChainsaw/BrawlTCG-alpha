@@ -228,9 +228,14 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack, burn: true);
         });
-        public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", 0, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             Card card = CardCatalogue.BouncyBomb.Clone();
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+        }, instaEffect: true);
+        public static Attack PlagueKnight_GrabHealingPotion = new Attack("Grab Healing Potion", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            Card card = CardCatalogue.VialOfCrows.Clone();
             GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
         }, instaEffect: true);
     }

@@ -63,5 +63,19 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
+        public static void Heal(object target, Card card)
+        {
+            if (card is BattleCard battleCard)
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.GainHealth(battleCard.HealthModifier);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+        }
     }
 }

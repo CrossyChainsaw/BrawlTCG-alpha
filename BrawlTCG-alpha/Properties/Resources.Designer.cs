@@ -413,6 +413,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Snowball {
+            get {
+                object obj = ResourceManager.GetObject("Snowball", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SpearIcon {
             get {
                 object obj = ResourceManager.GetObject("SpearIcon", resourceCulture);
@@ -456,6 +466,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Teros {
             get {
                 object obj = ResourceManager.GetObject("Teros", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Vial_of_Crows {
+            get {
+                object obj = ResourceManager.GetObject("Vial_of_Crows", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

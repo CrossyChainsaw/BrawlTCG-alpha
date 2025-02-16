@@ -67,7 +67,7 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard FaerieQueen = new LegendCard("Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Greatsword_Swing, attack3: AttackCatalogue.Greatsword_String, attack4: AttackCatalogue.Arcadia_PinkRoses); // base stance
         public static LegendCard Enchantress = new LegendCard("Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 18, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Enchantress_EnchantHealth, attack2: AttackCatalogue.Enchantress_EnchantPower, attack3: AttackCatalogue.Enchantress_CurseHealth, attack4: AttackCatalogue.Enchantress_CursePower);
         public static LegendCard DarkMage = new LegendCard("Dark Mage", 5, Elements.Magic, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: AttackCatalogue.Scythe_Slash);
-        public static LegendCard PlagueKnight = new LegendCard("Plague Knight", 5, Elements.Magic, Images.PlagueKnight, 0, 0, 0, 0, Weapons.Gauntlets, Weapons.Katars); // healer
+        public static LegendCard PlagueKnight = new LegendCard("Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 5, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AttackCatalogue.PlagueKnight_GrabHealingPotion); // healer
         //nai
         //nix
         //magyar
@@ -150,9 +150,10 @@ namespace BrawlTCG_alpha.Logic
         // Sword
 
         // Battle Cards
-        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8);
-        public static BattleCard Snowball = new BattleCard("Snowball", 1, "When Played: Deals direct damage", Elements.Arctic, Images.BrawlLogo, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4);
+        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8);
+        public static BattleCard Snowball = new BattleCard("Snowball", 1, "When Played: Deals direct damage", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4);
         public static BattleCard SuperSaiyan = new BattleCard("Super Saiyan", 4, "When Played: Boosts legend stats", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostStats, powerModifier: 6, healthModifier: 6);
+        public static BattleCard VialOfCrows = new BattleCard("Vial of Crows", 1, "When Played: Boosts legend stats", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.Heal, healthModifier: 5);
 
 
         // Decks
@@ -323,6 +324,10 @@ namespace BrawlTCG_alpha.Logic
             Snowball.Clone(),
             Snowball.Clone(),
             Snowball.Clone(),
+            PlagueKnight.Clone(),
+            PlagueKnight.Clone(),
+            PlagueKnight.Clone(),
+            PlagueKnight.Clone(),
         };
         public static List<Card> DeathCapDeck = new List<Card>() {
             // Essence
