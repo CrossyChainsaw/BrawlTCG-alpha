@@ -577,21 +577,14 @@ namespace BrawlTCG_alpha
                             // Find the legend card
                             CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
                                                                                                                         // Create a weapon card behind the legend
-                            cardControlOld = CreateCardControl(player, legendCardControl, weapon, legendCard);
+                            CardControl cardControlNew = CreateCardControl(player, legendCardControl, weapon, legendCard);
 
                             // Add to UI
-                            Controls.Add(cardControlOld);
-                            legendCardControl.CardsControls.Add(cardControlOld);
+                            Controls.Add(cardControlNew);
+                            legendCardControl.CardsControls.Add(cardControlNew);
 
-                            // Reorder Z Layer
-                            for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
-                            {
-                                CardControl weaponCardControl = legendCardControl.CardsControls[i];
-                                weaponCardControl.BringToFront();
-                            }
-
-                            // put the legend in front of the weapon
-                            legendCardControl.BringToFront();
+                            // Reorder Z-Layer Stacked Cards
+                            ReorderZLayer(legendCardControl);
 
                             // Rearrange cards in hand
                             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
@@ -609,6 +602,17 @@ namespace BrawlTCG_alpha
                 }
             }
             return false;
+        }
+        /// <summary>Reorders the Z-Layers of a legend's stacked cards</summary>
+        void ReorderZLayer(CardControl legendCardControl)
+        {
+            for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
+            {
+                CardControl cardControl = legendCardControl.CardsControls[i]; // battle or wep card
+                cardControl.BringToFront();
+            }
+            // put the legend in front of the weapon
+            legendCardControl.BringToFront();
         }
         bool TryPlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld)
         {
@@ -720,28 +724,44 @@ namespace BrawlTCG_alpha
             // get opponent
             Player enemy = _game.GetOtherPlayer(player);
             ZoneControl enemyPlayingFieldZone = GetMyZone(ZoneTypes.PlayingField, enemy);
+            ZoneControl myPlayingFieldZone = GetMyZone(ZoneTypes.PlayingField, player);
 
-            if (IsMouseInZone(enemyPlayingFieldZone))
+
+            if (IsMouseInZone(enemyPlayingFieldZone) || IsMouseInZone(myPlayingFieldZone))
             {
                 if (player.Essence >= battleCard.Cost)
                 {
-                    // Try to get the card control you are hovering over
                     CardControl targetCardControl = null;
-                    foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
+                    if (battleCard.FriendlyFire)
                     {
-                        if (IsMouseOnCardControl(cardControl))
+                        // Try to get your own CardControl you are hovering over
+                        foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
                         {
-                            targetCardControl = cardControl;
-                            break;
+                            if (IsMouseOnCardControl(cardControl))
+                            {
+                                targetCardControl = cardControl;
+                                break;
+                            }
                         }
                     }
-                    // if none, return a failed drag
+                    else
+                    {
+                        // Try to get your CardControl you are hovering over
+                        foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
+                        {
+                            if (IsMouseOnCardControl(cardControl))
+                            {
+                                targetCardControl = cardControl;
+                                break;
+                            }
+                        }
+                    }
+                    // Didn't find any CardControl
                     if (targetCardControl == null)
                     {
                         return false;
                     }
 
-                    // Apply the damage
 
                     // Apply the effect
                     if (targetCardControl.Card is LegendCard)
@@ -850,15 +870,32 @@ namespace BrawlTCG_alpha
             targetCardControl.Invalidate();
             targetCardControl.CheckIfDead();
 
-            // remove card from hand into DP logically
+            // remove card from hand (and in DP for some cards)
             player.PlayCard(battleCard);
 
             // remove card from hand visually
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
             RemoveCardControl(cardControlOld, handZone);
-            
+
             // Add to UI and Zone visually
-            AddCardToDiscardPile(player, cardControlOld);
+            if (battleCard.OneTimeUse)
+            {
+                AddCardToDiscardPile(player, cardControlOld);
+            }
+            else
+            {
+                // stack the card
+                targetLegend.StackCard(battleCard);
+                // create the new CardControl
+                CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
+                
+                // Add to UI
+                Controls.Add(battleCardControl);
+                targetCardControl.CardsControls.Add(battleCardControl);
+
+                // Reorder Z-Layer Stacked Cards
+                ReorderZLayer(targetCardControl);
+            }
             cardControlOld.Enabled = false;
 
             // Arrange
@@ -880,7 +917,7 @@ namespace BrawlTCG_alpha
             return cardControl;
         }
         /// <summary>Create a WeaponCardControl on top of a Legend</summary>
-        CardControl CreateCardControl(Player player, CardControl legendCardControl, WeaponCard weapon, LegendCard legend)
+        CardControl CreateCardControl(Player player, CardControl legendCardControl, Card weapon, LegendCard legend)
         {
             CardControl cardControl = new CardControl(_game, weapon, ArrangeCardsInPlayingField, true, player, players: _game.GetPlayers()) // create the weapon card same loc as legendcard
             {

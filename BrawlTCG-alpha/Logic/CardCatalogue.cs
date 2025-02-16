@@ -150,9 +150,9 @@ namespace BrawlTCG_alpha.Logic
         // Sword
 
         // Battle Cards
-        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, true, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8);
-        public static BattleCard Snowball = new BattleCard("Snowball", 1, "When Played: Deals direct damage", Elements.Arctic, Images.BrawlLogo, true, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4);
-
+        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8);
+        public static BattleCard Snowball = new BattleCard("Snowball", 1, "When Played: Deals direct damage", Elements.Arctic, Images.BrawlLogo, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4);
+        public static BattleCard SuperSaiyan = new BattleCard("Super Saiyan", 4, "When Played: Boosts legend stats", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostStats, powerModifier: 6, healthModifier: 6);
 
 
         // Decks
@@ -311,22 +311,14 @@ namespace BrawlTCG_alpha.Logic
             MasterThief.Clone(),
             MasterThief.Clone(),
             MasterThief.Clone(),
-            TheMinotaur.Clone(),
-            TheMinotaur.Clone(),
-            TheMinotaur.Clone(),
-            TheMinotaur.Clone(),
+            SuperSaiyan.Clone(),
+            SuperSaiyan.Clone(),
+            SuperSaiyan.Clone(),
+            SuperSaiyan.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
-            Mustafar.Clone(),
-            Mustafar.Clone(),
-            Mustafar.Clone(),
-            Mustafar.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
-            Fangwild.Clone(),
             Snowball.Clone(),
             Snowball.Clone(),
             Snowball.Clone(),

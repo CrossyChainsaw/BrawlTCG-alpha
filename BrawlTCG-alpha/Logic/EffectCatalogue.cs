@@ -48,5 +48,20 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
+        public static void BoostStats(object target, Card card)
+        {
+            if (card is BattleCard battleCard)
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.ModifyStat(Stats.Health, battleCard.HealthModifier);
+                    legend.ModifyStat(Stats.Power, battleCard.PowerModifier);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+        }
     }
 }

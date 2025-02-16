@@ -91,6 +91,10 @@ namespace BrawlTCG_alpha.Logic
                 {
                     DiscardPile.Add(battleCard);
                 }
+                else if (battleCard.Stackable)
+                {
+                    // don't add to discard pile
+                }
                 else
                 {
                     throw new Exception();

@@ -442,19 +442,22 @@ namespace BrawlTCG_alpha.Visuals
         int CheckElementalDamageBoost(LegendCard attackingLegend, Attack attack)
         {
             int elementalDamageBoost = 0;
-            foreach (WeaponCard weaponCard in attackingLegend.StackedCards)
+            foreach (Card card in attackingLegend.StackedCards)
             {
-                int requiredMatches = attack.WeaponOneAmount;
-                int foundMatches = 0;
-                if (weaponCard.Weapon == attack.WeaponOne)
+                if (card is WeaponCard weaponCard)
                 {
-                    if (weaponCard.Element == attackingLegend.Element)
+                    int requiredMatches = attack.WeaponOneAmount;
+                    int foundMatches = 0;
+                    if (weaponCard.Weapon == attack.WeaponOne)
                     {
-                        foundMatches++;
-                        if (foundMatches == requiredMatches)
+                        if (weaponCard.Element == attackingLegend.Element)
                         {
-                            elementalDamageBoost += requiredMatches;
-                            break;
+                            foundMatches++;
+                            if (foundMatches == requiredMatches)
+                            {
+                                elementalDamageBoost += requiredMatches;
+                                break;
+                            }
                         }
                     }
                 }

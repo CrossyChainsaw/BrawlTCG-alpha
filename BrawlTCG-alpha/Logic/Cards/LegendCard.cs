@@ -124,9 +124,9 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             // TODO: Differentiate battle/weapon cards
 
-            if (card is WeaponCard weaponCard)
+            if (card is WeaponCard || card is BattleCard)
             {
-                StackedCards.Add(weaponCard);
+                StackedCards.Add(card);
             }
             else
             {
