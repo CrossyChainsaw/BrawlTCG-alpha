@@ -12,7 +12,7 @@ enum Elements
     Magic,
     Nature,
     Cosmic,
-    Water,
+    Arctic,
     Wild,
     Shadow,
 }
@@ -28,7 +28,7 @@ namespace BrawlTCG_alpha.Logic
         public bool IsOpen { get; internal set; }
         public Action<object>? StartTurnEffect { get; internal set; }
         public Action<object>? EndTurnEffect { get; internal set; }
-        public Action<object>? WhenPlayedEffect { get; internal set; }
+        public Action<object, Card>? WhenPlayedEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
         public Color TextColor { get; internal set; }
@@ -39,9 +39,10 @@ namespace BrawlTCG_alpha.Logic
         static Color CosmicColor = Color.DarkBlue;
         static Color ShadowColor = Color.FromArgb(30, 30, 30);
         static Color WildColor = Color.Sienna;
+        static Color ArcticColor = Color.LightCyan;
 
 
-        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null)
+        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card>? whenPlayedEffect = null)
         {
             Name = name;
             Cost = cost;
@@ -57,7 +58,7 @@ namespace BrawlTCG_alpha.Logic
 
         public void OnStartTurn(object target) => StartTurnEffect?.Invoke(target);
         public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
-        public void OnPlayed(object target) => WhenPlayedEffect?.Invoke(target);
+        public void OnPlayedEffect(object target, Card card) => WhenPlayedEffect?.Invoke(target, this);
         public abstract Card Clone();
         public static Color SetCardColor(Elements element)
         {
@@ -85,11 +86,19 @@ namespace BrawlTCG_alpha.Logic
             {
                 return WildColor;
             }
-            throw new Exception("This element has no color");
+            else if (element == Elements.Wild)
+            {
+                return WildColor;
+            }
+            else if (element == Elements.Arctic)
+            {
+                return ArcticColor;
+            }
+            throw new Exception("This element has no card color");
         }
         public static Color SetTextColor(Elements element)
         {
-            if (element == Elements.Magic || element == Elements.Fire || element == Elements.Nature || element == Elements.Wild)
+            if (element == Elements.Magic || element == Elements.Fire || element == Elements.Nature || element == Elements.Wild || element == Elements.Arctic)
             {
                 return Color.Black;
             }
@@ -97,7 +106,7 @@ namespace BrawlTCG_alpha.Logic
             {
                 return Color.White;
             }
-            throw new Exception("This element has no color");
+            throw new Exception("This element has no text color");
         }
     }
 }

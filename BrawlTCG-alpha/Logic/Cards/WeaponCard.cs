@@ -31,7 +31,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Weapons Weapon { get; internal set; }
 
         // Methods
-        public WeaponCard(string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        public WeaponCard(string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
             Name = name;

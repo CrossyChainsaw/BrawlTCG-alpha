@@ -54,8 +54,8 @@ namespace BrawlTCG_alpha.Logic
             if (Deck.Count > 0)
             {
                 int lastCardIndex = Deck.Count - 1;
-                Card card = Deck[lastCardIndex]; 
-                Deck.RemoveAt(lastCardIndex);   
+                Card card = Deck[lastCardIndex];
+                Deck.RemoveAt(lastCardIndex);
                 Hand.Add(card);
                 return card;
             }
@@ -69,54 +69,55 @@ namespace BrawlTCG_alpha.Logic
         {
             Hand.Add(card);
         }
-    public void RemoveEssence(Card card)
-    {
-        Essence = Essence - card.Cost;
-    }
-    /// <summary>Remove Card from Hand, Add Card to Essence Field or PlayingField if it's that card</summary>
-    public void PlayCard(Card card)
-    {
-        if (card is EssenceCard essenceCard)
+        public void RemoveEssence(Card card)
         {
-            EssenceField.Add(essenceCard);
+            Essence = Essence - card.Cost;
         }
-        else if (card is LegendCard legendCard)
+        /// <summary>Remove Card from Hand, Add Card to Essence Field or PlayingField if it's that card</summary>
+        public void PlayCard(Card card)
         {
-            PlayingField.Add(legendCard);
-        }
-        else if (card is BattleCard battleCard)
-        {
-            if (battleCard.OneTimeUse)
+            if (card is EssenceCard essenceCard)
             {
-                DiscardPile.Add(battleCard);
+                EssenceField.Add(essenceCard);
+                _playedEssenceCardThisTurn = true;
             }
-            else
+            else if (card is LegendCard legendCard)
             {
-                throw new Exception();
+                PlayingField.Add(legendCard);
             }
+            else if (card is BattleCard battleCard)
+            {
+                if (battleCard.OneTimeUse)
+                {
+                    DiscardPile.Add(battleCard);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            Hand.Remove(card);
+            RemoveEssence(card);
         }
-        Hand.Remove(card);
-        RemoveEssence(card);
+        public void GainEssence(int gain)
+        {
+            Essence += gain;
+        }
+        public void LoseHealth(int damage)
+        {
+            Health -= damage;
+        }
+        public bool PlayedEssenceCardThisTurn()
+        {
+            return _playedEssenceCardThisTurn;
+        }
+        public void PlayedEssenceCardThisTurn(bool boolean)
+        {
+            _playedEssenceCardThisTurn = boolean;
+        }
+        public void GetEssence()
+        {
+            this.Essence = EssenceField.Count;
+        }
     }
-    public void GainEssence(int gain)
-    {
-        Essence += gain;
-    }
-    public void LoseHealth(int damage)
-    {
-        Health -= damage;
-    }
-    public bool PlayedEssenceCardThisTurn()
-    {
-        return _playedEssenceCardThisTurn;
-    }
-    public void PlayedEssenceCardThisTurn(bool boolean)
-    {
-        _playedEssenceCardThisTurn = boolean;
-    }
-    public void GetEssence()
-    {
-        this.Essence = EssenceField.Count;
-    }
-}
 }

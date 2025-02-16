@@ -26,15 +26,14 @@ namespace BrawlTCG_alpha.Logic
 
         // VISUALS
         public event Action UI_InitializeZones;
-        public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
-        public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action UI_Multi_InitializeDeckPiles;
+        public event Action UI_UpdateCardControlInPlayingFieldInformation;
+        public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
         public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
         public event Action<Player, bool> UI_ShowCards;
-        public event Action<Player, ZoneTypes, bool> UI_EnableCards;
-        public event Action UI_Multi_DisableCardsOnEssenceZones;
+        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<string> UI_PopUpNotification;
         public event Action<Player> UI_UntapPlayerCards;
@@ -59,8 +58,8 @@ namespace BrawlTCG_alpha.Logic
 
             // Initialize Decks Visually
             UI_Multi_InitializeDeckPiles.Invoke();
-            UI_EnableCards(ActivePlayer, ZoneTypes.Deck, false);
-            UI_EnableCards(InactivePlayer, ZoneTypes.Deck, false);
+            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
+            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
             DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
@@ -75,9 +74,12 @@ namespace BrawlTCG_alpha.Logic
                 ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
                 InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
             }
+            // update cards in essence fields
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
-            UI_Multi_DisableCardsOnEssenceZones.Invoke();
+            // Disable cards in essence zones
+            UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.EssenceField, false);
+            UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.EssenceField, false);
         }
         void DrawStartingHand(Player player, int nCards)
         {
@@ -96,7 +98,7 @@ namespace BrawlTCG_alpha.Logic
         public Task StartTurn()
         {
             // Before you start
-            UI_EnableCards.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
+            UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
             DrawCardFromDeck(ActivePlayer); // draw card
             ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
             ActivePlayer.GetEssence();
@@ -131,13 +133,13 @@ namespace BrawlTCG_alpha.Logic
             ActivePlayer.PlayedEssenceCardThisTurn(false);
             // Hide Enemy Hand and Disable it
             UI_ShowCards(InactivePlayer, false);
-            UI_EnableCards(InactivePlayer, ZoneTypes.Hand, false);
+            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
             // Show Player Hand and Enable it
             UI_ShowCards(ActivePlayer, true);
-            UI_EnableCards(ActivePlayer, ZoneTypes.Hand, true);
+            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
             // Enable all the cards on the field
-            UI_EnableCards(ActivePlayer, ZoneTypes.PlayingField, true);
-            UI_EnableCards(InactivePlayer, ZoneTypes.PlayingField, true);
+            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
+            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
 
             // START TURN
             // stage start turn effect
@@ -162,7 +164,6 @@ namespace BrawlTCG_alpha.Logic
             if (card != null)
             {
                 UI_MoveCardZoneFromDeckToHand.Invoke(player, card);
-                UI_UpdateCardsInDeckPile.Invoke(player);
             }
         }
         void RandomizeStartingPlayer()

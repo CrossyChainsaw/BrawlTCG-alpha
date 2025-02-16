@@ -54,7 +54,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             // Card Opt.
             Action<object>? startTurnEffect = null,
             Action<object>? endTurnEffect = null,
-            Action<object>? whenPlayedEffect = null,
+            Action<object, Card>? whenPlayedEffect = null,
             // LegendCard Opt.
             Action<object>? ability = null,
             Attack attack1 = null,
@@ -116,7 +116,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 Attack4
             );
         }
-        public List<Weapons> GetWeapons()
+        List<Weapons> GetWeapons()
         {
             return new List<Weapons> { PrimaryWeapon, SecondaryWeapon };
         }
@@ -209,6 +209,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             {
                 Power += modifyAmount;
             }
+        }
+        public bool HasWeapon(WeaponCard weaponCard)
+        {
+            return GetWeapons().Contains(weaponCard.Weapon);
         }
     }
 }

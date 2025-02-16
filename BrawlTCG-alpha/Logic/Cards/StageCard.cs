@@ -9,7 +9,7 @@ namespace BrawlTCG_alpha.Logic.Cards
     // ideas: start turn both players get a x sword
     internal class StageCard : Card
     {
-        public StageCard(string name, int cost, string description, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        public StageCard(string name, int cost, string description, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             Name = name;
             Cost = cost;

@@ -35,17 +35,15 @@ namespace BrawlTCG_alpha
             // Single
             _game.UI_InitializeZones += InitializeZones;
             _game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
-            _game.UI_EnableCards += EnableCards;
+            _game.UI_EnableCardsInZone += EnableCardsInZone;
             _game.UI_ShowCards += ShowCards;
             _game.UI_InitializeCardsInHand += InitializeCardsInHand;
             _game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
-            _game.UI_UpdateCardsInDeckPile += UpdateCardsInDeckPile;
             _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
             _game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             _game.UI_UntapPlayerCards += UntapPlayerCards;
             _game.UI_AddCardToHandZone += AddCardToHandZone;
             // Multi
-            _game.UI_Multi_DisableCardsOnEssenceZones += DisableCardsOnEssenceZones;
             _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
             // Non-Player
             _game.UI_PopUpNotification += (message) => MessageBox.Show(message);
@@ -68,23 +66,7 @@ namespace BrawlTCG_alpha
 
 
         // Inside Game.cs
-        void UpdateCardsInDeckPile(Player player)
-        {
-            // If you have no cards in your deck pile, make the deck pile dissapear
-            ZoneControl? zone = GetMyZone(ZoneTypes.Deck, player);
-            if (player.Deck.Count == 0)
-            {
-                foreach (CardControl cardControl in zone.CardsControls.ToList())
-                {
-                    if (cardControl.Owner == player)
-                    {
-                        // Remove from screen and zone
-                        RemoveCardControl(cardControl, zone);
-                    }
-                }
-            }
-        }
-        void ShowCards(Player player, bool show)
+        void ShowCards(Player player, bool show = true)
         {
             ZoneControl playerHand = GetMyZone(ZoneTypes.Hand, player);
             foreach (CardControl cardControl in playerHand.CardsControls)
@@ -105,7 +87,7 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void EnableCards(Player player, ZoneTypes zoneType, bool enable)
+        void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enable = true)
         {
             ZoneControl zone = GetMyZone(zoneType, player);
             foreach (CardControl card in zone.CardsControls)
@@ -115,17 +97,6 @@ namespace BrawlTCG_alpha
                     card.Enabled = true;
                 }
                 else
-                {
-                    card.Enabled = false;
-                }
-            }
-        }
-        void DisableCardsOnEssenceZones()
-        {
-            List<ZoneControl> zones = GetZones(ZoneTypes.EssenceField);
-            foreach (ZoneControl zone in zones)
-            {
-                foreach (CardControl card in zone.CardsControls)
                 {
                     card.Enabled = false;
                 }
@@ -220,7 +191,7 @@ namespace BrawlTCG_alpha
                     for (int i = 0; i < player.Deck.Count; i++)
                     {
                         Card card = player.Deck[i];
-                        CardControl cardControl = CreateCardControl(player, zone, card, false, extraPaddingY: i*2);
+                        CardControl cardControl = CreateCardControl(player, zone, card, false, extraPaddingY: i * 2);
 
                         AddCardControl(cardControl, zone);
                     }
@@ -565,250 +536,233 @@ namespace BrawlTCG_alpha
             }
             return false;
 
-            // Local Functions
-            bool TryPlayWeaponCard(Player player, WeaponCard weaponCard, CardControl cardControlOld)
-            {
-                ZoneControl playingFieldZone = GetMyZone(ZoneTypes.PlayingField, player);
-                if (IsMouseInZone(playingFieldZone))
-                {
-                    if (player.Essence >= weaponCard.Cost)
-                    {
-                        // Try to get the card control you are hovering over
-                        CardControl targetCardControl = null;
-                        foreach (CardControl cardControl in playingFieldZone.CardsControls)
-                        {
-                            if (IsMouseOnCardControl(cardControl))
-                            {
-                                targetCardControl = cardControl;
-                                break;
-                            }
-                        }
-                        // if none, return a failed drag
-                        if (targetCardControl == null)
-                        {
-                            return false;
-                        }
-
-
-                        // does the legend even have this weapon?
-                        if (targetCardControl.Card is LegendCard legendCard)
-                        {
-                            if (legendCard.GetWeapons().Contains(weaponCard.Weapon))
-                            {
-                                // Stack Card
-                                legendCard.StackCard(weaponCard);
-                                player.PlayCard(weaponCard); // play in memory
-                                UpdatePlayerInfo(player);
-
-                                // play in UI
-                                ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-                                RemoveCardControl(cardControlOld, handZone);
-
-                                // Create a weapon card behind the legend card
-                                CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
-                                CardControl cardControl = new CardControl(_game, weaponCard, ArrangeCardsInPlayingField, true, player, players: _game.GetPlayers()) // create the weapon card same loc as legendcard
-                                {
-                                    Location = new Point(legendCardControl.Location.X, legendCardControl.Location.Y - (20 * legendCard.StackedCards.Count)) // make sure we stack weapon cards on weapon cards visually
-                                };
-                                cardControl.CardReleased += async () => await TryToSnapCard(cardControl, weaponCard, player);
-                                cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
-                                cardControl.SetCanDrag(false);
-
-                                // Add to UI
-                                Controls.Add(cardControl);
-                                legendCardControl.CardsControls.Add(cardControl);
-
-                                // Reorder Z Layer
-                                for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
-                                {
-                                    CardControl weaponCardControl = legendCardControl.CardsControls[i];
-                                    weaponCardControl.BringToFront();
-                                }
-
-                                // put the legend in front of the weapon
-                                legendCardControl.BringToFront();
-
-                                // Rearrange cards in hand
-                                ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-                                return true;
-                            }
-                            else
-                            {
-                                MessageBox.Show($"You cannot play a {weaponCard.Weapon} on this legend");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Not enough Essence");
-                    }
-                }
-                return false;
-            }
-            bool TryPlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld)
-            {
-                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
-                if (IsMouseInZone(playZone))
-                {
-                    if (player.Essence >= legendCard.Cost)
-                    {
-                        // are there already 5?
-                        if (playZone.CardsControls.Count < 5)
-                        {
-                            // Give legend Card delegate
-                            legendCard.UI_BurnWeaponCard += BurnWeaponCard;
-                            // Play Card
-                            CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
-                            // Arrange Cards
-                            ArrangeCardsInPlayingField(player);
-                            return true;
-                        }
-                        else
-                        {
-                            MessageBox.Show("Already 5 Legends");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Not enough Essence");
-                    }
-                }
-                return false;
-            }
-            bool TryPlayStageCard(Player player, StageCard card, CardControl cardControlOld)
-            {
-                ZoneControl stageZone = GetStageZone();
-                if (IsMouseInZone(stageZone))
-                {
-                    if (player.Essence >= card.Cost)
-                    {
-                        // First remove the old card if there is one
-                        if (_game.ActiveStageCard != null)
-                        {
-                            MoveOldStageCardToDiscardPile(stageZone);
-                        }
-                        // Play the card in the zone on screen
-                        CardControl stageCardControl = PlayCardInStageZone(player, card, cardControlOld, stageZone);
-                        // set the card in game memory
-                        _game.SetStageCard(player, card);
-                        // Disable Drag
-                        stageCardControl.SetCanDrag(false);
-                        return true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Not enough Essence");
-                    }
-                }
-                return false;
-
-                // Local Functions
-                void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
-                {
-                    // Find CardControl
-                    CardControl stageCardCardControl = stageZone.CardsControls[0];
-                    // Remove from UI
-                    stageZone.CardsControls.Remove(stageCardCardControl);
-
-                    // Add card to discard pile
-                    StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
-                    Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
-                    _game.AddCardToDiscardPile(oldOwner, oldStageCard);
-
-                    // add to discard pile visually
-                    ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
-                    stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
-                    AddCardControl(stageCardCardControl, discardPileZone);
-                }
-            }
-            bool TryPlayEssenceCard(Player player, Card card, CardControl cardControlOld)
-            {
-                // Check if the mouse is in the Essence Field
-                ZoneControl essenceZone = GetMyZone(ZoneTypes.EssenceField, player);
-                if (IsMouseInZone(essenceZone))
-                {
-                    if (!player.PlayedEssenceCardThisTurn())
-                    {
-                        // Play Card
-                        CardControl essenceCardControl = PlayCardInZone(player, card, cardControlOld, essenceZone);
-                        // Disable new Essence Card
-                        essenceCardControl.Enabled = false;
-                        // Arrange Cards
-                        ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
-                        ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-                        return true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("You already played Essence this turn");
-                    }
-                }
-                return false;
-            }
-            bool TryPlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld)
-            {
-                // get opponent
-                Player enemy = _game.GetOtherPlayer(player);
-                ZoneControl enemyPlayingFieldZone = GetMyZone(ZoneTypes.PlayingField, enemy);
-
-                if (IsMouseInZone(enemyPlayingFieldZone))
-                {
-                    if (player.Essence >= battleCard.Cost)
-                    {
-                        // Try to get the card control you are hovering over
-                        CardControl targetCardControl = null;
-                        foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
-                        {
-                            if (IsMouseOnCardControl(cardControl))
-                            {
-                                targetCardControl = cardControl;
-                                break;
-                            }
-                        }
-                        // if none, return a failed drag
-                        if (targetCardControl == null)
-                        {
-                            return false;
-                        }
-
-                        // Apply the damage
-
-                        // does the legend even have this weapon?
-                        if (targetCardControl.Card is LegendCard legendCard)
-                        {
-                            battleCard.WhenPlayedEffect.Invoke(legendCard);
-                            targetCardControl.Invalidate();
-                            targetCardControl.CheckIfDead();
-                            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-
-
-                            // remove card from hand into DP logically
-                            player.PlayCard(battleCard); // play in memory
-
-                            // remove card from hand visually
-                            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-                            RemoveCardControl(cardControlOld, handZone);
-
-                            // Add to UI and Zone
-                            AddCardToDiscardPile(player, cardControl);
-                            cardControl.Enabled = false;
-
-                            return true;
-                        }
-                        else
-                        {
-                            MessageBox.Show($"You cannot play this BattleCard on this Card");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Not enough Essence");
-                    }
-                }
-                return false;
-            }
-
         }
+        bool TryPlayWeaponCard(Player player, WeaponCard weapon, CardControl cardControlOld)
+        {
+            ZoneControl playingFieldZone = GetMyZone(ZoneTypes.PlayingField, player);
+            if (IsMouseInZone(playingFieldZone))
+            {
+                if (player.Essence >= weapon.Cost)
+                {
+                    // Try to get the card control you are hovering over
+                    CardControl targetCardControl = null;
+                    foreach (CardControl cardControl in playingFieldZone.CardsControls)
+                    {
+                        if (IsMouseOnCardControl(cardControl))
+                        {
+                            targetCardControl = cardControl;
+                            break;
+                        }
+                    }
+                    // if none, return a failed drag
+                    if (targetCardControl == null)
+                    {
+                        return false;
+                    }
+
+                    // does the legend even have this weapon?
+                    if (targetCardControl.Card is LegendCard legendCard)
+                    {
+                        if (legendCard.HasWeapon(weapon))
+                        {
+                            // Stack Card
+                            legendCard.StackCard(weapon);
+                            player.PlayCard(weapon); // play in memory
+                            UpdatePlayerInfo(player); // update essence
+
+                            // play in UI
+                            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+                            RemoveCardControl(cardControlOld, handZone); // remove from hand
+
+                            // Find the legend card
+                            CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
+                                                                                                                        // Create a weapon card behind the legend
+                            cardControlOld = CreateCardControl(player, legendCardControl, weapon, legendCard);
+
+                            // Add to UI
+                            Controls.Add(cardControlOld);
+                            legendCardControl.CardsControls.Add(cardControlOld);
+
+                            // Reorder Z Layer
+                            for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
+                            {
+                                CardControl weaponCardControl = legendCardControl.CardsControls[i];
+                                weaponCardControl.BringToFront();
+                            }
+
+                            // put the legend in front of the weapon
+                            legendCardControl.BringToFront();
+
+                            // Rearrange cards in hand
+                            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+                            return true;
+                        }
+                        else
+                        {
+                            MessageBox.Show($"You cannot play a {weapon.Weapon} on this legend");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
+            return false;
+        }
+        bool TryPlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld)
+        {
+            ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
+            if (IsMouseInZone(playZone))
+            {
+                if (player.Essence >= legendCard.Cost)
+                {
+                    // are there already 5?
+                    if (playZone.CardsControls.Count < 5)
+                    {
+                        // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
+                        legendCard.UI_BurnWeaponCard += BurnWeaponCard;
+                        // Play Card
+                        CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
+                        // when played effect
+                        legendCard.OnPlayedEffect(null, null);
+                        // Arrange Cards
+                        ArrangeCardsInPlayingField(player);
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Already 5 Legends");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
+            return false;
+        }
+        bool TryPlayStageCard(Player player, StageCard stageCard, CardControl cardControlOld)
+        {
+            ZoneControl stageZone = GetStageZone();
+            if (IsMouseInZone(stageZone))
+            {
+                if (player.Essence >= stageCard.Cost)
+                {
+                    PlayStageCard(player, stageZone, cardControlOld, stageCard);
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
+            return false;
+        }
+        void PlayStageCard(Player player, ZoneControl stageZone, CardControl cardControlOld, StageCard stageCard)
+        {
+            if (_game.ActiveStageCard != null)
+            {
+                MoveOldStageCardToDiscardPile(stageZone);
+            }
+            // Play the card in the zone on screen
+            CardControl stageCardControl = PlayCardInStageZone(player, stageCard, cardControlOld, stageZone);
+            // set the card in game memory
+            _game.SetStageCard(player, stageCard);
+            // Disable Drag
+            stageCardControl.SetCanDrag(false);
+
+            // Local Functions
+            void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
+            {
+                // Find CardControl
+                CardControl stageCardCardControl = stageZone.CardsControls[0];
+                // Remove from UI
+                RemoveCardControl(stageCardCardControl, stageZone);
+
+                // Add card to discard pile
+                StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
+                Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
+                _game.AddCardToDiscardPile(oldOwner, oldStageCard);
+
+                // add to discard pile visually
+                ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
+                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
+                AddCardControl(stageCardCardControl, discardPileZone);
+            }
+        }
+        bool TryPlayEssenceCard(Player player, Card card, CardControl cardControlOld)
+        {
+            // Check if the mouse is in the Essence Field
+            ZoneControl essenceZone = GetMyZone(ZoneTypes.EssenceField, player);
+            if (IsMouseInZone(essenceZone))
+            {
+                if (!player.PlayedEssenceCardThisTurn())
+                {
+                    // Play Card
+                    CardControl essenceCardControl = PlayCardInZone(player, card, cardControlOld, essenceZone);
+                    // Disable new Essence Card
+                    essenceCardControl.Enabled = false;
+                    // Arrange Cards
+                    ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
+                    ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show("You already played Essence this turn");
+                }
+            }
+            return false;
+        }
+        bool TryPlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld)
+        {
+            // get opponent
+            Player enemy = _game.GetOtherPlayer(player);
+            ZoneControl enemyPlayingFieldZone = GetMyZone(ZoneTypes.PlayingField, enemy);
+
+            if (IsMouseInZone(enemyPlayingFieldZone))
+            {
+                if (player.Essence >= battleCard.Cost)
+                {
+                    // Try to get the card control you are hovering over
+                    CardControl targetCardControl = null;
+                    foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
+                    {
+                        if (IsMouseOnCardControl(cardControl))
+                        {
+                            targetCardControl = cardControl;
+                            break;
+                        }
+                    }
+                    // if none, return a failed drag
+                    if (targetCardControl == null)
+                    {
+                        return false;
+                    }
+
+                    // Apply the damage
+
+                    // Apply the effect
+                    if (targetCardControl.Card is LegendCard)
+                    {
+                        PlayBattleCard(player, battleCard, cardControlOld, targetCardControl);
+                        return true;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"You cannot play this BattleCard on this Card");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Not enough Essence");
+                }
+            }
+            return false;
+        }
+
+
         bool IsMouseInZone(ZoneControl zone)
         {
             Point mousePos = this.PointToClient(Cursor.Position);
@@ -823,6 +777,7 @@ namespace BrawlTCG_alpha
             zoneBounds = this.RectangleToClient(zoneBounds);
             return zoneBounds.Contains(mousePos);
         }
+
         /// <summary>Delete from UI and Zone, Add to UI and Zone</summary>
         void MoveCardControlFromPlayingFieldToDiscardPile(Player player, CardControl cardControl)
         {
@@ -835,13 +790,14 @@ namespace BrawlTCG_alpha
             cardControl.Enabled = false;
         }
 
-        void AddCardToDiscardPile(Player player, CardControl cardControl)
+        /// <summary>deletes old card control and creates a new one</summary>
+        void AddCardToDiscardPile(Player player, CardControl cardControlOld)
         {
             // Add to UI and Zone
             ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, player);
-            CardControl cardControl1 = CreateCardControl(player, discardPileZone, cardControl.Card, true);
-            cardControl1.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 3));
-            AddCardControl(cardControl1, discardPileZone);
+            CardControl cardControlNew = CreateCardControl(player, discardPileZone, cardControlOld.Card, true);
+            cardControlNew.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 3));
+            AddCardControl(cardControlNew, discardPileZone);
         }
 
 
@@ -850,6 +806,7 @@ namespace BrawlTCG_alpha
         {
             // Remove Card from Hand, Add to x
             player.PlayCard(card);
+
             // Remove Visually
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
             RemoveCardControl(cardControlOld, handZone);
@@ -860,12 +817,14 @@ namespace BrawlTCG_alpha
 
             // Update info for essence
             UpdatePlayerInfo(player);
+
             return cardControl;
         }
         CardControl PlayCardInStageZone(Player player, Card card, CardControl cardControlOld, ZoneControl stageZone)
         {
             // Play card
             player.PlayCard(card);
+
             // Remove from UI
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
             RemoveCardControl(cardControlOld, handZone);
@@ -877,18 +836,59 @@ namespace BrawlTCG_alpha
             AddCardControl(cardControl, stageZone);
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
 
+            // Update player essence
+            UpdatePlayerInfo(player);
+
             // Return the new Control
             return cardControl;
         }
-        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, int extraPaddingX=0, int extraPaddingY=0)
+        void PlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld, CardControl targetCardControl)
         {
-            int padding = 10; // to center the control we add 10 pixels
+            // Card Effect
+            LegendCard targetLegend = (LegendCard)targetCardControl.Card;
+            battleCard.OnPlayedEffect(targetLegend, battleCard);
+            targetCardControl.Invalidate();
+            targetCardControl.CheckIfDead();
+
+            // remove card from hand into DP logically
+            player.PlayCard(battleCard);
+
+            // remove card from hand visually
+            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+            RemoveCardControl(cardControlOld, handZone);
+            
+            // Add to UI and Zone visually
+            AddCardToDiscardPile(player, cardControlOld);
+            cardControlOld.Enabled = false;
+
+            // Arrange
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+            // Update player info
+            UpdatePlayerInfo(player);
+        }
+        /// <summary>Create a CardControl in a Zone</summary>
+        CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, int extraPaddingY = 0)
+        {
+            int padding = 10;
             CardControl cardControl = new CardControl(_game, card, ArrangeCardsInPlayingField, isOpen: isOpen, owner: player, players: _game.GetPlayers())
             {
-                Location = new Point(zone.Location.X + padding + extraPaddingX, zone.Location.Y + padding + extraPaddingY),
+                Location = new Point(zone.Location.X + padding, zone.Location.Y + padding + extraPaddingY),
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
+            return cardControl;
+        }
+        /// <summary>Create a WeaponCardControl on top of a Legend</summary>
+        CardControl CreateCardControl(Player player, CardControl legendCardControl, WeaponCard weapon, LegendCard legend)
+        {
+            CardControl cardControl = new CardControl(_game, weapon, ArrangeCardsInPlayingField, true, player, players: _game.GetPlayers()) // create the weapon card same loc as legendcard
+            {
+                Location = new Point(legendCardControl.Location.X, legendCardControl.Location.Y - (20 * legend.StackedCards.Count)) // make sure we stack weapon cards on weapon cards visually
+            };
+            cardControl.CardReleased += async () => await TryToSnapCard(cardControl, weapon, player);
+            cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
+            cardControl.SetCanDrag(false);
             return cardControl;
         }
     }

@@ -38,12 +38,14 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
 
         // When Played Effect
-        public static void BouncyBomb(object target)
+        public static void DirectDamage(object target, Card card)
         {
-            int bouncyBombDamage = 8;
-            if (target is LegendCard legend)
+            if (card is BattleCard battleCard)
             {
-                legend.LoseHealth(bouncyBombDamage);
+                if (target is LegendCard legend)
+                {
+                    legend.LoseHealth(battleCard.Damage);
+                }
             }
         }
     }

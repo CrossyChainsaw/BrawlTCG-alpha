@@ -76,6 +76,8 @@ namespace BrawlTCG_alpha.Logic
         // Shadow
         public static LegendCard MasterThief = new LegendCard("Master Thief", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AttackCatalogue.Any_BurnForCard, attack2: AttackCatalogue.MasterThief_GrabBomb);
         public static LegendCard Raymesis = new LegendCard("Raymesis", 5, Elements.Shadow, Images.Raymesis, 9, 5, 16, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AttackCatalogue.Axe_Swing);
+        public static LegendCard Mastermind = new LegendCard("Mastermind", 4, Elements.Shadow, Images.Loki, 3, 7, 10, 0, Weapons.Katars, Weapons.Scythe, attack1: AttackCatalogue.Axe_Swing);
+
         //cross
         //jiro
         //dusk
@@ -95,7 +97,7 @@ namespace BrawlTCG_alpha.Logic
         //ragnir
         //mordex
         //yumiko dog
-        //embed squirle
+        //ember squirle
         //lionheart
         //onyx
         //munin
@@ -148,7 +150,8 @@ namespace BrawlTCG_alpha.Logic
         // Sword
 
         // Battle Cards
-        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, true, whenPlayedEffect: EffectCatalogue.BouncyBomb);
+        public static BattleCard BouncyBomb = new BattleCard("Bouncy Bomb", 2, "When Played: Deals direct damage", Elements.Shadow, Images.BouncyBomb, true, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8);
+        public static BattleCard Snowball = new BattleCard("Snowball", 1, "When Played: Deals direct damage", Elements.Arctic, Images.BrawlLogo, true, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4);
 
 
 
@@ -316,7 +319,18 @@ namespace BrawlTCG_alpha.Logic
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
             SleightOfHand.Clone(),
-
+            Mustafar.Clone(),
+            Mustafar.Clone(),
+            Mustafar.Clone(),
+            Mustafar.Clone(),
+            Fangwild.Clone(),
+            Fangwild.Clone(),
+            Fangwild.Clone(),
+            Fangwild.Clone(),
+            Snowball.Clone(),
+            Snowball.Clone(),
+            Snowball.Clone(),
+            Snowball.Clone(),
         };
         public static List<Card> DeathCapDeck = new List<Card>() {
             // Essence

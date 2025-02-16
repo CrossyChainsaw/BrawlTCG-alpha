@@ -10,7 +10,8 @@ namespace BrawlTCG_alpha.Logic.Cards
     internal class BattleCard : Card
     {
         public bool OneTimeUse { get; set; }
-        public BattleCard(string name, int cost, string description, Elements element, Image image, bool oneTimeUse, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        public int Damage { get; set; }
+        public BattleCard(string name, int cost, string description, Elements element, Image image, bool oneTimeUse, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card>? whenPlayedEffect = null, int damage = 0) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // req
             Name = name;
@@ -24,11 +25,12 @@ namespace BrawlTCG_alpha.Logic.Cards
             WhenPlayedEffect = whenPlayedEffect;
             // other opt
             OneTimeUse = oneTimeUse;
+            Damage = damage;
         }
 
         public override Card Clone()
         {
-            return new BattleCard(Name, Cost, Description, Element, Image, OneTimeUse, StartTurnEffect, EndTurnEffect, WhenPlayedEffect);
+            return new BattleCard(Name, Cost, Description, Element, Image, OneTimeUse, StartTurnEffect, EndTurnEffect, WhenPlayedEffect, Damage);
         }
     }
 }
