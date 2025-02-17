@@ -53,7 +53,7 @@ namespace BrawlTCG_alpha.Logic
         public static LegendCard BriarRose = new LegendCard("Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 7, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Any_Seduce); // speed stance
         public static LegendCard ForestGuardian = new LegendCard("Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 15, 0, Weapons.Hammer, Weapons.Greatsword, attack1: AttackCatalogue.Greatsword_Swing, attack2: AttackCatalogue.Greatsword_String);
         public static LegendCard Deathcap = new LegendCard("Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 10, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AttackCatalogue.Spear_Stab, attack2: AttackCatalogue.Orb_Throw, attack3: AttackCatalogue.DeathCap_Storm);
-        public static LegendCard Rayman = new LegendCard("Rayman", 5, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AttackCatalogue.Axe_Swing);
+        public static LegendCard Rayman = new LegendCard("Rayman", 5, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AttackCatalogue.Axe_Swing, attack2: AttackCatalogue.Gauntlets_Punch, attack3: AttackCatalogue.Gauntlets_PowerPunch);
 
         //glowbox
         //gnash
