@@ -54,7 +54,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             // Card Opt.
             Action<object>? startTurnEffect = null,
             Action<object>? endTurnEffect = null,
-            Action<object, Card>? whenPlayedEffect = null,
+            Action<object, Card, Game>? whenPlayedEffect = null,
             // LegendCard Opt.
             Action<object>? ability = null,
             Attack attack1 = null,

@@ -43,6 +43,7 @@ namespace BrawlTCG_alpha
             _game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             _game.UI_UntapPlayerCards += UntapPlayerCards;
             _game.UI_AddCardToHandZone += AddCardToHandZone;
+            _game.UI_PlayStageCard += PlayStageCard;
             // Multi
             _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
             // Non-Player
@@ -629,7 +630,7 @@ namespace BrawlTCG_alpha
                         // Play Card
                         CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
                         // when played effect
-                        legendCard.OnPlayedEffect(null, null);
+                        legendCard.OnPlayedEffect(null, null, _game);
                         // Arrange Cards
                         ArrangeCardsInPlayingField(player);
                         return true;
@@ -646,14 +647,16 @@ namespace BrawlTCG_alpha
             }
             return false;
         }
-        bool TryPlayStageCard(Player player, StageCard stageCard, CardControl cardControlOld)
+        bool TryPlayStageCard(Player player, StageCard stageCard, CardControl cardControl)
         {
+            // Find stage zone
             ZoneControl stageZone = GetStageZone();
+
             if (IsMouseInZone(stageZone))
             {
                 if (player.Essence >= stageCard.Cost)
                 {
-                    PlayStageCard(player, stageZone, cardControlOld, stageCard);
+                    PlayStageCard(player, stageCard);
                     return true;
                 }
                 else
@@ -662,38 +665,6 @@ namespace BrawlTCG_alpha
                 }
             }
             return false;
-        }
-        void PlayStageCard(Player player, ZoneControl stageZone, CardControl cardControlOld, StageCard stageCard)
-        {
-            if (_game.ActiveStageCard != null)
-            {
-                MoveOldStageCardToDiscardPile(stageZone);
-            }
-            // Play the card in the zone on screen
-            CardControl stageCardControl = PlayCardInStageZone(player, stageCard, cardControlOld, stageZone);
-            // set the card in game memory
-            _game.SetStageCard(player, stageCard);
-            // Disable Drag
-            stageCardControl.SetCanDrag(false);
-
-            // Local Functions
-            void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
-            {
-                // Find CardControl
-                CardControl stageCardCardControl = stageZone.CardsControls[0];
-                // Remove from UI
-                RemoveCardControl(stageCardCardControl, stageZone);
-
-                // Add card to discard pile
-                StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
-                Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
-                _game.AddCardToDiscardPile(oldOwner, oldStageCard);
-
-                // add to discard pile visually
-                ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
-                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
-                AddCardControl(stageCardCardControl, discardPileZone);
-            }
         }
         bool TryPlayEssenceCard(Player player, Card card, CardControl cardControlOld)
         {
@@ -840,14 +811,55 @@ namespace BrawlTCG_alpha
 
             return cardControl;
         }
-        CardControl PlayCardInStageZone(Player player, Card card, CardControl cardControlOld, ZoneControl stageZone)
+        void PlayStageCard(Player player, StageCard stageCard)
         {
+            // Find stage zone
+            ZoneControl stageZone = GetStageZone();
+
+            if (_game.ActiveStageCard != null)
+            {
+                MoveOldStageCardToDiscardPile(stageZone);
+            }
+
+            // Play the card in the zone on screen
+            CardControl stageCardControl = PlayCardInStageZone(player, stageCard);
+            // set the card in game memory
+            _game.SetStageCard(player, stageCard);
+            // Disable Drag
+            stageCardControl.SetCanDrag(false);
+
+            // Local Functions
+            void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
+            {
+                // Find CardControl
+                CardControl stageCardCardControl = stageZone.CardsControls[0];
+                // Remove from UI
+                RemoveCardControl(stageCardCardControl, stageZone);
+
+                // Add card to discard pile
+                StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
+                Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
+                _game.AddCardToDiscardPile(oldOwner, oldStageCard);
+
+                // add to discard pile visually
+                ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
+                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
+                AddCardControl(stageCardCardControl, discardPileZone);
+            }
+        }
+        CardControl PlayCardInStageZone(Player player, StageCard card)
+        {
+            // Find stage zone
+            ZoneControl stageZone = GetStageZone();
+            // Find stage CardControl
+            CardControl stageCardControl = GetCardControl(player, ZoneTypes.Hand, card);
+
             // Play card
             player.PlayCard(card);
 
             // Remove from UI
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-            RemoveCardControl(cardControlOld, handZone);
+            RemoveCardControl(stageCardControl, handZone);
 
             // Create the new control in the correct zone and position
             CardControl cardControl = CreateCardControl(player, stageZone, card, true);
@@ -866,7 +878,7 @@ namespace BrawlTCG_alpha
         {
             // Card Effect
             LegendCard targetLegend = (LegendCard)targetCardControl.Card;
-            battleCard.OnPlayedEffect(targetLegend, battleCard);
+            battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
             targetCardControl.Invalidate();
             targetCardControl.CheckIfDead();
 

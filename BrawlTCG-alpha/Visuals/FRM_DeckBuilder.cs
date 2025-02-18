@@ -20,7 +20,7 @@ namespace BrawlTCG_alpha.Visuals
         Shadow
     }
 
-    public partial class FRM_SetupGame : Form
+    public partial class FRM_DeckBuilder : Form
     {
         private ListView listAvailableCards, listDeck;
         private Button btnAddCard, btnRemoveCard, btnSaveDeck, btnSwitchPlayer, btnStartGame;
@@ -34,7 +34,7 @@ namespace BrawlTCG_alpha.Visuals
         private bool isPlayer1DeckSaved = false;
         private bool isPlayer2DeckSaved = false;
 
-        public FRM_SetupGame()
+        public FRM_DeckBuilder()
         {
             Text = "Deck Builder";
             Size = new Size(800, 600);
@@ -102,41 +102,41 @@ namespace BrawlTCG_alpha.Visuals
         {
             availableCards = new List<Card>
             {
-                // Essence
-                CardCatalogue.Essence.Clone(),
-                // Stages
-                CardCatalogue.Mustafar.Clone(),
-                CardCatalogue.Fangwild.Clone(),
-                // Fire Legend Cards
-                CardCatalogue.IronLady.Clone(),
-                CardCatalogue.Heatblast.Clone(),
-                // Cosmic Legend Cards
-                CardCatalogue.Artemis.Clone(),
-                CardCatalogue.Orion.Clone(),
-                // Nature Legend Cards
-                CardCatalogue.BriarRose.Clone(),
-                CardCatalogue.ForestGuardian.Clone(),
-                CardCatalogue.Deathcap.Clone(),
-                // Magic Legend Cards
-                CardCatalogue.FaerieQueen.Clone(),
-                CardCatalogue.Enchantress.Clone(),
-                CardCatalogue.DarkMage.Clone(),
-                // Shadow Legend Cards
-                CardCatalogue.MasterThief.Clone(),
-                // Wild Legend Cards (add more here if needed)
-                // Weapon Cards
-                CardCatalogue.BlazingFire.Clone(),
-                CardCatalogue.SleightOfHand.Clone(),
-                CardCatalogue.LawOfTheLand.Clone(),
-                CardCatalogue.GalaxyLance.Clone(),
-                CardCatalogue.RemnantOfFate.Clone(),
-                CardCatalogue.SacredRelic.Clone(),
-                CardCatalogue.ScryingGlass.Clone(),
-                CardCatalogue.SearingBlade.Clone(),
-                CardCatalogue.ShootingStar.Clone(),
-                CardCatalogue.StarryScythe.Clone(),
-                CardCatalogue.MagmaSpear.Clone(),
-                CardCatalogue.PiercingRegret.Clone()
+                //// Essence
+                //CardCatalogue.Essence.Clone(),
+                //// Stages
+                //CardCatalogue.Mustafar.Clone(),
+                //CardCatalogue.Fangwild.Clone(),
+                //// Fire Legend Cards
+                //CardCatalogue.IronLady.Clone(),
+                //CardCatalogue.Heatblast.Clone(),
+                //// Cosmic Legend Cards
+                //CardCatalogue.Artemis.Clone(),
+                //CardCatalogue.Orion.Clone(),
+                //// Nature Legend Cards
+                //CardCatalogue.BriarRose.Clone(),
+                //CardCatalogue.ForestGuardian.Clone(),
+                //CardCatalogue.Deathcap.Clone(),
+                //// Magic Legend Cards
+                //CardCatalogue.FaerieQueen.Clone(),
+                //CardCatalogue.Enchantress.Clone(),
+                //CardCatalogue.DarkMage.Clone(),
+                //// Shadow Legend Cards
+                //CardCatalogue.MasterThief.Clone(),
+                //// Wild Legend Cards (add more here if needed)
+                //// Weapon Cards
+                //CardCatalogue.BlazingFire.Clone(),
+                //CardCatalogue.SleightOfHand.Clone(),
+                //CardCatalogue.LawOfTheLand.Clone(),
+                //CardCatalogue.GalaxyLance.Clone(),
+                //CardCatalogue.RemnantOfFate.Clone(),
+                //CardCatalogue.SacredRelic.Clone(),
+                //CardCatalogue.ScryingGlass.Clone(),
+                //CardCatalogue.SearingBlade.Clone(),
+                //CardCatalogue.ShootingStar.Clone(),
+                //CardCatalogue.StarryScythe.Clone(),
+                //CardCatalogue.MagmaSpear.Clone(),
+                //CardCatalogue.PiercingRegret.Clone()
             };
 
             PopulateAvailableCards();

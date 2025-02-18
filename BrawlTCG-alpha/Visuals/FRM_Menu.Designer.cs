@@ -1,6 +1,6 @@
 ﻿namespace BrawlTCG_alpha.Visuals
 {
-    partial class FRM_SetupGame
+    partial class FRM_Menu
     {
         /// <summary>
         /// Required designer variable.
@@ -28,33 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(450, 166);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            // 
-            // FRM_SetupGame
-            // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(button1);
-            Name = "FRM_SetupGame";
-            Text = "FRM_SetupGame";
-            WindowState = FormWindowState.Maximized;
-            Load += FRM_SetupGame_Load;
-            ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Text = "FRM_Menu";
         }
 
         #endregion
-
-        private Button button1;
     }
 }

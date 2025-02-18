@@ -28,7 +28,7 @@ namespace BrawlTCG_alpha.Logic
         public bool IsOpen { get; internal set; }
         public Action<object>? StartTurnEffect { get; internal set; }
         public Action<object>? EndTurnEffect { get; internal set; }
-        public Action<object, Card>? WhenPlayedEffect { get; internal set; }
+        public Action<object, Card, Game>? WhenPlayedEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
         public Color TextColor { get; internal set; }
@@ -42,7 +42,7 @@ namespace BrawlTCG_alpha.Logic
         static Color ArcticColor = Color.LightCyan;
 
 
-        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card>? whenPlayedEffect = null)
+        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null)
         {
             Name = name;
             Cost = cost;
@@ -58,7 +58,7 @@ namespace BrawlTCG_alpha.Logic
 
         public void OnStartTurn(object target) => StartTurnEffect?.Invoke(target);
         public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
-        public void OnPlayedEffect(object target, Card card) => WhenPlayedEffect?.Invoke(target, this);
+        public void OnPlayedEffect(object target, Card card, Game game) => WhenPlayedEffect?.Invoke(target, this, game);
         public abstract Card Clone();
         public static Color SetCardColor(Elements element)
         {
