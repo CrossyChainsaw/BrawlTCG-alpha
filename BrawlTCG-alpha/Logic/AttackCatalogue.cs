@@ -189,6 +189,15 @@ namespace BrawlTCG_alpha.Logic.Cards
             DefaultAttack(attacker, target, attack);
         });
 
+        public static Attack Gauntlets_Punch = new Attack("Punch", 0, Weapons.Gauntlets, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+
+        public static Attack Gauntlets_PowerPunch = new Attack("Power Punch", 4, Weapons.Gauntlets, 2, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
 
 
         // Signature Attacks
