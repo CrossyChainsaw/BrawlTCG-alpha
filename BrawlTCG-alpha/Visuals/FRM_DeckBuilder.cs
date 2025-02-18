@@ -40,6 +40,7 @@ namespace BrawlTCG_alpha.Visuals
             Size = new Size(800, 600);
             InitializeComponents();
             LoadCards();
+            LoadDecks();    
         }
 
 
@@ -82,7 +83,7 @@ namespace BrawlTCG_alpha.Visuals
             Controls.Add(btnSwitchPlayer);
 
             cmbFilterType = new ComboBox { Location = new Point(20, 20), Width = 150 };
-            cmbFilterType.Items.AddRange(new string[] { "All", "Legend", "Stage", "Move", "Essence" });
+            cmbFilterType.Items.AddRange(new string[] { "All", "Legend", "Stage", "Weapon", "Essence", "Battle" });
             cmbFilterType.SelectedIndex = 0;
             cmbFilterType.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
             Controls.Add(cmbFilterType);
@@ -100,44 +101,13 @@ namespace BrawlTCG_alpha.Visuals
 
         private void LoadCards()
         {
-            availableCards = new List<Card>
+            availableCards = new List<Card>();
+
+            // Loop through the dictionary and clone each card
+            foreach (var cardEntry in CardCatalogue.CardDictionary)
             {
-                //// Essence
-                //CardCatalogue.Essence.Clone(),
-                //// Stages
-                //CardCatalogue.Mustafar.Clone(),
-                //CardCatalogue.Fangwild.Clone(),
-                //// Fire Legend Cards
-                //CardCatalogue.IronLady.Clone(),
-                //CardCatalogue.Heatblast.Clone(),
-                //// Cosmic Legend Cards
-                //CardCatalogue.Artemis.Clone(),
-                //CardCatalogue.Orion.Clone(),
-                //// Nature Legend Cards
-                //CardCatalogue.BriarRose.Clone(),
-                //CardCatalogue.ForestGuardian.Clone(),
-                //CardCatalogue.Deathcap.Clone(),
-                //// Magic Legend Cards
-                //CardCatalogue.FaerieQueen.Clone(),
-                //CardCatalogue.Enchantress.Clone(),
-                //CardCatalogue.DarkMage.Clone(),
-                //// Shadow Legend Cards
-                //CardCatalogue.MasterThief.Clone(),
-                //// Wild Legend Cards (add more here if needed)
-                //// Weapon Cards
-                //CardCatalogue.BlazingFire.Clone(),
-                //CardCatalogue.SleightOfHand.Clone(),
-                //CardCatalogue.LawOfTheLand.Clone(),
-                //CardCatalogue.GalaxyLance.Clone(),
-                //CardCatalogue.RemnantOfFate.Clone(),
-                //CardCatalogue.SacredRelic.Clone(),
-                //CardCatalogue.ScryingGlass.Clone(),
-                //CardCatalogue.SearingBlade.Clone(),
-                //CardCatalogue.ShootingStar.Clone(),
-                //CardCatalogue.StarryScythe.Clone(),
-                //CardCatalogue.MagmaSpear.Clone(),
-                //CardCatalogue.PiercingRegret.Clone()
-            };
+                availableCards.Add(cardEntry.Value.Clone());
+            }
 
             PopulateAvailableCards();
         }
@@ -284,21 +254,34 @@ namespace BrawlTCG_alpha.Visuals
                 return;
             }
 
-            // Save the deck and update the corresponding player status
-            if (isPlayer1Turn)
-            {
-                isPlayer1DeckSaved = true;
-            }
-            else
-            {
-                isPlayer2DeckSaved = true;
-            }
+            // Save the deck to a text file
+            string deckFileName = isPlayer1Turn ? "deckPlayer1.txt" : "deckPlayer2.txt";
 
-            // Display message and update the button status
-            MessageBox.Show($"{(isPlayer1Turn ? "Player 1" : "Player 2")} deck saved successfully!");
+            try
+            {
+                // Write the card names to the file
+                var cardNames = currentDeck.Select(card => card.Name).ToList();
+                File.WriteAllLines(deckFileName, cardNames);
 
-            // Disable/Enable the Start Game button based on the deck save status
-            UpdateStartGameButton();
+                // Display message and update the corresponding player status
+                if (isPlayer1Turn)
+                {
+                    isPlayer1DeckSaved = true;
+                }
+                else
+                {
+                    isPlayer2DeckSaved = true;
+                }
+
+                MessageBox.Show($"{(isPlayer1Turn ? "Player 1" : "Player 2")} deck saved successfully!");
+
+                // Disable/Enable the Start Game button based on the deck save status
+                UpdateStartGameButton();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving deck: {ex.Message}");
+            }
         }
 
         private void UpdateStartGameButton()
@@ -348,6 +331,43 @@ namespace BrawlTCG_alpha.Visuals
         {
             // Initially disable the Start Game button
             btnStartGame.Enabled = false;
+        }
+
+        private void LoadDecks()
+        {
+            // Load Player 1's deck from the file
+            player1Deck = LoadDeckFromFile("deckPlayer1.txt");
+            // Load Player 2's deck from the file
+            player2Deck = LoadDeckFromFile("deckPlayer2.txt");
+
+            // Populate the deck list UI based on the current player's deck
+            PopulateDeck();
+        }
+
+        private List<Card> LoadDeckFromFile(string filePath)
+        {
+            List<Card> deck = new List<Card>();
+
+            if (File.Exists(filePath))
+            {
+                // Read each line in the file
+                var cardNames = File.ReadAllLines(filePath);
+
+                foreach (var cardName in cardNames)
+                {
+                    // Try to get the card from the CardCatalogue using the card name
+                    if (CardCatalogue.CardDictionary.TryGetValue(cardName, out Card card))
+                    {
+                        deck.Add(card.Clone()); // Add a clone of the card to the deck
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Deck file not found: {filePath}");
+            }
+
+            return deck;
         }
     }
 }

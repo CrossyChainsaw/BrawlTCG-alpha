@@ -72,8 +72,8 @@ namespace BrawlTCG_alpha.Logic
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
             {
-                ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-                InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
+                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
             }
             // update cards in essence fields
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);

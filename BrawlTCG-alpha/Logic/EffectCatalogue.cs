@@ -79,7 +79,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public static void GenerateMatrix(object target, Card card, Game game)
         {
-            StageCard generatedCard = (StageCard)CardCatalogue.Matrix.Clone();
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardByName("Matrix");
             StageCard card2 = generatedCard;
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
