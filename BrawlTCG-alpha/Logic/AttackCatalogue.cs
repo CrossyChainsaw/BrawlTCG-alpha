@@ -200,6 +200,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
 
 
+
         // Signature Attacks
         public static Attack Arcadia_PinkRoses = new Attack("Pink Roses", 4, Weapons.Spear, 1, weaponTwo: Weapons.Greatsword, weaponTwoAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
