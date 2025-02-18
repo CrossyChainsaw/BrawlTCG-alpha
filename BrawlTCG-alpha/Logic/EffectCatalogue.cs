@@ -38,7 +38,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
 
         // When Played Effect
-        public static void DirectDamage(object target, Card card)
+        public static void DirectDamage(object target, Card card, Game game)
         {
             if (card is BattleCard battleCard)
             {
@@ -48,7 +48,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-        public static void BoostStats(object target, Card card)
+        public static void BoostStats(object target, Card card, Game game)
         {
             if (card is BattleCard battleCard)
             {
@@ -63,7 +63,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-        public static void Heal(object target, Card card)
+        public static void Heal(object target, Card card, Game game)
         {
             if (card is BattleCard battleCard)
             {
@@ -76,6 +76,27 @@ namespace BrawlTCG_alpha.Logic.Cards
                     throw new Exception();
                 }
             }
+        }
+        public static void GenerateMatrix(object target, Card card, Game game)
+        {
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardByName("Matrix");
+            StageCard card2 = generatedCard;
+            game.AddCardToHandZone(game.ActivePlayer, card2);
+            game.PlayStageCard(card2);
+
+            //// add to hand
+            //game.AddCardToHandZone(game.ActivePlayer, card2);
+            //// flip to show
+            //game.ShowCards();
+        }
+
+        public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)
+        {
+            Card card = generatedCard;
+            // add to hand
+            game.AddCardToHandZone(activePlayer, card);
+            // flip to show
+            game.ShowCards();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace BrawlTCG_alpha
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new FRM_Game(new Player("Odin", CardCatalogue.Deck1), new Player("Valhalla", CardCatalogue.Deck2))); // build decks first
+            Application.Run(new FRM_Menu()); // build decks first
             //Application.Run(new FRM_SetupGame()); // build decks first
         }
     }

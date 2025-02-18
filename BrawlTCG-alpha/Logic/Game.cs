@@ -29,15 +29,16 @@ namespace BrawlTCG_alpha.Logic
         public event Action UI_Multi_InitializeDeckPiles;
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
+        public event Action<Player, Card> UI_AddCardToHandZone;
+        public event Action<Player, StageCard> UI_PlayStageCard;
         public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
         public event Action<Player, bool> UI_ShowCards;
         public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
         public event Action<Player> UI_UpdatePlayerInformation;
-        public event Action<string> UI_PopUpNotification;
         public event Action<Player> UI_UntapPlayerCards;
-        public event Action<Player, Card> UI_AddCardToHandZone;
+        public event Action<string> UI_PopUpNotification;
         // Fields
         public StageCard ActiveStageCard;
         public Player ActiveStageCardOwner;
@@ -71,8 +72,8 @@ namespace BrawlTCG_alpha.Logic
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
             {
-                ActivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
-                InactivePlayer.EssenceField.Add(CardCatalogue.Essence.Clone());
+                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
+                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
             }
             // update cards in essence fields
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
@@ -146,7 +147,10 @@ namespace BrawlTCG_alpha.Logic
             List<LegendCard> legends = GetAllMyLegendsOnThePlayingField(ActivePlayer);
             if (ActiveStageCard != null)
             {
-                ActiveStageCard.StartTurnEffect.Invoke(legends);
+                if (ActiveStageCard.StartTurnEffect != null)
+                {
+                    ActiveStageCard.StartTurnEffect.Invoke(legends);
+                }
             }
             // burn damage
             foreach (LegendCard legend in legends)
@@ -255,6 +259,10 @@ namespace BrawlTCG_alpha.Logic
             player.AddCardToHand(card);
             // visually
             UI_AddCardToHandZone.Invoke(player, card);
+        }
+        public void PlayStageCard(StageCard card)
+        {
+            UI_PlayStageCard(ActivePlayer, card);
         }
     }
 }
