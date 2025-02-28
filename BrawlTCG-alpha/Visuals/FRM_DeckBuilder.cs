@@ -17,7 +17,8 @@ namespace BrawlTCG_alpha.Visuals
         Cosmic,
         Water,
         Wild,
-        Shadow
+        Shadow,
+        Arctic
     }
 
     public partial class FRM_DeckBuilder : Form
@@ -72,10 +73,6 @@ namespace BrawlTCG_alpha.Visuals
             btnSaveDeck = new Button { Text = "💾 Save Deck", Location = new Point(840, 540), Size = new Size(100, 30) };
             btnSaveDeck.Click += BtnSaveDeck_Click;
             Controls.Add(btnSaveDeck);
-
-            btnStartGame = new Button { Text = "🎮 Start Game", Location = new Point(840, 580), Size = new Size(100, 30) };
-            btnStartGame.Click += BtnStartGame_Click;
-            Controls.Add(btnStartGame);
 
 
             btnSwitchPlayer = new Button { Text = "Switch to Player 2", Location = new Point(20, 460), Size = new Size(150, 30) };
@@ -308,25 +305,6 @@ namespace BrawlTCG_alpha.Visuals
             btnSaveDeck.Enabled = currentDeck.Count >= 20 && currentDeck.Count(c => c is EssenceCard) >= 10;
         }
 
-        private void BtnStartGame_Click(object sender, EventArgs e)
-        {
-            // Check if both players have saved their decks
-            if (player1Deck.Count == 0 || player2Deck.Count == 0)
-            {
-                MessageBox.Show("Both players must have a deck before starting the game!");
-                return;
-            }
-
-            // Transition to the game (here, we can just show a message for now)
-            MessageBox.Show("Game starting with Player 1 and Player 2 decks!");
-
-            Player p1 = new Player("Player 1", player1Deck);
-            Player p2 = new Player("Player 2", player2Deck);
-
-            new FRM_Game(p1, p2).Show();
-            this.Hide(); // Optionally hide the deck builder form
-        }
-
         private void FRM_SetupGame_Load(object sender, EventArgs e)
         {
             // Initially disable the Start Game button
@@ -344,21 +322,33 @@ namespace BrawlTCG_alpha.Visuals
             PopulateDeck();
         }
 
-        private List<Card> LoadDeckFromFile(string filePath)
+        List<Card> LoadDeckFromFile(string filePath)
         {
             List<Card> deck = new List<Card>();
 
             if (File.Exists(filePath))
             {
                 // Read each line in the file
-                var cardNames = File.ReadAllLines(filePath);
+                var cardIds = File.ReadAllLines(filePath);
 
-                foreach (var cardName in cardNames)
+                foreach (var cardIdStr in cardIds)
                 {
-                    // Try to get the card from the CardCatalogue using the card name
-                    if (CardCatalogue.CardDictionary.TryGetValue(cardName, out Card card))
+                    if (int.TryParse(cardIdStr, out int cardId)) // Parse the ID from the file line
                     {
-                        deck.Add(card.Clone()); // Add a clone of the card to the deck
+                        try
+                        {
+                            // Try to get the card by ID from the CardCatalogue
+                            Card card = CardCatalogue.GetCardById(cardId);
+                            deck.Add(card); // Add the cloned card to the deck
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"Error loading card with ID {cardId}: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Invalid card ID found in deck file: {cardIdStr}");
                     }
                 }
             }
@@ -369,5 +359,6 @@ namespace BrawlTCG_alpha.Visuals
 
             return deck;
         }
+
     }
 }

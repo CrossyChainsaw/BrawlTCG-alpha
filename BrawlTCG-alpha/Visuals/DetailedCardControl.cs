@@ -464,19 +464,22 @@ namespace BrawlTCG_alpha.Visuals
             }
             if (attack.WeaponTwo != null)
             {
-                foreach (WeaponCard weaponCard in attackingLegend.StackedCards)
+                foreach (Card card in attackingLegend.StackedCards)
                 {
-                    int requiredMatches = (int)attack.WeaponTwoAmount;
-                    int foundMatches2 = 0;
-                    if (weaponCard.Weapon == attack.WeaponTwo)
+                    if (card is WeaponCard weaponCard)
                     {
-                        if (weaponCard.Element == attackingLegend.Element)
+                        int requiredMatches = (int)attack.WeaponTwoAmount;
+                        int foundMatches2 = 0;
+                        if (weaponCard.Weapon == attack.WeaponTwo)
                         {
-                            foundMatches2++;
-                            if (foundMatches2 == requiredMatches)
+                            if (weaponCard.Element == attackingLegend.Element)
                             {
-                                elementalDamageBoost += requiredMatches;
-                                break;
+                                foundMatches2++;
+                                if (foundMatches2 == requiredMatches)
+                                {
+                                    elementalDamageBoost += requiredMatches;
+                                    break;
+                                }
                             }
                         }
                     }

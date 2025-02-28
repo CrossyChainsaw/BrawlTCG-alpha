@@ -38,7 +38,6 @@
             Name = "FRM_PlayingField";
             Text = "BrawlTCG-Alpha";
             WindowState = FormWindowState.Maximized;
-            Load += FRM_PlayingField_Load;
             ResumeLayout(false);
         }
 

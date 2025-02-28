@@ -40,6 +40,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public LegendCard(
             // Card
+            int id,
             string name,
             int cost,
             Elements element,
@@ -61,9 +62,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack attack2 = null,
             Attack attack3 = null,
             Attack attack4 = null
-        ) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        ) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
+            ID = id;
             Name = name;
             Cost = cost;
             Element = element;
@@ -96,6 +98,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public override Card Clone()
         {
             return new LegendCard(
+                ID,
                 Name,
                 Cost,
                 Element,

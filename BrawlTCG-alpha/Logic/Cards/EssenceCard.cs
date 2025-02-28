@@ -9,8 +9,9 @@ namespace BrawlTCG_alpha.Logic.Cards
     internal class EssenceCard : Card
     {
         const int ESSENCE_GAIN = 1;
-        public EssenceCard(string name, int cost, Elements element, Image image) : base(name, cost, element, image)
+        public EssenceCard(int id, string name, int cost, Elements element, Image image) : base(id, name, cost, element, image)
         {
+            ID = id;
             Name = name;
             Cost = cost;
             Description = "Start Turn: Gives the player 1 Essence";
@@ -27,7 +28,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public override Card Clone()
         {
-            return new EssenceCard(name: Name, cost: Cost, element: Element, image: Image);
+            return new EssenceCard(id: ID, name: Name, cost: Cost, element: Element, image: Image);
         }
     }
 

@@ -13,8 +13,8 @@ namespace BrawlTCG_alpha.Logic
     internal class Game
     {
         // Fields
-        const int STARTING_ESSENCE = 10;
-        const int STARTING_HAND_CARDS = 10; // 7
+        const int STARTING_ESSENCE = 1;
+        const int STARTING_HAND_CARDS = 7; // 7
 
         // Properties
         public Player BottomPlayer { get; private set; }
@@ -23,6 +23,8 @@ namespace BrawlTCG_alpha.Logic
         public Player InactivePlayer { get; private set; }
         public bool SomeoneIsAttacking { get; private set; }
         public Attack SelectedAttack { get; private set; }
+        public Player Me { get; private set; }
+        public Player Opponent { get; private set; }
 
         // VISUALS
         public event Action UI_InitializeZones;
@@ -44,10 +46,38 @@ namespace BrawlTCG_alpha.Logic
         public Player ActiveStageCardOwner;
         bool _bottomPlayerTurn = false;
 
-        public Game(Player playerOne, Player playerTwo)
+        public Game(Player player1, Player player2)
         {
-            BottomPlayer = playerOne;
-            TopPlayer = playerTwo;
+            // Determine opponent object
+            if (player1.IsMe)
+            {
+                Me = player1;
+                BottomPlayer = player1;
+                Opponent = player2;
+                TopPlayer = player2;
+            }
+            else
+            {
+                Me = player2;
+                BottomPlayer = player2;
+                Opponent = player1;
+                TopPlayer = player1;
+            }
+
+            // Host always starts
+            if (player1.IsHost)
+            {
+                ActivePlayer = player1;
+                InactivePlayer = player2;
+                _bottomPlayerTurn = true;
+            }
+            else
+            {
+                ActivePlayer = player2;
+                InactivePlayer = player1;
+                _bottomPlayerTurn = false;
+            }
+
         }
         public void Prepare()
         {
@@ -55,7 +85,7 @@ namespace BrawlTCG_alpha.Logic
             UI_InitializeZones.Invoke();
 
             // Define Players
-            RandomizeStartingPlayer();
+            //RandomizeStartingPlayer(); // host always starts
 
             // Initialize Decks Visually
             UI_Multi_InitializeDeckPiles.Invoke();
@@ -72,8 +102,8 @@ namespace BrawlTCG_alpha.Logic
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
             {
-                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
-                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardByName("Essence"));
+                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0)); // 0 is essence card
+                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0));
             }
             // update cards in essence fields
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
@@ -81,6 +111,9 @@ namespace BrawlTCG_alpha.Logic
             // Disable cards in essence zones
             UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.EssenceField, false);
             UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.EssenceField, false);
+
+            // only show your own cards
+            ShowCards();
         }
         void DrawStartingHand(Player player, int nCards)
         {
@@ -108,7 +141,7 @@ namespace BrawlTCG_alpha.Logic
         }
         public void ShowCards()
         {
-            UI_ShowCards(ActivePlayer, true);
+            UI_ShowCards(Me, true);
         }
 
         public void SwitchTurn()
@@ -133,10 +166,8 @@ namespace BrawlTCG_alpha.Logic
             // Reset Variables
             ActivePlayer.PlayedEssenceCardThisTurn(false);
             // Hide Enemy Hand and Disable it
-            UI_ShowCards(InactivePlayer, false);
             UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
             // Show Player Hand and Enable it
-            UI_ShowCards(ActivePlayer, true);
             UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
             // Enable all the cards on the field
             UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);

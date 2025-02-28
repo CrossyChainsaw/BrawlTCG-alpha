@@ -23,10 +23,14 @@ namespace BrawlTCG_alpha.Logic
         public List<Card> PlayingField { get; private set; }
         public List<Card> DiscardPile { get; private set; }
         public List<Card> EssenceField { get; private set; }
+        public bool IsHost { get; private set; }
+        public bool IsMe { get; private set; }
+
         bool _playedEssenceCardThisTurn = false;
 
+
         // Methods
-        public Player(string name, List<Card> deck)
+        public Player(string name, List<Card> deck, bool isHost, bool isMe)
         {
             Name = name;
             Health = STARTING_HEALTH;
@@ -36,7 +40,8 @@ namespace BrawlTCG_alpha.Logic
             PlayingField = new List<Card>();
             DiscardPile = new List<Card>();
             EssenceField = new List<Card>();
-            ShuffleDeck();
+            IsHost = isHost;
+            IsMe = isMe;
         }
         public void ShuffleDeck()
         {

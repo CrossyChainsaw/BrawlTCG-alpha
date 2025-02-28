@@ -79,8 +79,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public static void GenerateMatrix(object target, Card card, Game game)
         {
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardByName("Matrix");
+            // first give the player essence before playing it!
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(102); // #102: Matrix
             StageCard card2 = generatedCard;
+            game.ActivePlayer.GainEssence(card2.Cost);
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
 

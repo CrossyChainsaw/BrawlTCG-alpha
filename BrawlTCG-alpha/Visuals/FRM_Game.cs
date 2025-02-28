@@ -6,8 +6,12 @@ using BrawlTCG_alpha.Logic.Cards;
 using BrawlTCG_alpha.Visuals;
 using Microsoft.VisualBasic.Devices;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Packaging;
+using System.Net.Sockets;
 using System.Numerics;
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.Policy;
 using System.Xml.Linq;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
@@ -24,46 +28,147 @@ namespace BrawlTCG_alpha
         Color _gameBackgroundColor = Color.MidnightBlue;
         Game _game;
 
-        // Methods & Events
-        internal FRM_Game(Player player1, Player player2)
+        // Networking
+        private TcpClient _client;
+        private NetworkStream _stream;
+        private StreamReader _reader;
+        private StreamWriter _writer;
+        private bool _isHost, _myTurn;
+
+        // Methods
+
+        // For Host
+        internal FRM_Game(TcpListener host, TcpClient client, Player hostPlayer, Player peerPlayer)
         {
+            // setup
             InitializeComponent();
-            _game = new Game(player1, player2);
+            _isHost = true;
+            _myTurn = true;
+            this.Text = "BrawlTCG Host";
+
+            // Setup Client
+            _client = client;
+            _stream = client.GetStream();
+            _reader = new StreamReader(_stream);
+            _writer = new StreamWriter(_stream) { AutoFlush = true };
+
+            // SETUP GAME
+            _game = new Game(hostPlayer, peerPlayer);
+            SetupBoard(_game);
+            _game.Prepare();
+            _game.Start();
+
+            // Start listening for incoming messages
+            Task.Run(() => ListenForMessages());
+        }
+
+        // For Peer
+        internal FRM_Game(TcpClient client, Player hostPlayer, Player peerPlayer)
+        {
+            // setup
+            InitializeComponent();
+            _isHost = true;
+            _myTurn = true;
+            this.Text = "BrawlTCG Peer";
+
+            // Setup Client
+            _client = client;
+            _stream = client.GetStream();
+            _reader = new StreamReader(_stream);
+            _writer = new StreamWriter(_stream) { AutoFlush = true };
+
+            // SETUP GAME
+            _game = new Game(peerPlayer, hostPlayer);
+            SetupBoard(_game);
+            _game.Prepare();
+            _game.Start();
+
+            // Start listening for incoming messages
+            Task.Run(() => ListenForMessages());
+        }
+
+        void SetupBoard(Game game)
+        {
             BackColor = _gameBackgroundColor; // background color
 
             // Give all the functions to the game class so that the game class controls the entire game.
             // Single
-            _game.UI_InitializeZones += InitializeZones;
-            _game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
-            _game.UI_EnableCardsInZone += EnableCardsInZone;
-            _game.UI_ShowCards += ShowCards;
-            _game.UI_InitializeCardsInHand += InitializeCardsInHand;
-            _game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
-            _game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
-            _game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
-            _game.UI_UntapPlayerCards += UntapPlayerCards;
-            _game.UI_AddCardToHandZone += AddCardToHandZone;
-            _game.UI_PlayStageCard += PlayStageCard;
+            game.UI_InitializeZones += InitializeZones;
+            game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
+            game.UI_EnableCardsInZone += EnableCardsInZone;
+            game.UI_ShowCards += ShowCards;
+            game.UI_InitializeCardsInHand += InitializeCardsInHand;
+            game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
+            game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
+            game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
+            game.UI_UntapPlayerCards += UntapPlayerCards;
+            game.UI_AddCardToHandZone += AddCardToHandZone;
+            game.UI_PlayStageCard += PlayStageCard;
             // Multi
-            _game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
+            game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
             // Non-Player
-            _game.UI_PopUpNotification += (message) => MessageBox.Show(message);
+            game.UI_PopUpNotification += (message) => MessageBox.Show(message);
         }
-        // Events
-        private void FRM_PlayingField_Load(object sender, EventArgs e)
+
+
+        // Networking Methods
+
+        private void SendMessageToServer(string message)
         {
-            _game.Prepare();
-            _game.Start();
-        }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Space)
+            try
             {
-                _game.SwitchTurn();
-                _game.StartTurn();
+                if (_game.ActivePlayer == _game.Me)
+                {
+                    if (_writer != null)
+                    {
+                        _writer.WriteLine(message);
+                    }
+                }
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to send message: {ex.Message}");
+            }
         }
+
+        // Methods
+        async Task ListenForMessages()
+        {
+            while (true)
+            {
+                string message = await _reader.ReadLineAsync();  // Use async/await here for non-blocking
+                if (message != null)
+                {
+                    string[] parts = message.Split(':');
+
+                    if (parts[0] == "SWITCH_TURN")
+                    {
+                        // Use Invoke to safely update the UI from the background thread
+                        this.Invoke((Action)(() =>
+                        {
+                            SwitchTurn();
+                        }));
+                    }
+                    else if (parts[0] == "PLAY_CARD") // PLAY_CARD:HAND_INDEX:<hand-index>:TARGET_ZONE:<target-zone>
+                    {
+                        if (parts[4] == ZoneTypes.EssenceField.ToString())
+                        {
+                            int handIndex = Convert.ToInt32(parts[2]);
+                            Card card = _game.Opponent.Hand[handIndex];
+                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, card);
+                            ZoneControl zone = GetMyZone(ZoneTypes.EssenceField, _game.Opponent);
+                            this.Invoke((Action)(() =>
+                            {
+                                PlayEssenceCard(_game.Opponent, card, oldCC, zone);
+                            }));
+                        }
+                    }
+                }
+            }
+        }
+
+
+
 
 
         // Inside Game.cs
@@ -174,6 +279,15 @@ namespace BrawlTCG_alpha
                     Location = new Point(x, y)
                 };
 
+                // indicate turn
+                if (zone.ZoneType == ZoneTypes.PlayerInfo)
+                {
+                    if (zone.Owner == _game.ActivePlayer)
+                    {
+                        zone.BackColor = Color.Green;
+                    }
+                }
+
                 Zones.Add(zone);
                 this.Controls.Add(zone);
             }
@@ -192,7 +306,7 @@ namespace BrawlTCG_alpha
                     for (int i = 0; i < player.Deck.Count; i++)
                     {
                         Card card = player.Deck[i];
-                        CardControl cardControl = CreateCardControl(player, zone, card, false, extraPaddingY: i * 2);
+                        CardControl cardControl = CreateCardControl(player, zone, card, false, extraPaddingY: i * 1);
 
                         AddCardControl(cardControl, zone);
                     }
@@ -674,13 +788,16 @@ namespace BrawlTCG_alpha
             {
                 if (!player.PlayedEssenceCardThisTurn())
                 {
-                    // Play Card
-                    CardControl essenceCardControl = PlayCardInZone(player, card, cardControlOld, essenceZone);
-                    // Disable new Essence Card
-                    essenceCardControl.Enabled = false;
-                    // Arrange Cards
-                    ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
-                    ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+                    // get card index before removing it
+                    int handIndex = player.Hand.IndexOf(card);
+
+                    PlayEssenceCard(player, card, cardControlOld, essenceZone);
+
+                    // Communicate to opponent
+                    string msg = $"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.EssenceField}";
+                    MessageBox.Show(msg);
+                    SendMessageToServer(msg);
+
                     return true;
                 }
                 else
@@ -753,7 +870,6 @@ namespace BrawlTCG_alpha
             return false;
         }
 
-
         bool IsMouseInZone(ZoneControl zone)
         {
             Point mousePos = this.PointToClient(Cursor.Position);
@@ -810,7 +926,7 @@ namespace BrawlTCG_alpha
             UpdatePlayerInfo(player);
 
             return cardControl;
-        }
+        } // COMMUNICATE PLAY CARD
         void PlayStageCard(Player player, StageCard stageCard)
         {
             // Find stage zone
@@ -900,7 +1016,7 @@ namespace BrawlTCG_alpha
                 targetLegend.StackCard(battleCard);
                 // create the new CardControl
                 CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
-                
+
                 // Add to UI
                 Controls.Add(battleCardControl);
                 targetCardControl.CardsControls.Add(battleCardControl);
@@ -940,6 +1056,42 @@ namespace BrawlTCG_alpha
             cardControl.SetCanDrag(false);
             return cardControl;
         }
+
+        // COMMUNICATION PROOF METHODS
+        void SwitchTurn()
+        {
+            _game.SwitchTurn();
+            _game.StartTurn();
+
+            // Update UI (turn indication)
+            ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, _game.ActivePlayer);
+            zone.BackColor = Color.Green;
+
+            ZoneControl zone2 = GetMyZone(ZoneTypes.PlayerInfo, _game.InactivePlayer);
+            zone2.BackColor = SystemColors.ControlDarkDark;
+        }
+        void PlayEssenceCard(Player player, Card card, CardControl cardControlOld, ZoneControl essenceZone)
+        {
+            // Play Card
+            CardControl essenceCardControl = PlayCardInZone(player, card, cardControlOld, essenceZone);
+            // Disable new Essence Card
+            essenceCardControl.Enabled = false;
+            // Arrange Cards
+            ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+        }
+
+        // Events
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Space && _game.Me == _game.ActivePlayer)
+            {
+                // Send END_TURN to the server
+                SendMessageToServer("SWITCH_TURN");
+                SwitchTurn();
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        } // COMMUNICATION !
     }
 
 }

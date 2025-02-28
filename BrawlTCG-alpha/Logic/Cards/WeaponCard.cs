@@ -31,9 +31,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Weapons Weapon { get; internal set; }
 
         // Methods
-        public WeaponCard(string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null) : base(name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
+            ID = id;
             Name = name;
             Cost = cost;
             Description = GetWeaponCardDescription(weapon);
@@ -70,7 +71,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public override Card Clone()
         {
-            return new WeaponCard(Name, Cost, Element, Image, Weapon, StartTurnEffect, EndTurnEffect, WhenPlayedEffect);
+            return new WeaponCard(ID, Name, Cost, Element, Image, Weapon, StartTurnEffect, EndTurnEffect, WhenPlayedEffect);
         }
     }
 }

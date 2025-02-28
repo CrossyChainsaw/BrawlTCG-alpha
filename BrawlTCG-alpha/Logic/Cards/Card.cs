@@ -21,6 +21,7 @@ namespace BrawlTCG_alpha.Logic
 {
     internal abstract class Card
     {
+        public int ID {  get; internal set; }
         public string Name { get; internal set; }
         public int Cost { get; internal set; }
         public string Description { get; internal set; }
@@ -42,8 +43,9 @@ namespace BrawlTCG_alpha.Logic
         static Color ArcticColor = Color.LightCyan;
 
 
-        public Card(string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null)
+        public Card(int id, string name, int cost, Elements element, Image image, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null)
         {
+            ID = id;
             Name = name;
             Cost = cost;
             Element = element;

@@ -39,19 +39,22 @@ namespace BrawlTCG_alpha.Logic.Cards
 
             // check if the element of the weapon you need for this attack is the same as the element of the legend
             int elementalDamageBoost = 0;
-            foreach (WeaponCard weaponCard in attackingLegend.StackedCards)
+            foreach (Card card in attackingLegend.StackedCards)
             {
-                int requiredMatches = attack.WeaponOneAmount;
-                int foundMatches = 0;
-                if (weaponCard.Weapon == attack.WeaponOne)
+                if (card is WeaponCard weaponCard)
                 {
-                    if (weaponCard.Element == attackingLegend.Element)
+                    int requiredMatches = attack.WeaponOneAmount;
+                    int foundMatches = 0;
+                    if (weaponCard.Weapon == attack.WeaponOne)
                     {
-                        foundMatches++;
-                        if (foundMatches == requiredMatches)
+                        if (weaponCard.Element == attackingLegend.Element)
                         {
-                            elementalDamageBoost += requiredMatches;
-                            break;
+                            foundMatches++;
+                            if (foundMatches == requiredMatches)
+                            {
+                                elementalDamageBoost += requiredMatches;
+                                break;
+                            }
                         }
                     }
                 }
@@ -240,12 +243,12 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            Card card = CardCatalogue.GetCardByName("BouncyBomb");
+            Card card = CardCatalogue.GetCardById(500); // #500: Bouncy Bomb
             GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
         }, instaEffect: true);
         public static Attack PlagueKnight_GrabHealingPotion = new Attack("Grab Healing Potion", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            Card card = CardCatalogue.GetCardByName("VialOfCrows");
+            Card card = CardCatalogue.GetCardById(501); // #501: Vial of Crows 
             GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
         }, instaEffect: true);
     }
