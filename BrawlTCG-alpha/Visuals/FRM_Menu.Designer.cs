@@ -53,7 +53,7 @@
             // 
             // TB_Name
             // 
-            TB_Name.Location = new Point(62, 24);
+            TB_Name.Location = new Point(61, 24);
             TB_Name.Name = "TB_Name";
             TB_Name.Size = new Size(125, 27);
             TB_Name.TabIndex = 0;

@@ -162,6 +162,39 @@ namespace BrawlTCG_alpha
                                 PlayEssenceCard(_game.Opponent, card, oldCC, zone);
                             }));
                         }
+                        else if (parts[4] == ZoneTypes.Stage.ToString())
+                        {
+                            int handIndex = Convert.ToInt32(parts[2]);
+                            Card card = _game.Opponent.Hand[handIndex];
+                            this.Invoke((Action)(() =>
+                            {
+                                PlayStageCard(_game.Opponent, (StageCard)card);
+                            }));
+                        }
+                        else if (parts[4] == ZoneTypes.PlayingField.ToString())
+                        {
+                            int handIndex = Convert.ToInt32(parts[2]);
+                            LegendCard legendCard = (LegendCard)_game.Opponent.Hand[handIndex];
+                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, legendCard);
+                            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
+                            this.Invoke((Action)(() =>
+                            {
+                                PlayLegendCard(_game.Opponent, legendCard, oldCC, zone);
+                            }));
+                        }
+                        else if (parts[3] == "TARGET_LEGEND")
+                        {
+                            int handIndex = Convert.ToInt32(parts[2]);
+                            int indexCC = Convert.ToInt32(parts[4]);
+                            ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
+                            CardControl legendCC = playZone.CardsControls[indexCC];
+                            WeaponCard weaponCard = (WeaponCard)_game.Opponent.Hand[handIndex];
+                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, weaponCard);
+                            this.Invoke((Action)(() =>
+                            {
+                                PlayWeaponCard(_game.Opponent, (LegendCard)legendCC.Card, weaponCard, oldCC);
+                            }));
+                        }
                     }
                 }
             }
@@ -669,6 +702,7 @@ namespace BrawlTCG_alpha
                             break;
                         }
                     }
+
                     // if none, return a failed drag
                     if (targetCardControl == null)
                     {
@@ -680,29 +714,16 @@ namespace BrawlTCG_alpha
                     {
                         if (legendCard.HasWeapon(weapon))
                         {
-                            // Stack Card
-                            legendCard.StackCard(weapon);
-                            player.PlayCard(weapon); // play in memory
-                            UpdatePlayerInfo(player); // update essence
+                            // get card index before removing it
+                            int handIndex = player.Hand.IndexOf(weapon);
+                            int fieldIndexCC = playingFieldZone.CardsControls.IndexOf(targetCardControl);
 
-                            // play in UI
-                            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-                            RemoveCardControl(cardControlOld, handZone); // remove from hand
+                            // Play card
+                            PlayWeaponCard(player, legendCard, weapon, cardControlOld);
 
-                            // Find the legend card
-                            CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
-                                                                                                                        // Create a weapon card behind the legend
-                            CardControl cardControlNew = CreateCardControl(player, legendCardControl, weapon, legendCard);
+                            // communicate to opponent
+                            SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}");
 
-                            // Add to UI
-                            Controls.Add(cardControlNew);
-                            legendCardControl.CardsControls.Add(cardControlNew);
-
-                            // Reorder Z-Layer Stacked Cards
-                            ReorderZLayer(legendCardControl);
-
-                            // Rearrange cards in hand
-                            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
                             return true;
                         }
                         else
@@ -718,17 +739,6 @@ namespace BrawlTCG_alpha
             }
             return false;
         }
-        /// <summary>Reorders the Z-Layers of a legend's stacked cards</summary>
-        void ReorderZLayer(CardControl legendCardControl)
-        {
-            for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
-            {
-                CardControl cardControl = legendCardControl.CardsControls[i]; // battle or wep card
-                cardControl.BringToFront();
-            }
-            // put the legend in front of the weapon
-            legendCardControl.BringToFront();
-        }
         bool TryPlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld)
         {
             ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
@@ -739,14 +749,15 @@ namespace BrawlTCG_alpha
                     // are there already 5?
                     if (playZone.CardsControls.Count < 5)
                     {
-                        // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
-                        legendCard.UI_BurnWeaponCard += BurnWeaponCard;
-                        // Play Card
-                        CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
-                        // when played effect
-                        legendCard.OnPlayedEffect(null, null, _game);
-                        // Arrange Cards
-                        ArrangeCardsInPlayingField(player);
+                        // get card index before removing it
+                        int handIndex = player.Hand.IndexOf(legendCard);
+
+                        // Play the Card
+                        PlayLegendCard(player, legendCard, cardControlOld, playZone);
+
+                        // communicate to opponent
+                        SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.PlayingField}");
+
                         return true;
                     }
                     else
@@ -761,16 +772,24 @@ namespace BrawlTCG_alpha
             }
             return false;
         }
-        bool TryPlayStageCard(Player player, StageCard stageCard, CardControl cardControl)
+        bool TryPlayStageCard(Player player, Card card, CardControl cardControl)
         {
             // Find stage zone
             ZoneControl stageZone = GetStageZone();
 
             if (IsMouseInZone(stageZone))
             {
-                if (player.Essence >= stageCard.Cost)
+                if (player.Essence >= card.Cost)
                 {
-                    PlayStageCard(player, stageCard);
+                    // get card index before removing it
+                    int handIndex = player.Hand.IndexOf(card);
+
+                    // play the stage card
+                    PlayStageCard(player, (StageCard)card);
+
+                    // communicate to opponent
+                    SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.Stage}");
+
                     return true;
                 }
                 else
@@ -791,12 +810,11 @@ namespace BrawlTCG_alpha
                     // get card index before removing it
                     int handIndex = player.Hand.IndexOf(card);
 
+                    // play the essence card
                     PlayEssenceCard(player, card, cardControlOld, essenceZone);
 
                     // Communicate to opponent
-                    string msg = $"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.EssenceField}";
-                    MessageBox.Show(msg);
-                    SendMessageToServer(msg);
+                    SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.EssenceField}");
 
                     return true;
                 }
@@ -869,6 +887,18 @@ namespace BrawlTCG_alpha
             }
             return false;
         }
+        /// <summary>Reorders the Z-Layers of a legend's stacked cards</summary>
+        static void ReorderZLayer(CardControl legendCardControl)
+        {
+            for (int i = legendCardControl.CardsControls.Count - 1; i >= 0; i--)
+            {
+                CardControl cardControl = legendCardControl.CardsControls[i]; // battle or wep card
+                cardControl.BringToFront();
+            }
+            // put the legend in front of the weapon
+            legendCardControl.BringToFront();
+        }
+
 
         bool IsMouseInZone(ZoneControl zone)
         {
@@ -927,42 +957,6 @@ namespace BrawlTCG_alpha
 
             return cardControl;
         } // COMMUNICATE PLAY CARD
-        void PlayStageCard(Player player, StageCard stageCard)
-        {
-            // Find stage zone
-            ZoneControl stageZone = GetStageZone();
-
-            if (_game.ActiveStageCard != null)
-            {
-                MoveOldStageCardToDiscardPile(stageZone);
-            }
-
-            // Play the card in the zone on screen
-            CardControl stageCardControl = PlayCardInStageZone(player, stageCard);
-            // set the card in game memory
-            _game.SetStageCard(player, stageCard);
-            // Disable Drag
-            stageCardControl.SetCanDrag(false);
-
-            // Local Functions
-            void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
-            {
-                // Find CardControl
-                CardControl stageCardCardControl = stageZone.CardsControls[0];
-                // Remove from UI
-                RemoveCardControl(stageCardCardControl, stageZone);
-
-                // Add card to discard pile
-                StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
-                Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
-                _game.AddCardToDiscardPile(oldOwner, oldStageCard);
-
-                // add to discard pile visually
-                ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
-                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
-                AddCardControl(stageCardCardControl, discardPileZone);
-            }
-        }
         CardControl PlayCardInStageZone(Player player, StageCard card)
         {
             // Find stage zone
@@ -1057,7 +1051,7 @@ namespace BrawlTCG_alpha
             return cardControl;
         }
 
-        // COMMUNICATION PROOF METHODS
+        // COMMUNICATION-READY METHODS
         void SwitchTurn()
         {
             _game.SwitchTurn();
@@ -1078,6 +1072,80 @@ namespace BrawlTCG_alpha
             essenceCardControl.Enabled = false;
             // Arrange Cards
             ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+        }
+        void PlayStageCard(Player player, StageCard stageCard)
+        {
+            // Find stage zone
+            ZoneControl stageZone = GetStageZone();
+
+            if (_game.ActiveStageCard != null)
+            {
+                MoveOldStageCardToDiscardPile(stageZone);
+            }
+
+            // Play the card in the zone on screen
+            CardControl stageCardControl = PlayCardInStageZone(player, stageCard);
+            // set the card in game memory
+            _game.SetStageCard(player, stageCard);
+            // Disable Drag
+            stageCardControl.SetCanDrag(false);
+
+            // Local Functions
+            void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
+            {
+                // Find CardControl
+                CardControl stageCardCardControl = stageZone.CardsControls[0];
+                // Remove from UI
+                RemoveCardControl(stageCardCardControl, stageZone);
+
+                // Add card to discard pile
+                StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
+                Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
+                _game.AddCardToDiscardPile(oldOwner, oldStageCard);
+
+                // add to discard pile visually
+                ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
+                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
+                AddCardControl(stageCardCardControl, discardPileZone);
+            }
+        }
+        void PlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld, ZoneControl playZone)
+        {
+            // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
+            legendCard.UI_BurnWeaponCard += BurnWeaponCard;
+            // Play Card
+            CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
+            // when played effect
+            legendCard.OnPlayedEffect(null, null, _game);
+            // Arrange Cards
+            ArrangeCardsInPlayingField(player);
+            // Arrange Cards in hand
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+        }
+        void PlayWeaponCard(Player player, LegendCard legendCard, WeaponCard weapon, CardControl cardControlOld)
+        {
+            // Stack Card
+            legendCard.StackCard(weapon);
+            player.PlayCard(weapon); // play in memory
+            UpdatePlayerInfo(player); // update essence
+
+            // play in UI
+            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+            RemoveCardControl(cardControlOld, handZone); // remove from hand
+
+            // Find the legend card
+            CardControl legendCardControl = GetCardControl(player, ZoneTypes.PlayingField, legendCard); // first find the legend control
+            CardControl cardControlNew = CreateCardControl(player, legendCardControl, weapon, legendCard); // Create a weapon card behind the legend
+
+            // Add to UI
+            Controls.Add(cardControlNew);
+            legendCardControl.CardsControls.Add(cardControlNew);
+
+            // Reorder Z-Layer Stacked Cards
+            ReorderZLayer(legendCardControl);
+
+            // Rearrange cards in hand
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
         }
 
