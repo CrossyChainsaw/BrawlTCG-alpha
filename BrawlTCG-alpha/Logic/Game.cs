@@ -181,7 +181,7 @@ namespace BrawlTCG_alpha.Logic
             {
                 if (ActiveStageCard.StartTurnEffect != null)
                 {
-                    ActiveStageCard.StartTurnEffect.Invoke(legends);
+                    ActiveStageCard.StartTurnEffect.Invoke(legends, null, this); 
                 }
             }
             // burn damage

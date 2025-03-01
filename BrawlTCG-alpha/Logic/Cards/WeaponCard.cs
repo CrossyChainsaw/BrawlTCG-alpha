@@ -18,6 +18,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         Bow,
         Gauntlets,
         Scythe,
+        Sword,
         Cannon,
         Orb,
         Greatsword,
@@ -31,7 +32,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Weapons Weapon { get; internal set; }
 
         // Methods
-        public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon, Action<object>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon, Action<object, Card, Game>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             // Card
             ID = id;

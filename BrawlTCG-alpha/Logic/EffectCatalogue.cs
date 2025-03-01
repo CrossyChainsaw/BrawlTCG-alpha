@@ -9,7 +9,7 @@ namespace BrawlTCG_alpha.Logic.Cards
     internal class EffectCatalogue
     {
         // Start Turn Effect
-        public static void MustafarEffect(object target)
+        public static void MustafarEffect(object target, Card card, Game game)
         {
             if (target is List<LegendCard> legends)
             {
@@ -23,7 +23,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         }
 
-        public static void FangwildEffect(object target)
+        public static void FangwildEffect(object target, Card card, Game game)
         {
             if (target is List<LegendCard> legends)
             {
@@ -77,7 +77,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-        public static void GenerateMatrix(object target, Card card, Game game)
+        public static void GenerateAndPlayMatrix(object target, Card card, Game game)
         {
             // first give the player essence before playing it!
             StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(102); // #102: Matrix
@@ -90,6 +90,22 @@ namespace BrawlTCG_alpha.Logic.Cards
             //game.AddCardToHandZone(game.ActivePlayer, card2);
             //// flip to show
             //game.ShowCards();
+        }
+
+        public static void GenerateAndPlayWorkshop(object target, Card card, Game game)
+        {
+            // first give the player essence before playing it!
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(103); // #103: Workshop
+            StageCard card2 = generatedCard;
+            game.ActivePlayer.GainEssence(card2.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, card2);
+            game.PlayStageCard(card2);
+        }
+
+        public static void GenerateRandomCard(object target, Card card, Game game)
+        {
+            Card generatedCard = CardCatalogue.GetRandomCard();
+            game.AddCardToHandZone(game.ActivePlayer, generatedCard);
         }
 
         public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)

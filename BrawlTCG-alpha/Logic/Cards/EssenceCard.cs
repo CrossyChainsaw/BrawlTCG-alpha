@@ -17,9 +17,9 @@ namespace BrawlTCG_alpha.Logic.Cards
             Description = "Start Turn: Gives the player 1 Essence";
             Element = element;
             Image = image;
-            StartTurnEffect = (target) => GivePlayerEssence(target);
+            StartTurnEffect = (target, _, __) => GivePlayerEssence(target, _, __);
         }
-        void GivePlayerEssence(object target)
+        void GivePlayerEssence(object target, Card _, Game __)
         {
             if (target is Player player)
             {

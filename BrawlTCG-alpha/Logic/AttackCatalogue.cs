@@ -186,6 +186,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
+        public static Attack Hammer_Gimp = new Attack("Hammer Gimp", int.MaxValue, Weapons.Hammer, 3, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            OneHitKO(attacker, target, attack);
+        }, weaponOneBurnAmount: 2);
 
         public static Attack Axe_Swing = new Attack("Axe Swing", 1, Weapons.Axe, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
@@ -201,6 +205,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
+
 
 
 
@@ -251,5 +256,35 @@ namespace BrawlTCG_alpha.Logic.Cards
             Card card = CardCatalogue.GetCardById(501); // #501: Vial of Crows 
             GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
         }, instaEffect: true);
+        public static Attack Yumiko_GrabOrbs = new Attack("Spawn Orbs", -1000, Weapons.Any, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            Card card = CardCatalogue.GetCardById(504); // #504: Orb
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+        }, instaEffect: true);
+        public static Attack WuShang_DownSig = new Attack("Gauntlet Dsig", -2, Weapons.Gauntlets, 2, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        }, multiHit: true);
+        public static Attack NinjaSpirit_PhantomSlash = new Attack("Phantom Slash", 0, Weapons.Sword, 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+        public static Attack ForestSpirit_Explode = new Attack("Explode", 1, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int recoil = int.MaxValue;
+            DefaultAttack(attacker, target, attack);
+            attacker.LoseHealth(recoil);
+        });
+        public static Attack ForestSpirit_Heal = new Attack("Heal", 1, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int healAmount = attacker.Power;
+            LegendCard legend = (LegendCard)target;
+            legend.GainHealth(healAmount);
+
+            int recoil = int.MaxValue;
+            attacker.LoseHealth(recoil);
+        }, friendlyFire: true);
     }
 }
