@@ -256,11 +256,17 @@ namespace BrawlTCG_alpha.Visuals
                 // Add click event
                 attackButton.Click += (sender, e) =>
                 {
-                    if (!_game.SomeoneIsAttacking)
+                    if (this.OriginalCardControl.Card is LegendCard legend && legend.AttackedThisTurn == true)
+                    {
+                        MessageBox.Show("This legend already attacked this turn");
+                    }
+                    else if (!_game.SomeoneIsAttacking)
                     {
                         _game.StartAttack(attack);
                         OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
                         Player otherPlayer = _game.GetOtherPlayer(Owner);
+                        FRM_Game parentForm = (FRM_Game)this.FindForm();
+
 
                         // THESE ATTACKS DON'T ATTACK
                         if (attack.InstaEffect)
@@ -270,8 +276,10 @@ namespace BrawlTCG_alpha.Visuals
 
                             // Attack
                             attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game); // send this as a msg
+
                             // Stop Attacking
-                            _game.StopAttack();
+                            StopAttacking();
+
                             // Remove Card
                             OnDetailedCardClicked();
 
@@ -286,15 +294,21 @@ namespace BrawlTCG_alpha.Visuals
 
                             // The thing
                             AttackThePlayer(legendCard, otherPlayer, attack); // send this as a msg
-                            _game.StopAttack();
 
                             // The message
                             NETWORK_SendMessage($"ATTACK_PLAYER:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_PLAYER_IS_HOST:{otherPlayer.IsHost}");
                         }
                         // PREPARE FOR A LEGEND ATTACK
+                        else if (attack.FriendlyFire == true)
+                        {
+                            ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
+                            foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
+                            {
+                                cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
+                            }
+                        }
                         else if (otherPlayer.PlayingField.Count > 0)
                         {
-                            FRM_Game parentForm = (FRM_Game)this.FindForm();
                             if (attack.MultiHit)
                             {
                                 // Attack Everyone
@@ -320,14 +334,6 @@ namespace BrawlTCG_alpha.Visuals
                                 {
                                     ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
                                     foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
-                                    {
-                                        cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
-                                    }
-                                }
-                                else if (attack.FriendlyFire == true)
-                                {
-                                    ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
-                                    foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
                                     {
                                         cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
                                     }
@@ -418,7 +424,7 @@ namespace BrawlTCG_alpha.Visuals
                 MessageBox.Show($"{otherPlayer.Name} has been defeated");
             }
             // Stop Attacking
-            _game.StopAttack();
+            StopAttacking();
             // Remove Card
             OnDetailedCardClicked();
         }
@@ -455,7 +461,7 @@ namespace BrawlTCG_alpha.Visuals
             enemyCardControl.CheckIfDead();
 
             // Stop Attacking
-            _game.StopAttack();
+            StopAttacking();
 
             // Remove Detailed card off screen
             OnDetailedCardClicked();
@@ -548,19 +554,35 @@ namespace BrawlTCG_alpha.Visuals
             this.Update();
             this.Dispose();
         }
-
+        void StopAttacking()
+        {
+            LegendCard legend = (LegendCard)this.OriginalCardControl.Card;
+            legend.AttackedThisTurn = true;
+            _game.StopAttack();
+        }
 
         // Events
         void OnClickCardControlDuringAttack(CardControl clickedCard)
         {
             if (_game.SomeoneIsAttacking)
             {
-                // Setup for the message
-                int fieldIndex = Owner.PlayingField.IndexOf(this.Card);
+                // Setup the message
                 Attack attack = _game.SelectedAttack;
-                int enemyFieldIndex = _game.InactivePlayer.PlayingField.IndexOf(clickedCard.Card);
+                int fieldIndex = Owner.PlayingField.IndexOf(this.Card);
+                int enemyFieldIndex;
+                if (attack.FriendlyFire)
+                {
+                    enemyFieldIndex = _game.ActivePlayer.PlayingField.IndexOf(clickedCard.Card);
+                }
+                else
+                {
+                    enemyFieldIndex = _game.InactivePlayer.PlayingField.IndexOf(clickedCard.Card);
+                }
 
+                // the actual attack
                 AttackLegendCard((LegendCard)this.Card, clickedCard);
+
+                // send the message
                 NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
             }
         } // COMMUNICATION FUNCTION

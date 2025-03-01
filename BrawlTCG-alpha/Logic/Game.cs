@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     internal class Game
     {
         // Fields
-        const int STARTING_ESSENCE = 1; // 1
+        const int STARTING_ESSENCE = 10; // 1
         const int STARTING_HAND_CARDS = 7; // 7
 
         // Properties
@@ -190,6 +190,12 @@ namespace BrawlTCG_alpha.Logic
                 legend.TakeBurnDamage();
             }
 
+            // Legends can attack again
+            foreach(LegendCard legend in legends)
+            {
+                legend.AttackedThisTurn = false;
+            }
+
             // Update legends information in playing field
             UI_UpdateCardControlInPlayingFieldInformation.Invoke();
         }
@@ -273,6 +279,18 @@ namespace BrawlTCG_alpha.Logic
             // ideally disable cards here
             SomeoneIsAttacking = true;
             SelectedAttack = attack;
+
+            // enable disable correct cards
+            if (attack.FriendlyFire)
+            {
+                UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
+                UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, false);
+            }
+            else
+            {
+                UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, false);
+                UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
+            }
         }
         public void StopAttack()
         {

@@ -23,7 +23,6 @@ namespace BrawlTCG_alpha.Logic.Cards
         public int Dexterity { get; internal set; }
         public int Defense { get; internal set; }
         public int Speed { get; internal set; }
-        public bool IsBurned { get; internal set; }
         public Weapons PrimaryWeapon { get; internal set; }
         public Weapons SecondaryWeapon { get; internal set; }
         public List<Card> StackedCards { get; internal set; }
@@ -34,6 +33,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Attack Attack3 { get; private set; }
         public Attack Attack4 { get; private set; }
         public bool IsTapped { get; private set; }
+        public bool IsBurned { get; internal set; } = false;
+        public bool AttackedThisTurn { get; set; } = false;
 
         public event Action<LegendCard, WeaponCard> UI_BurnWeaponCard;
         public event Action<LegendCard> UI_RearrangeMyStackedCards;
@@ -92,7 +93,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack4 = attack4;
             // Other
             StackedCards = new List<Card>();
-            IsBurned = false;
         }
 
         public override Card Clone()

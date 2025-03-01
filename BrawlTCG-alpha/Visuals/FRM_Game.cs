@@ -329,9 +329,19 @@ namespace BrawlTCG_alpha
                         }
 
                         // Find Target
-                        int targetFieldIndex = Convert.ToInt32(parts[6]);
-                        Card targetCard = _game.Me.PlayingField[targetFieldIndex];
-                        CardControl targetCC = GetCardControl(_game.Me, ZoneTypes.PlayingField, targetCard);
+                        CardControl targetCC;
+                        if (chosenAttack.FriendlyFire)
+                        {
+                            int targetFieldIndex = Convert.ToInt32(parts[6]);
+                            Card targetCard = _game.Opponent.PlayingField[targetFieldIndex]; // crash
+                            targetCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, targetCard);
+                        }
+                        else
+                        {
+                            int targetFieldIndex = Convert.ToInt32(parts[6]);
+                            Card targetCard = _game.Me.PlayingField[targetFieldIndex]; // crash
+                            targetCC = GetCardControl(_game.Me, ZoneTypes.PlayingField, targetCard);
+                        }
 
 
                         // ATTACK
