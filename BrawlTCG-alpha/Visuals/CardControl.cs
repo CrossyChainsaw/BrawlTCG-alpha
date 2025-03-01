@@ -454,6 +454,9 @@ namespace BrawlTCG_alpha.Visuals
 
             // CHECK IF DEAD
             enemyCardControl.CheckIfDead();
+
+            // stop attacking
+            _game.StopAttack();
         }
     }
 }
