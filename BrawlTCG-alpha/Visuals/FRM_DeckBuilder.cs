@@ -256,9 +256,15 @@ namespace BrawlTCG_alpha.Visuals
 
             try
             {
-                // Write the card names to the file
-                var cardNames = currentDeck.Select(card => card.Name).ToList();
-                File.WriteAllLines(deckFileName, cardNames);
+                // Assuming currentDeck is your list of cards and card.ID is an integer
+                List<int> cardIDs = currentDeck.Select(card => card.ID).ToList();
+
+                // Convert the integers to strings
+                List<string> cardIDStrings = cardIDs.Select(id => id.ToString()).ToList();
+
+                // Write the card IDs to the file
+                File.WriteAllLines(deckFileName, cardIDStrings);
+
 
                 // Display message and update the corresponding player status
                 if (isPlayer1Turn)
@@ -284,7 +290,6 @@ namespace BrawlTCG_alpha.Visuals
         private void UpdateStartGameButton()
         {
             // Check if both players have saved their decks
-            btnStartGame.Enabled = isPlayer1DeckSaved && isPlayer2DeckSaved;
         }
 
         private void BtnSwitchPlayer_Click(object sender, EventArgs e)

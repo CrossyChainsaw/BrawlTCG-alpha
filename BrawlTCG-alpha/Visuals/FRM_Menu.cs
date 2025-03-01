@@ -39,22 +39,6 @@ namespace BrawlTCG_alpha.Visuals
             MessageBox.Show("No");
         }
 
-        private void ConnectToServer()
-        {
-            try
-            {
-                _client = new TcpClient("127.0.0.1", 5000); // Connect to localhost server
-                NetworkStream stream = _client.GetStream();
-                _streamReader = new StreamReader(stream);
-                _streamWriter = new StreamWriter(stream) { AutoFlush = true };
-
-                MessageBox.Show("Connected to server!");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to connect to server: {ex.Message}");
-            }
-        }
         List<Card> ShuffleDeck(List<Card> deck)
         {
             Random rng = new Random();
