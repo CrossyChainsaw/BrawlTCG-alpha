@@ -113,7 +113,7 @@ namespace BrawlTCG_alpha
 
         // Networking Methods
 
-        private void SendMessageToServer(string message)
+        public void SendMessageToServer(string message)
         {
             try
             {
@@ -185,22 +185,165 @@ namespace BrawlTCG_alpha
                         else if (parts[3] == "TARGET_LEGEND")
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
-                            int indexCC = Convert.ToInt32(parts[4]);
-                            ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
-                            CardControl legendCC = playZone.CardsControls[indexCC];
-                            WeaponCard weaponCard = (WeaponCard)_game.Opponent.Hand[handIndex];
-                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, weaponCard);
-                            this.Invoke((Action)(() =>
+                            Card card = _game.Opponent.Hand[handIndex];
+
+                            // play wep card
+                            if (card is WeaponCard weaponCard)
                             {
-                                PlayWeaponCard(_game.Opponent, (LegendCard)legendCC.Card, weaponCard, oldCC);
-                            }));
+                                int indexCC = Convert.ToInt32(parts[4]);
+                                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
+                                CardControl legendCC = playZone.CardsControls[indexCC];
+                                CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, weaponCard);
+                                this.Invoke((Action)(() =>
+                                {
+                                    PlayWeaponCard(_game.Opponent, (LegendCard)legendCC.Card, weaponCard, oldCC);
+                                }));
+                            }
+                            // play battle card
+                            else if (card is BattleCard battleCard)
+                            {
+                                int indexCC = Convert.ToInt32(parts[4]); // card control index
+                                bool friendlyFire = bool.Parse(parts[6]);
+                                Player targetPlayer;
+                                ZoneControl targetZone;
+                                if (friendlyFire)
+                                {
+                                    targetPlayer = _game.Opponent;
+                                }
+                                else
+                                {
+                                    targetPlayer = _game.Me;
+                                }
+                                targetZone = GetMyZone(ZoneTypes.PlayingField, targetPlayer);
+                                CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, card);
+                                CardControl targetCC = targetZone.CardsControls[indexCC];
+
+                                this.Invoke((Action)(() =>
+                                {
+                                    PlayBattleCard(_game.Opponent, battleCard, oldCC, targetCC);
+                                }));
+                            }
                         }
+                    }
+                    else if (parts[0] == "ATTACK_PLAYER")
+                    {
+                        // Find legend
+                        int fieldIndex = Convert.ToInt32(parts[2]);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
+                        LegendCard legend = (LegendCard)legendCC.Card;
+
+                        // Find attack
+                        string correctAttackName = parts[4];
+                        Attack chosenAttack = null;
+                        foreach (Attack attack in legend.GetAttacks())
+                        {
+                            if (attack.Name == correctAttackName)
+                            {
+                                chosenAttack = attack;
+                            }
+                        }
+
+                        // perform the attack
+                        this.Invoke((Action)(() =>
+                        {
+                            legendCC.AttackThePlayer(legend, _game.Me, chosenAttack);
+                        }));
+                    }
+                    else if (parts[0] == "STATUS_ATTACK")
+                    {
+                        // Find legend
+                        int fieldIndex = Convert.ToInt32(parts[2]);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
+                        LegendCard legend = (LegendCard)legendCC.Card;
+
+                        // Find attack
+                        string correctAttackName = parts[4];
+                        Attack chosenAttack = null;
+                        foreach (Attack attack in legend.GetAttacks())
+                        {
+                            if (attack.Name == correctAttackName)
+                            {
+                                chosenAttack = attack;
+                            }
+                        }
+
+                        // perform the attack
+                        this.Invoke((Action)(() =>
+                        {
+                            chosenAttack.Effect.Invoke(legend, null, chosenAttack, _game.ActivePlayer, _game);
+                        }));
+                    }
+                    else if (parts[0] == "ATTACK_ALL_LEGENDS")
+                    {
+                        // Find legend
+                        int fieldIndex = Convert.ToInt32(parts[2]);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
+                        LegendCard legend = (LegendCard)legendCC.Card;
+
+                        // Find attack
+                        string correctAttackName = parts[4];
+                        Attack chosenAttack = null;
+                        foreach (Attack attack in legend.GetAttacks())
+                        {
+                            if (attack.Name == correctAttackName)
+                            {
+                                chosenAttack = attack;
+                            }
+                        }
+
+                        // perform the attack
+                        ZoneControl myPlayZone = GetMyZone(ZoneTypes.PlayingField, _game.Me);
+                        foreach (CardControl cc in myPlayZone.CardsControls.ToList())
+                        {
+                            if (cc.Card is LegendCard)
+                            {
+                                _game.StartAttack(chosenAttack);
+                                this.Invoke((Action)(() =>
+                                {
+                                    cc.AttackLegendCard(legend, cc);
+                                }));
+                                _game.StopAttack();
+                            }
+                        }
+                    }
+                    else if (parts[0] == "ATTACK_LEGEND") // NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
+                    {
+                        // Find attacker
+                        int fieldIndex = Convert.ToInt32(parts[2]);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
+                        LegendCard legend = (LegendCard)legendCC.Card;
+
+                        // Find attack
+                        string correctAttackName = parts[4];
+                        Attack chosenAttack = null;
+                        foreach (Attack attack in legend.GetAttacks())
+                        {
+                            if (attack.Name == correctAttackName)
+                            {
+                                chosenAttack = attack;
+                            }
+                        }
+
+                        // Find Target
+                        int targetFieldIndex = Convert.ToInt32(parts[6]);
+                        Card targetCard = _game.Me.PlayingField[targetFieldIndex];
+                        CardControl targetCC = GetCardControl(_game.Me, ZoneTypes.PlayingField, targetCard);
+
+
+                        // ATTACK
+                        _game.StartAttack(chosenAttack);
+                        this.Invoke((Action)(() =>
+                        {
+                            legendCC.AttackLegendCard(legend, targetCC);
+                        }));
                     }
                 }
             }
         }
-
-
 
 
 
@@ -838,6 +981,8 @@ namespace BrawlTCG_alpha
                 if (player.Essence >= battleCard.Cost)
                 {
                     CardControl targetCardControl = null;
+                    int fieldIndexCC = -1;
+                    bool friendlyFire = false;
                     if (battleCard.FriendlyFire)
                     {
                         // Try to get your own CardControl you are hovering over
@@ -846,6 +991,8 @@ namespace BrawlTCG_alpha
                             if (IsMouseOnCardControl(cardControl))
                             {
                                 targetCardControl = cardControl;
+                                fieldIndexCC = myPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
+                                friendlyFire = true;
                                 break;
                             }
                         }
@@ -858,12 +1005,14 @@ namespace BrawlTCG_alpha
                             if (IsMouseOnCardControl(cardControl))
                             {
                                 targetCardControl = cardControl;
+                                fieldIndexCC = enemyPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
+                                friendlyFire = false;
                                 break;
                             }
                         }
                     }
                     // Didn't find any CardControl
-                    if (targetCardControl == null)
+                    if (targetCardControl == null || fieldIndexCC == -1)
                     {
                         return false;
                     }
@@ -872,7 +1021,16 @@ namespace BrawlTCG_alpha
                     // Apply the effect
                     if (targetCardControl.Card is LegendCard)
                     {
+
+                        // get card index before removing it
+                        int handIndex = player.Hand.IndexOf(cardControlOld.Card);
+
+                        // play battle card
                         PlayBattleCard(player, battleCard, cardControlOld, targetCardControl);
+
+                        // Communicate to opponent
+                        SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}:FRIENDLY_FIRE:{friendlyFire}");
+
                         return true;
                     }
                     else
@@ -984,48 +1142,6 @@ namespace BrawlTCG_alpha
             // Return the new Control
             return cardControl;
         }
-        void PlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld, CardControl targetCardControl)
-        {
-            // Card Effect
-            LegendCard targetLegend = (LegendCard)targetCardControl.Card;
-            battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
-            targetCardControl.Invalidate();
-            targetCardControl.CheckIfDead();
-
-            // remove card from hand (and in DP for some cards)
-            player.PlayCard(battleCard);
-
-            // remove card from hand visually
-            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-            RemoveCardControl(cardControlOld, handZone);
-
-            // Add to UI and Zone visually
-            if (battleCard.OneTimeUse)
-            {
-                AddCardToDiscardPile(player, cardControlOld);
-            }
-            else
-            {
-                // stack the card
-                targetLegend.StackCard(battleCard);
-                // create the new CardControl
-                CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
-
-                // Add to UI
-                Controls.Add(battleCardControl);
-                targetCardControl.CardsControls.Add(battleCardControl);
-
-                // Reorder Z-Layer Stacked Cards
-                ReorderZLayer(targetCardControl);
-            }
-            cardControlOld.Enabled = false;
-
-            // Arrange
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-
-            // Update player info
-            UpdatePlayerInfo(player);
-        }
         /// <summary>Create a CardControl in a Zone</summary>
         CardControl CreateCardControl(Player player, ZoneControl zone, Card card, bool isOpen, int extraPaddingY = 0)
         {
@@ -1036,6 +1152,7 @@ namespace BrawlTCG_alpha
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
+            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             return cardControl;
         }
         /// <summary>Create a WeaponCardControl on top of a Legend</summary>
@@ -1047,6 +1164,7 @@ namespace BrawlTCG_alpha
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, weapon, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
+            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInfo;
             cardControl.SetCanDrag(false);
             return cardControl;
         }
@@ -1148,6 +1266,48 @@ namespace BrawlTCG_alpha
             // Rearrange cards in hand
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
         }
+        void PlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld, CardControl targetCardControl)
+        {
+            // Card Effect
+            LegendCard targetLegend = (LegendCard)targetCardControl.Card;
+            battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
+            targetCardControl.Invalidate();
+            targetCardControl.CheckIfDead();
+
+            // remove card from hand (and in DP for some cards)
+            player.PlayCard(battleCard);
+
+            // remove card from hand visually
+            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+            RemoveCardControl(cardControlOld, handZone);
+
+            // Add to UI and Zone visually
+            if (battleCard.OneTimeUse)
+            {
+                AddCardToDiscardPile(player, cardControlOld);
+            }
+            else
+            {
+                // stack the card
+                targetLegend.StackCard(battleCard);
+                // create the new CardControl
+                CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
+
+                // Add to UI
+                Controls.Add(battleCardControl);
+                targetCardControl.CardsControls.Add(battleCardControl);
+
+                // Reorder Z-Layer Stacked Cards
+                ReorderZLayer(targetCardControl);
+            }
+            cardControlOld.Enabled = false;
+
+            // Arrange
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+            // Update player info
+            UpdatePlayerInfo(player);
+        } // THIS ONE DOESNT WORK!!!!!!!!!!!!!!!
 
         // Events
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

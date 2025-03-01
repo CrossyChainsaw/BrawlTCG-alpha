@@ -37,6 +37,7 @@ namespace BrawlTCG_alpha.Visuals
         public event Action<CardControl> CardClicked; // Event to notify when this card is clicked
         public event Action<Player> UI_ArrangeCardsInPlayingField;
         public event Action<Player, CardControl> UI_AddCardToDiscardPile;
+        public event Action<Player> UI_UpdatePlayerInformation;
 
 
         // Methods
@@ -333,6 +334,7 @@ namespace BrawlTCG_alpha.Visuals
                     Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
                 };
                 legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
+                legendCardControl.NETWORK_SendMessage += frm.SendMessageToServer;
                 // UI
                 parentForm.Controls.Add(legendCardControl);
                 legendCardControl.BringToFront();
@@ -423,6 +425,35 @@ namespace BrawlTCG_alpha.Visuals
         {
             Card.IsOpen = !Card.IsOpen;
             Invalidate();
+        }
+
+        // THESE FUNCTIONS ARE FROM DCC AND AREN'T SUPOSED TO BE USED, EXCEPT FOR THE PLAYER THAT LISTENED TO A MESSAGE, THEY CAN TRIGGER THESE.
+        public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
+        {
+            // Attack
+            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            UI_UpdatePlayerInformation(otherPlayer);
+
+            // Notify
+            MessageBox.Show($"{otherPlayer.Name} just took damage");
+
+            // Check if dead
+            if (otherPlayer.Health <= 0)
+            {
+                MessageBox.Show($"{otherPlayer.Name} has been defeated");
+            }
+        }
+        public void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
+        {
+            LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
+
+            // Apply the Damage
+            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer, _game);
+            enemyCardControl.Invalidate();
+            enemyCardControl.Update();
+
+            // CHECK IF DEAD
+            enemyCardControl.CheckIfDead();
         }
     }
 }

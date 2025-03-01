@@ -26,6 +26,7 @@ namespace BrawlTCG_alpha.Visuals
         // Events
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<Player> UI_ArrangeCardsInPlayingField;
+        public event Action<string> NETWORK_SendMessage;
 
         public DetailedCardControl(Game game, Card card, Player owner, List<Player> players, CardControl originalCardControl, Action<Player> arrangeCards)
         {
@@ -264,18 +265,31 @@ namespace BrawlTCG_alpha.Visuals
                         // THESE ATTACKS DON'T ATTACK
                         if (attack.InstaEffect)
                         {
+                            // Setup for the message
+                            int fieldIndex = Owner.PlayingField.IndexOf(legendCard);
+
                             // Attack
-                            attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game);
+                            attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game); // send this as a msg
                             // Stop Attacking
                             _game.StopAttack();
                             // Remove Card
                             OnDetailedCardClicked();
+
+                            // The message
+                            NETWORK_SendMessage($"STATUS_ATTACK:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
                         }
                         // ATTACK THE PLAYER - This checks if // there are no cards enemy field // not a friendly fire attack // more than 0 damage (otherwise its probably status)
                         else if (otherPlayer.PlayingField.Count == 0 && attack.FriendlyFire == false && AttackCatalogue.CalculateDamage(legendCard, attack) > 0)
                         {
-                            AttackThePlayer(legendCard, otherPlayer, attack);
+                            // Setup for the message
+                            int fieldIndex = Owner.PlayingField.IndexOf(legendCard);
+
+                            // The thing
+                            AttackThePlayer(legendCard, otherPlayer, attack); // send this as a msg
                             _game.StopAttack();
+
+                            // The message
+                            NETWORK_SendMessage($"ATTACK_PLAYER:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_PLAYER_IS_HOST:{otherPlayer.IsHost}");
                         }
                         // PREPARE FOR A LEGEND ATTACK
                         else if (otherPlayer.PlayingField.Count > 0)
@@ -287,9 +301,15 @@ namespace BrawlTCG_alpha.Visuals
                                 ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
                                 foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls.ToList())
                                 {
+                                    // Setup for the message
+                                    int fieldIndex = Owner.PlayingField.IndexOf(legendCard);
+
                                     // Start Attacking
                                     _game.StartAttack(attack);
                                     AttackLegendCard(legendCard, cardControl);
+
+                                    // send msg
+                                    NETWORK_SendMessage($"ATTACK_ALL_LEGENDS:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
                                 }
                             }
                             else
@@ -383,24 +403,24 @@ namespace BrawlTCG_alpha.Visuals
                     }
                     return emojis;
                 }
-                void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
-                {
-                    // Attack
-                    attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game);
-                    UI_UpdatePlayerInformation(otherPlayer);
-                    // Notify
-                    MessageBox.Show($"{otherPlayer.Name} just took damage");
-                    // Check if dead
-                    if (otherPlayer.Health <= 0)
-                    {
-                        MessageBox.Show($"{otherPlayer.Name} has been defeated");
-                    }
-                    // Stop Attacking
-                    _game.StopAttack();
-                    // Remove Card
-                    OnDetailedCardClicked();
-                }
             }
+        }
+        public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
+        {
+            // Attack
+            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            UI_UpdatePlayerInformation(otherPlayer);
+            // Notify
+            MessageBox.Show($"{otherPlayer.Name} just took damage");
+            // Check if dead
+            if (otherPlayer.Health <= 0)
+            {
+                MessageBox.Show($"{otherPlayer.Name} has been defeated");
+            }
+            // Stop Attacking
+            _game.StopAttack();
+            // Remove Card
+            OnDetailedCardClicked();
         }
         int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
         {
@@ -436,6 +456,7 @@ namespace BrawlTCG_alpha.Visuals
 
             // Stop Attacking
             _game.StopAttack();
+
             // Remove Detailed card off screen
             OnDetailedCardClicked();
         }
@@ -534,9 +555,15 @@ namespace BrawlTCG_alpha.Visuals
         {
             if (_game.SomeoneIsAttacking)
             {
+                // Setup for the message
+                int fieldIndex = Owner.PlayingField.IndexOf(this.Card);
+                Attack attack = _game.SelectedAttack;
+                int enemyFieldIndex = _game.InactivePlayer.PlayingField.IndexOf(clickedCard.Card);
+
                 AttackLegendCard((LegendCard)this.Card, clickedCard);
+                NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
             }
-        }
+        } // COMMUNICATION FUNCTION
         void OnDetailedCardClicked()
         {
             if (_isRemoved) return; // Already removed, skip
