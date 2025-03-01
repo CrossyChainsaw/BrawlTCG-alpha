@@ -142,7 +142,7 @@ namespace BrawlTCG_alpha.Logic
         public void ShowCards()
         {
             UI_ShowCards(Me, true);
-            UI_ShowCards(Opponent, true);
+            //UI_ShowCards(Opponent, true);
         }
 
         public void SwitchTurn()
