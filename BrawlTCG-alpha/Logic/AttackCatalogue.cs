@@ -177,9 +177,9 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             TapEnemyCard(attacker, target, attack);
         });
-        public static Attack Any_BurnForCard = new Attack("Draw two Cards", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Any_BurnForThreeCard = new Attack("Draw two Cards", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            DrawCards(attacker, target, attack, activePlayer, game, nCards: 2);
+            DrawCards(attacker, target, attack, activePlayer, game, nCards: 3);
         }, instaEffect: true);
 
         public static Attack Hammer_Swing = new Attack("Hammer Swing", 1, Weapons.Hammer, 1, execute: (attacker, target, attack, activePlayer, game) =>

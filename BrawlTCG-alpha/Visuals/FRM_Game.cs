@@ -1227,6 +1227,7 @@ namespace BrawlTCG_alpha
             // Find stage zone
             ZoneControl stageZone = GetStageZone();
 
+            // discard old stage card
             if (_game.ActiveStageCard != null)
             {
                 MoveOldStageCardToDiscardPile(stageZone);
@@ -1234,10 +1235,22 @@ namespace BrawlTCG_alpha
 
             // Play the card in the zone on screen
             CardControl stageCardControl = PlayCardInStageZone(player, stageCard);
-            // set the card in game memory
+            // set the stage card in game memory
             _game.SetStageCard(player, stageCard);
             // Disable Drag
             stageCardControl.SetCanDrag(false);
+
+            // when played effect - (first get all cards on screen then do)
+            if (stageCard.WhenPlayedEffect != null)
+            {
+                List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
+                List<Card> allCards = l1.Concat(l2).ToList();
+                stageCard.WhenPlayedEffect.Invoke(allCards, stageCard, _game);
+            }
+
+            // update all cards
+            UpdateCardControlsInPlayingFieldInformation();
 
             // Local Functions
             void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
@@ -1251,6 +1264,13 @@ namespace BrawlTCG_alpha
                 StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
                 Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
                 _game.AddCardToDiscardPile(oldOwner, oldStageCard);
+                if (_game.ActiveStageCard.WhenDiscardedEffect != null)
+                {
+                    List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                    List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
+                    List<Card> allCards = l1.Concat(l2).ToList();
+                    _game.ActiveStageCard.WhenDiscardedEffect.Invoke(null, stageCard, _game);
+                }
 
                 // add to discard pile visually
                 ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
@@ -1266,6 +1286,16 @@ namespace BrawlTCG_alpha
             CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
             // when played effect
             legendCard.OnPlayedEffect(null, null, _game);
+            // the active stage effect
+            if (_game.ActiveStageCard != null)
+            {
+                if (_game.ActiveStageCard.WhileInPlayEffect != null)
+                {
+                    StageCard stage = _game.ActiveStageCard;
+                    stage.WhileInPlayEffect(legendCard, stage, _game);
+                    legendCardControl.Invalidate();
+                }
+            }
             // Arrange Cards
             ArrangeCardsInPlayingField(player);
             // Arrange Cards in hand

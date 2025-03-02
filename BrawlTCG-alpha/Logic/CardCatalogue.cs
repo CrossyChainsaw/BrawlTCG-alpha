@@ -23,7 +23,7 @@ namespace BrawlTCG_alpha.Logic
             { 101, new StageCard(id:101, "Fangwild", 3, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Images.Fangwild, startTurnEffect: EffectCatalogue.FangwildEffect) },
             { 102, new StageCard(id:102, "Matrix", 1, "Nothing", Elements.Cosmic, Images.Matrix) },
             //{ 103, new StageCard(id:103, "The Workshop", 1, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: EffectCatalogue.GenerateRandomCard) }, // bugged
-            //{ 103, new StageCard(id:103, "Evil Hideout", 1, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: EffectCatalogue.GenerateRandomCard) }, // all fire, wild, shadow legends get+3 attack
+            { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: EffectCatalogue.EvilHideoutWhenPlayed, whileInPlayEffect: EffectCatalogue.EvilHideoutWhilePlay, whenDiscardedEffect: EffectCatalogue.EvilHideoutWhenDiscard) }, // all fire, wild, shadow legends get+3 attack
 
 
             // Nature
@@ -54,7 +54,7 @@ namespace BrawlTCG_alpha.Logic
 
             // Shadow
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 4, 1, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.NinjaSpirit_PhantomSlash) },
-            { 5000, new LegendCard(id: 5000, "Master Thief", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AC.Any_BurnForCard, attack2: AC.MasterThief_GrabBomb) },
+            { 5000, new LegendCard(id: 5000, "Master Thief", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AC.Any_BurnForThreeCard, attack2: AC.MasterThief_GrabBomb) },
             { 5002, new LegendCard(id: 5002, "Mastermind", 4, Elements.Shadow, Images.Loki, 5, 6, 10, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Scythe_Slash, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMatrix) },
             { 5001, new LegendCard(id: 5001, "Raymesis", 5, Elements.Shadow, Images.Raymesis, 9, 5, 16, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AC.Axe_Swing) },
 
@@ -72,6 +72,7 @@ namespace BrawlTCG_alpha.Logic
             // Bow (no cards yet, keeping the comment)
             // Gauntlets
             { 17000, new WeaponCard(id: 17000, "Sleight of Hand", 1, Elements.Shadow, Images.Sleight_of_Hand, Weapons.Gauntlets) },
+            { 17001, new WeaponCard(id: 17001, "Rippers", 1, Elements.Wild, Images.MordexGaunts, Weapons.Gauntlets) },
             // Greatsword
             { 18000, new WeaponCard(id: 18000, "Law of the Land", 1, Elements.Nature, Images.LawOfTheLand, Weapons.Greatsword) },
             // Hammer
@@ -97,8 +98,8 @@ namespace BrawlTCG_alpha.Logic
             { 500, new BattleCard(id: 500, "Bouncy Bomb", 2, "When Played: Deals direct damage 8", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8) },
             { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Boosts Heals legend by 5", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.Heal, healthModifier: 5) },
             { 502, new BattleCard(id: 502, "Snowball", 1, "When Played: Deals direct damage 4", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4) },
-            { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostStats, powerModifier: 5, healthModifier: 5) },
-            { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 2", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 2) },
+            { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
+            { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 1) },
 
 
         };

@@ -48,7 +48,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-        public static void BoostStats(object target, Card card, Game game)
+        public static void BoostHealthAndPower(object target, Card card, Game game)
         {
             if (card is BattleCard battleCard)
             {
@@ -115,6 +115,82 @@ namespace BrawlTCG_alpha.Logic.Cards
             game.AddCardToHandZone(activePlayer, card);
             // flip to show
             game.ShowCards();
+        }
+
+        // While in play effect
+        public static void EvilHideoutWhenPlayed(object target, Card card, Game game)
+        {
+            // target is everyone
+
+            // my cards
+            foreach (Card c in game.Me.PlayingField)
+            {
+                if (c is LegendCard legend)
+                {
+                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+
+                    if (evilHideoutElements.Contains(legend.Element))
+                    {
+                        legend.ModifyStat(Stats.Power, 3);
+                    }
+                }
+            }
+            // enemy cards
+            foreach (Card c in game.Opponent.PlayingField)
+            {
+                if (c is LegendCard legend)
+                {
+                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+
+                    if (evilHideoutElements.Contains(legend.Element))
+                    {
+                        legend.ModifyStat(Stats.Power, 3);
+                    }
+                }
+            }
+        }
+        public static void EvilHideoutWhilePlay(object target, Card card, Game game)
+        {
+            if (target is LegendCard legend)
+            {
+                List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+
+                if (evilHideoutElements.Contains(legend.Element))
+                {
+                    legend.ModifyStat(Stats.Power, 3);
+                }
+            }
+        }
+        public static void EvilHideoutWhenDiscard(object target, Card card, Game game)
+        {
+            // target is everyone
+
+            // my cards
+            foreach (Card c in game.Me.PlayingField)
+            {
+                if (c is LegendCard legend)
+                {
+                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+
+                    if (evilHideoutElements.Contains(legend.Element))
+                    {
+                        legend.ModifyStat(Stats.Power, -3);
+                    }
+                }
+            }
+            // enemy cards
+            foreach (Card c in game.Opponent.PlayingField)
+            {
+                if (c is LegendCard legend)
+                {
+                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+
+                    if (evilHideoutElements.Contains(legend.Element))
+                    {
+                        legend.ModifyStat(Stats.Power, -3);
+                    }
+                }
+            }
         }
     }
 }
