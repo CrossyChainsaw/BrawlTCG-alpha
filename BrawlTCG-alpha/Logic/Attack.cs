@@ -23,7 +23,6 @@ namespace BrawlTCG_alpha.Logic.Cards
         public bool MultiHit { get; private set; } // hits everyone
         public bool InstaEffect { get; private set; }
         public int Recoil {  get; private set; }
-        //public string Description { get; private set; }
 
 
         public Attack(string name, int attackModifier, Weapons weaponOne, int weaponOneAmount, Action<LegendCard, object, Attack, Player, Game> execute, int weaponOneBurnAmount = 0, Weapons? weaponTwo = null, int? weaponTwoAmount = null, int weaponTwoBurnAmount = 0, bool friendlyFire = false, bool multiHit = false, bool instaEffect = false, int recoilDamage=0)
@@ -45,21 +44,5 @@ namespace BrawlTCG_alpha.Logic.Cards
             InstaEffect = instaEffect;
             Recoil = recoilDamage;
         }
-        //public void Execute(LegendCard attacker, object target, Player activePlayer, Game? game = null)
-        //{
-        //    if (target is LegendCard legendCard)
-        //    {
-        //        Effect(attacker, legendCard, this, activePlayer, game);
-        //    }
-        //    else
-        //    {
-        //        throw new Exception();
-        //    }
-        //}
-        //public Attack Clone()
-        //{
-        //    return new Attack(Name, AttackModifier, WeaponOne, WeaponOneAmount, Effect, WeaponOneBurnAmount, WeaponTwo, WeaponTwoAmount, WeaponTwoBurnAmount, FriendlyFire);
-        //}
-
     }
 }

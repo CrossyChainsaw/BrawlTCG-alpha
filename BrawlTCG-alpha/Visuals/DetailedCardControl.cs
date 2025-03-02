@@ -260,7 +260,7 @@ namespace BrawlTCG_alpha.Visuals
                     {
                         MessageBox.Show("This legend already attacked this turn");
                     }
-                    else if (!_game.SomeoneIsAttacking)
+                    else if (!_game.GetSomeoneIsAttacking())
                     {
                         _game.StartAttack(attack);
                         OriginalCardControl.Enabled = false; // prevents from attacking twice // or attacking yourself
@@ -275,7 +275,7 @@ namespace BrawlTCG_alpha.Visuals
                             int fieldIndex = Owner.PlayingField.IndexOf(legendCard);
 
                             // Attack
-                            attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game); // send this as a msg
+                            attack.Effect.Invoke(legendCard, null, attack, _game.GetActivePlayer(), _game); // send this as a msg
 
                             // Stop Attacking
                             StopAttacking();
@@ -379,7 +379,7 @@ namespace BrawlTCG_alpha.Visuals
                 void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
                 {
                     // only enable them if this is your legend && if the card is on the playing field
-                    if (Owner == _game.ActivePlayer)
+                    if (Owner == _game.GetActivePlayer())
                     {
                         // Assume the attack can be played unless we find a reason it can't
                         bool canPlayAttack = true;
@@ -423,7 +423,7 @@ namespace BrawlTCG_alpha.Visuals
         public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
         {
             // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.GetActivePlayer(), _game); // send attack name? // attacking legend card index
             UI_UpdatePlayerInformation(otherPlayer);
             // Notify
             MessageBox.Show($"{otherPlayer.Name} just took damage");
@@ -464,7 +464,7 @@ namespace BrawlTCG_alpha.Visuals
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
             // Apply the Damage
-            _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer, _game);
+            _game.GetSelectedAttack().Effect.Invoke(legendCard, targetLegend, _game.GetSelectedAttack(), _game.GetActivePlayer(), _game);
             enemyCardControl.Invalidate();
             enemyCardControl.Update();
 
@@ -578,19 +578,19 @@ namespace BrawlTCG_alpha.Visuals
         // Events
         void OnClickCardControlDuringAttack(CardControl clickedCard)
         {
-            if (_game.SomeoneIsAttacking)
+            if (_game.GetSomeoneIsAttacking())
             {
                 // Setup the message
-                Attack attack = _game.SelectedAttack;
+                Attack attack = _game.GetSelectedAttack();
                 int fieldIndex = Owner.PlayingField.IndexOf(this.Card);
                 int enemyFieldIndex;
                 if (attack.FriendlyFire)
                 {
-                    enemyFieldIndex = _game.ActivePlayer.PlayingField.IndexOf(clickedCard.Card);
+                    enemyFieldIndex = _game.GetActivePlayer().PlayingField.IndexOf(clickedCard.Card);
                 }
                 else
                 {
-                    enemyFieldIndex = _game.InactivePlayer.PlayingField.IndexOf(clickedCard.Card);
+                    enemyFieldIndex = _game.GetInactivePlayer().PlayingField.IndexOf(clickedCard.Card);
                 }
 
                 // the actual attack
@@ -611,7 +611,7 @@ namespace BrawlTCG_alpha.Visuals
                 RemoveThisFromScreen(parentForm);
             }
 
-            if (_game.SomeoneIsAttacking)
+            if (_game.GetSomeoneIsAttacking())
             {
                 OriginalCardControl.Enabled = true;
                 _game.StopAttack();
