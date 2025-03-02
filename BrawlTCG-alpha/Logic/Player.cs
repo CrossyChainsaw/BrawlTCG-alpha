@@ -13,6 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 30;
+        const int MAX_CARDS_IN_HAND = 15;
 
         // Properties
         public string Name { get; private set; }
@@ -56,13 +57,16 @@ namespace BrawlTCG_alpha.Logic
         }
         public Card? DrawCardFromDeck()
         {
-            if (Deck.Count > 0)
+            if (Hand.Count < MAX_CARDS_IN_HAND)
             {
-                int lastCardIndex = Deck.Count - 1;
-                Card card = Deck[lastCardIndex];
-                Deck.RemoveAt(lastCardIndex);
-                Hand.Add(card);
-                return card;
+                if (Deck.Count > 0)
+                {
+                    int lastCardIndex = Deck.Count - 1;
+                    Card card = Deck[lastCardIndex];
+                    Deck.RemoveAt(lastCardIndex);
+                    Hand.Add(card);
+                    return card;
+                }
             }
             return null;
         }
