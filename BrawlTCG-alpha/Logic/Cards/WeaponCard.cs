@@ -34,20 +34,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         // Methods
         public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon, Action<object, Card, Game>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
-            // Card
-            ID = id;
-            Name = name;
-            Cost = cost;
             Description = GetWeaponCardDescription(weapon);
-            Element = element;
-            Image = image;
-            // Weapon Card
             Weapon = weapon;
-            // Card Opt.
-            StartTurnEffect = startTurnEffect;
-            EndTurnEffect = endTurnEffect;
-            WhenPlayedEffect = whenPlayedEffect;
-
         }
         string GetWeaponCardDescription(Weapons weapon)
         {

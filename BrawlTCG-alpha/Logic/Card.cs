@@ -91,10 +91,6 @@ namespace BrawlTCG_alpha.Logic
             {
                 return WildColor;
             }
-            else if (element == Elements.Wild)
-            {
-                return WildColor;
-            }
             else if (element == Elements.Arctic)
             {
                 return ArcticColor;

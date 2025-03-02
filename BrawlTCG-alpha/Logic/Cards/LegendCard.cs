@@ -66,12 +66,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack attack4 = null
         ) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
-            // Card
-            ID = id;
-            Name = name;
-            Cost = cost;
-            Element = element;
-            Image = image;
             // LegenCard
             Power = power;
             Dexterity = dexterity;
@@ -82,10 +76,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             PrimaryWeapon = primaryWeapon;
             SecondaryWeapon = secondaryWeapon;
             Description = $"{BaseHealth,4}hp {power,4}att {primaryWeapon,20} {secondaryWeapon,20}";
-            // Card Optional
-            StartTurnEffect = startTurnEffect;
-            EndTurnEffect = endTurnEffect;
-            WhenPlayedEffect = whenPlayedEffect;
             // LegendCard Optional
             Ability = ability;
             Attack1 = attack1;

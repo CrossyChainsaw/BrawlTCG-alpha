@@ -11,12 +11,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         const int ESSENCE_GAIN = 1;
         public EssenceCard(int id, string name, int cost, Elements element, Image image) : base(id, name, cost, element, image)
         {
-            ID = id;
-            Name = name;
-            Cost = cost;
             Description = "Start Turn: Gives the player 1 Essence";
-            Element = element;
-            Image = image;
             StartTurnEffect = (target, _, __) => GivePlayerEssence(target, _, __);
         }
         void GivePlayerEssence(object target, Card _, Game __)

@@ -13,16 +13,6 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public StageCard(int id, string name, int cost, string description, Elements element, Image image, Action<object, Card, Game>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null, Action<object, Card, Game>? whenDiscardedEffect = null, Action<object, Card, Game>? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
         {
-            ID = id;
-            Name = name;
-            Cost = cost;
-            Description = description;
-            Element = element;
-            Image = image;
-            StartTurnEffect = startTurnEffect;
-            EndTurnEffect = endTurnEffect;
-            WhenPlayedEffect = whenPlayedEffect;
-            WhenDiscardedEffect = whenDiscardedEffect;
             WhileInPlayEffect = whileInPlayEffect;
         }
 
