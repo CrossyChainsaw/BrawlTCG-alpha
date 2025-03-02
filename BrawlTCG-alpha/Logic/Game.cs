@@ -189,6 +189,7 @@ namespace BrawlTCG_alpha.Logic
                     ActiveStageCard.StartTurnEffect.Invoke(legends, null, this); 
                 }
             }
+
             // burn damage
             foreach (LegendCard legend in legends)
             {
