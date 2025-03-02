@@ -129,5 +129,14 @@ namespace BrawlTCG_alpha.Logic
         {
             this.Essence = EssenceField.Count;
         }
+        public List<Card> GetAllCardsInPlayingField()
+        {
+            List<Card> cards = new List<Card>();
+            foreach (Card card in PlayingField)
+            {
+                cards.Add(card);
+            }
+            return cards;
+        }
     }
 }
