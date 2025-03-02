@@ -348,16 +348,25 @@ namespace BrawlTCG_alpha.Visuals
                             attackButton.Enabled = false;
                         }
                         attackButton.BackColor = Color.LightGreen;
+                        
+                        
+                        // Recoil Check dead
+                        if (attack.Recoil > 0)
+                        {
+                            this.OriginalCardControl.CheckIfDead();
+                        }
                     }
                     else
                     {
                         OnDetailedCardClicked();
                         _game.StopAttack();
                     }
+
                 };
                 _attackButtons.Add(attackButton);
                 // Add To UI
                 Controls.Add(attackButton);
+
 
 
 
@@ -369,7 +378,7 @@ namespace BrawlTCG_alpha.Visuals
 
                 void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
                 {
-                    // only enable them if this is your legend
+                    // only enable them if this is your legend && if the card is on the playing field
                     if (Owner == _game.ActivePlayer)
                     {
                         // Assume the attack can be played unless we find a reason it can't
@@ -427,6 +436,8 @@ namespace BrawlTCG_alpha.Visuals
             StopAttacking();
             // Remove Card
             OnDetailedCardClicked();
+            // Check if i died
+            this.OriginalCardControl.CheckIfDead();
         }
         int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
         {
@@ -465,6 +476,9 @@ namespace BrawlTCG_alpha.Visuals
 
             // Remove Detailed card off screen
             OnDetailedCardClicked();
+
+            // Check if i died
+            this.OriginalCardControl.CheckIfDead();
         }
         int CheckElementalDamageBoost(LegendCard attackingLegend, Attack attack)
         {

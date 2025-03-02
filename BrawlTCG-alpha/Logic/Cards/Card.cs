@@ -27,6 +27,7 @@ namespace BrawlTCG_alpha.Logic
         public string Description { get; internal set; }
         public Elements Element { get; internal set; }
         public bool IsOpen { get; internal set; }
+        public bool IsDiscarded { get; set; } = false;
         public Action<object, Card, Game>? StartTurnEffect { get; internal set; }
         public Action<object>? EndTurnEffect { get; internal set; }
         public Action<object, Card, Game>? WhenPlayedEffect { get; internal set; }

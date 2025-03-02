@@ -151,6 +151,11 @@ namespace BrawlTCG_alpha.Logic
             // ...
             // untap all cards of the active player
             UI_UntapPlayerCards.Invoke(ActivePlayer);
+            // Legends can attack again
+            foreach (LegendCard legend in GetAllMyLegendsOnThePlayingField(ActivePlayer))
+            {
+                legend.AttackedThisTurn = false;
+            }
 
             // Switch the Turn
             _bottomPlayerTurn = !_bottomPlayerTurn;
@@ -188,12 +193,6 @@ namespace BrawlTCG_alpha.Logic
             foreach (LegendCard legend in legends)
             {
                 legend.TakeBurnDamage();
-            }
-
-            // Legends can attack again
-            foreach(LegendCard legend in legends)
-            {
-                legend.AttackedThisTurn = false;
             }
 
             // Update legends information in playing field
@@ -283,19 +282,22 @@ namespace BrawlTCG_alpha.Logic
             // enable disable correct cards
             if (attack.FriendlyFire)
             {
-                UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
-                UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, false);
+                UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.PlayingField, true);
+                UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.PlayingField, false);
             }
             else
             {
-                UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, false);
-                UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
+                UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.PlayingField, false);
+                UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.PlayingField, true);
             }
         }
         public void StopAttack()
         {
             SomeoneIsAttacking = false;
             SelectedAttack = null;
+
+            // enable your cards again
+            UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.PlayingField, true);
         }
         public void AddCardToDiscardPile(Player player, Card card)
         {

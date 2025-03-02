@@ -64,7 +64,7 @@ namespace BrawlTCG_alpha.Visuals
             // Dragging
             this.MouseDown += (sender, e) =>
             {
-                if (_canDrag)
+                if (_canDrag && !Card.IsDiscarded && Owner == _game.ActivePlayer) // i.e. can drag && card is not in discard pile && it is your own card
                 {
                     StartDragging(e);
                 }
@@ -386,7 +386,7 @@ namespace BrawlTCG_alpha.Visuals
                 // correct hp
                 legend.CurrentHP = 0;
 
-                // Remove stacked cards - logically the stacked card is still here but the control is removed
+                // Remove stacked cards - (logically the stacked card is still here but the control is removed)
                 int n = legend.StackedCards.Count;
                 for (int i = 0; i < n; i++)
                 {
@@ -401,21 +401,21 @@ namespace BrawlTCG_alpha.Visuals
                     UI_AddCardToDiscardPile(Owner, cardControl);
                 }
 
-
+                // disable attack buttons by saying its not on the playing field anymore
+                legend.OnPlayingField = false;
 
                 // move legend card to discard pile logically
                 this.Owner.PlayingField.Remove(Card);
                 this.Owner.DiscardPile.Add(Card);
+                this.Card.IsDiscarded = true;
                 // visually
                 UI_AddCardToDiscardPile(Owner, this);
-
-
 
                 // Rearrange playing field
                 if (Owner.PlayingField.Count > 0)
                 {
                     UI_ArrangeCardsInPlayingField(Owner);
-                }
+                } 
 
                 this.Dispose();
             }
@@ -428,8 +428,10 @@ namespace BrawlTCG_alpha.Visuals
         }
 
         // THESE FUNCTIONS ARE FROM DCC AND AREN'T SUPOSED TO BE USED, EXCEPT FOR THE PLAYER THAT LISTENED TO A MESSAGE, THEY CAN TRIGGER THESE.
-        public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
+        public void AttackThePlayer(CardControl legendCC, Player otherPlayer, Attack attack)
         {
+            LegendCard legendCard = (LegendCard)legendCC.Card;
+
             // Attack
             attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
             UI_UpdatePlayerInformation(otherPlayer);
@@ -439,21 +441,24 @@ namespace BrawlTCG_alpha.Visuals
 
             // Check if dead
             if (otherPlayer.Health <= 0)
-            {
                 MessageBox.Show($"{otherPlayer.Name} has been defeated");
-            }
+            legendCC.CheckIfDead();
         }
-        public void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
+        public void AttackLegendCard(CardControl legendCC, CardControl enemyCC)
         {
-            LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
+            LegendCard legendCard = (LegendCard)legendCC.Card;
+            LegendCard targetLegend = (LegendCard)enemyCC.Card;
 
             // Apply the Damage
             _game.SelectedAttack.Effect.Invoke(legendCard, targetLegend, _game.SelectedAttack, _game.ActivePlayer, _game);
-            enemyCardControl.Invalidate();
-            enemyCardControl.Update();
+            
+            // Update cc
+            enemyCC.Invalidate();
+            legendCC.Invalidate();
 
             // CHECK IF DEAD
-            enemyCardControl.CheckIfDead();
+            enemyCC.CheckIfDead();
+            legendCC.CheckIfDead();
 
             // stop attacking
             _game.StopAttack();

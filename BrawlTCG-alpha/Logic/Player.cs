@@ -89,6 +89,7 @@ namespace BrawlTCG_alpha.Logic
             else if (card is LegendCard legendCard)
             {
                 PlayingField.Add(legendCard);
+                legendCard.OnPlayingField = true;
             }
             else if (card is BattleCard battleCard)
             {

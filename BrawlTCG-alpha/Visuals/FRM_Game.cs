@@ -247,7 +247,7 @@ namespace BrawlTCG_alpha
                         // perform the attack
                         this.Invoke((Action)(() =>
                         {
-                            legendCC.AttackThePlayer(legend, _game.Me, chosenAttack);
+                            legendCC.AttackThePlayer(legendCC, _game.Me, chosenAttack);
                         }));
                     }
                     else if (parts[0] == "STATUS_ATTACK")
@@ -303,7 +303,7 @@ namespace BrawlTCG_alpha
                                 _game.StartAttack(chosenAttack);
                                 this.Invoke((Action)(() =>
                                 {
-                                    cc.AttackLegendCard(legend, cc);
+                                    cc.AttackLegendCard(legendCC, cc);
                                 }));
                                 _game.StopAttack();
                             }
@@ -348,7 +348,7 @@ namespace BrawlTCG_alpha
                         _game.StartAttack(chosenAttack);
                         this.Invoke((Action)(() =>
                         {
-                            legendCC.AttackLegendCard(legend, targetCC);
+                            legendCC.AttackLegendCard(legendCC, targetCC);
                         }));
                     }
                 }
@@ -382,18 +382,38 @@ namespace BrawlTCG_alpha
         void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enable = true)
         {
             ZoneControl zone = GetMyZone(zoneType, player);
-            foreach (CardControl card in zone.CardsControls)
+
+
+            foreach (CardControl CC in zone.CardsControls)
             {
-                if (enable && card.Card.IsOpen)
+                if (enable && CC.Card.IsOpen)
                 {
-                    card.Enabled = true;
+                    // if already attacked, don't enable
+                    if (CC.Card is LegendCard legend && legend.AttackedThisTurn)
+                    {
+                        EnableCC(CC, false);
+                        continue;
+                    }
+                    EnableCC(CC, true);
                 }
                 else
                 {
-                    card.Enabled = false;
+                    EnableCC(CC, false);
                 }
             }
+
+            // Local Methods
+            void EnableCC(CardControl CC, bool enable)
+            {
+                if (!CC.IsHandleCreated)
+                {
+                    CC.Enabled = enable;
+                    return; // Exit early if the control is not ready
+                }
+                CC.Invoke(new Action(() => CC.Enabled = enable));
+            }
         }
+
         void UpdateCardControlsInPlayingFieldInformation()
         {
             //List<CardControl> cardControls = new List<CardControl>();

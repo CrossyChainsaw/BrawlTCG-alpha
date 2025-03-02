@@ -35,6 +35,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public bool IsTapped { get; private set; }
         public bool IsBurned { get; internal set; } = false;
         public bool AttackedThisTurn { get; set; } = false;
+        public bool OnPlayingField { get; set; } = false;
 
         public event Action<LegendCard, WeaponCard> UI_BurnWeaponCard;
         public event Action<LegendCard> UI_RearrangeMyStackedCards;
