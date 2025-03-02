@@ -275,40 +275,6 @@ namespace BrawlTCG_alpha
                             chosenAttack.Effect.Invoke(legend, null, chosenAttack, _game.GetActivePlayer(), _game);
                         }));
                     }
-                    else if (parts[0] == "ATTACK_ALL_LEGENDS")
-                    {
-                        // Find legend
-                        int fieldIndex = Convert.ToInt32(parts[2]);
-                        Card card = _game.GetOpponent().PlayingField[fieldIndex];
-                        CardControl legendCC = GetCardControl(_game.GetOpponent(), ZoneTypes.PlayingField, card);
-                        LegendCard legend = (LegendCard)legendCC.Card;
-
-                        // Find attack
-                        string correctAttackName = parts[4];
-                        Attack chosenAttack = null;
-                        foreach (Attack attack in legend.GetAttacks())
-                        {
-                            if (attack.Name == correctAttackName)
-                            {
-                                chosenAttack = attack;
-                            }
-                        }
-
-                        // perform the attack
-                        ZoneControl myPlayZone = GetMyZone(ZoneTypes.PlayingField, _game.GetMe());
-                        foreach (CardControl cc in myPlayZone.CardsControls.ToList())
-                        {
-                            if (cc.Card is LegendCard)
-                            {
-                                _game.StartAttack(chosenAttack);
-                                this.Invoke((Action)(() =>
-                                {
-                                    cc.AttackLegendCard(legendCC, cc);
-                                }));
-                                _game.StopAttack();
-                            }
-                        }
-                    }
                     else if (parts[0] == "ATTACK_LEGEND") // NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
                     {
                         // Find attacker

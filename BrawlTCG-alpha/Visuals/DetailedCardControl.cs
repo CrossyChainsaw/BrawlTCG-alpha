@@ -318,12 +318,23 @@ namespace BrawlTCG_alpha.Visuals
                                     // Setup for the message
                                     int fieldIndex = Owner.PlayingField.IndexOf(legendCard);
 
+                                    // Get enemy field index
+                                    int enemyFieldIndex;
+                                    if (attack.FriendlyFire)
+                                    {
+                                        enemyFieldIndex = _game.GetActivePlayer().PlayingField.IndexOf(cardControl.Card);
+                                    }
+                                    else
+                                    {
+                                        enemyFieldIndex = _game.GetInactivePlayer().PlayingField.IndexOf(cardControl.Card);
+                                    }
+
                                     // Start Attacking
                                     _game.StartAttack(attack);
                                     AttackLegendCard(legendCard, cardControl);
 
                                     // send msg
-                                    NETWORK_SendMessage($"ATTACK_ALL_LEGENDS:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
+                                    NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
                                 }
                             }
                             else
