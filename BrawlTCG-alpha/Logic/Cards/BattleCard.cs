@@ -17,6 +17,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public int HealthModifier { get; private set; }
         public BattleCard(int id, string name, int cost, string description, Elements element, Image image, bool oneTimeUse, bool stackable, bool friendlyFire, Action<object, Card, Game>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null, int damage = 0, int powerModifier = 0, int healthModifier = 0) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
+            Description = description;
             OneTimeUse = oneTimeUse;
             Stackable = stackable;
             FriendlyFire = friendlyFire;
