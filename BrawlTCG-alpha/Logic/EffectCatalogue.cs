@@ -133,6 +133,27 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         }
 
+        public static void DrawCard(object target, Card card, Game game)
+        {
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.ShowCards();
+        }
+
+        public static void DrawTwoCards(object target, Card card, Game game)
+        {
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.ShowCards();
+        }
+
+        public static void DrawThreeCards(object target, Card card, Game game)
+        {
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.DrawCardFromDeck(game.ActivePlayer);
+            game.ShowCards();
+        }
+
         public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)
         {
             Card card = generatedCard;
