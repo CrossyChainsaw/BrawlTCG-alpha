@@ -243,22 +243,6 @@ namespace BrawlTCG_alpha.Logic
         {
             _playerManager.RandomizeStartingPlayer();
         }
-        public Player GetMe()
-        {
-            return _playerManager.Me;
-        }
-        public Player GetOpponent()
-        {
-            return _playerManager.Opponent;
-        }
-        public Player GetActivePlayer()
-        {
-            return _playerManager.ActivePlayer;
-        }
-        public Player GetInactivePlayer()
-        {
-            return _playerManager.InactivePlayer;
-        }
 
 
         // StageCardManager

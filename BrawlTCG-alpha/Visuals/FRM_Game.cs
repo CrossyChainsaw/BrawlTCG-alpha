@@ -119,7 +119,7 @@ namespace BrawlTCG_alpha
         {
             try
             {
-                if (_game.GetActivePlayer() == _game.GetMe())
+                if (_game.ActivePlayer == _game.Me)
                 {
                     if (_writer != null)
                     {
@@ -156,49 +156,49 @@ namespace BrawlTCG_alpha
                         if (parts[4] == ZoneTypes.EssenceField.ToString())
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
-                            Card card = _game.GetOpponent().Hand[handIndex];
-                            CardControl oldCC = GetCardControl(_game.GetOpponent(), ZoneTypes.Hand, card);
-                            ZoneControl zone = GetMyZone(ZoneTypes.EssenceField, _game.GetOpponent());
+                            Card card = _game.Opponent.Hand[handIndex];
+                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, card);
+                            ZoneControl zone = GetMyZone(ZoneTypes.EssenceField, _game.Opponent);
                             this.Invoke((Action)(() =>
                             {
-                                PlayEssenceCard(_game.GetOpponent(), card, oldCC, zone);
+                                PlayEssenceCard(_game.Opponent, card, oldCC, zone);
                             }));
                         }
                         else if (parts[4] == ZoneTypes.Stage.ToString())
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
-                            Card card = _game.GetOpponent().Hand[handIndex];
+                            Card card = _game.Opponent.Hand[handIndex];
                             this.Invoke((Action)(() =>
                             {
-                                PlayStageCard(_game.GetOpponent(), (StageCard)card);
+                                PlayStageCard(_game.Opponent, (StageCard)card);
                             }));
                         }
                         else if (parts[4] == ZoneTypes.PlayingField.ToString())
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
-                            LegendCard legendCard = (LegendCard)_game.GetOpponent().Hand[handIndex];
-                            CardControl oldCC = GetCardControl(_game.GetOpponent(), ZoneTypes.Hand, legendCard);
-                            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, _game.GetOpponent());
+                            LegendCard legendCard = (LegendCard)_game.Opponent.Hand[handIndex];
+                            CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, legendCard);
+                            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
                             this.Invoke((Action)(() =>
                             {
-                                PlayLegendCard(_game.GetOpponent(), legendCard, oldCC, zone);
+                                PlayLegendCard(_game.Opponent, legendCard, oldCC, zone);
                             }));
                         }
                         else if (parts[3] == "TARGET_LEGEND")
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
-                            Card card = _game.GetOpponent().Hand[handIndex];
+                            Card card = _game.Opponent.Hand[handIndex];
 
                             // play wep card
                             if (card is WeaponCard weaponCard)
                             {
                                 int indexCC = Convert.ToInt32(parts[4]);
-                                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, _game.GetOpponent());
+                                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, _game.Opponent);
                                 CardControl legendCC = playZone.CardsControls[indexCC];
-                                CardControl oldCC = GetCardControl(_game.GetOpponent(), ZoneTypes.Hand, weaponCard);
+                                CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, weaponCard);
                                 this.Invoke((Action)(() =>
                                 {
-                                    PlayWeaponCard(_game.GetOpponent(), (LegendCard)legendCC.Card, weaponCard, oldCC);
+                                    PlayWeaponCard(_game.Opponent, (LegendCard)legendCC.Card, weaponCard, oldCC);
                                 }));
                             }
                             // play battle card
@@ -210,19 +210,19 @@ namespace BrawlTCG_alpha
                                 ZoneControl targetZone;
                                 if (friendlyFire)
                                 {
-                                    targetPlayer = _game.GetOpponent();
+                                    targetPlayer = _game.Opponent;
                                 }
                                 else
                                 {
-                                    targetPlayer = _game.GetMe();
+                                    targetPlayer = _game.Me;
                                 }
                                 targetZone = GetMyZone(ZoneTypes.PlayingField, targetPlayer);
-                                CardControl oldCC = GetCardControl(_game.GetOpponent(), ZoneTypes.Hand, card);
+                                CardControl oldCC = GetCardControl(_game.Opponent, ZoneTypes.Hand, card);
                                 CardControl targetCC = targetZone.CardsControls[indexCC];
 
                                 this.Invoke((Action)(() =>
                                 {
-                                    PlayBattleCard(_game.GetOpponent(), battleCard, oldCC, targetCC);
+                                    PlayBattleCard(_game.Opponent, battleCard, oldCC, targetCC);
                                 }));
                             }
                         }
@@ -231,8 +231,8 @@ namespace BrawlTCG_alpha
                     {
                         // Find legend
                         int fieldIndex = Convert.ToInt32(parts[2]);
-                        Card card = _game.GetOpponent().PlayingField[fieldIndex];
-                        CardControl legendCC = GetCardControl(_game.GetOpponent(), ZoneTypes.PlayingField, card);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
                         LegendCard legend = (LegendCard)legendCC.Card;
 
                         // Find attack
@@ -249,15 +249,15 @@ namespace BrawlTCG_alpha
                         // perform the attack
                         this.Invoke((Action)(() =>
                         {
-                            legendCC.AttackThePlayer(legendCC, _game.GetMe(), chosenAttack);
+                            legendCC.AttackThePlayer(legendCC, _game.Me, chosenAttack);
                         }));
                     }
                     else if (parts[0] == "STATUS_ATTACK")
                     {
                         // Find legend
                         int fieldIndex = Convert.ToInt32(parts[2]);
-                        Card card = _game.GetOpponent().PlayingField[fieldIndex];
-                        CardControl legendCC = GetCardControl(_game.GetOpponent(), ZoneTypes.PlayingField, card);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
                         LegendCard legend = (LegendCard)legendCC.Card;
 
                         // Find attack
@@ -274,15 +274,15 @@ namespace BrawlTCG_alpha
                         // perform the attack
                         this.Invoke((Action)(() =>
                         {
-                            chosenAttack.Effect.Invoke(legend, null, chosenAttack, _game.GetActivePlayer(), _game);
+                            chosenAttack.Effect.Invoke(legend, null, chosenAttack, _game.ActivePlayer, _game);
                         }));
                     }
                     else if (parts[0] == "ATTACK_LEGEND") // NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
                     {
                         // Find attacker
                         int fieldIndex = Convert.ToInt32(parts[2]);
-                        Card card = _game.GetOpponent().PlayingField[fieldIndex];
-                        CardControl legendCC = GetCardControl(_game.GetOpponent(), ZoneTypes.PlayingField, card);
+                        Card card = _game.Opponent.PlayingField[fieldIndex];
+                        CardControl legendCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, card);
                         LegendCard legend = (LegendCard)legendCC.Card;
 
                         // Find attack
@@ -301,14 +301,14 @@ namespace BrawlTCG_alpha
                         if (chosenAttack.FriendlyFire)
                         {
                             int targetFieldIndex = Convert.ToInt32(parts[6]);
-                            Card targetCard = _game.GetOpponent().PlayingField[targetFieldIndex]; // crash
-                            targetCC = GetCardControl(_game.GetOpponent(), ZoneTypes.PlayingField, targetCard);
+                            Card targetCard = _game.Opponent.PlayingField[targetFieldIndex]; // crash
+                            targetCC = GetCardControl(_game.Opponent, ZoneTypes.PlayingField, targetCard);
                         }
                         else
                         {
                             int targetFieldIndex = Convert.ToInt32(parts[6]);
-                            Card targetCard = _game.GetMe().PlayingField[targetFieldIndex]; // crash
-                            targetCC = GetCardControl(_game.GetMe(), ZoneTypes.PlayingField, targetCard);
+                            Card targetCard = _game.Me.PlayingField[targetFieldIndex]; // crash
+                            targetCC = GetCardControl(_game.Me, ZoneTypes.PlayingField, targetCard);
                         }
 
 
@@ -430,20 +430,20 @@ namespace BrawlTCG_alpha
             int bottomOffset = 1080 - (cardHeight + 100);
 
             // Player Zones
-            CreateZone("Your Deck", leftOffset, bottomOffset, cardWidth, cardHeight, ZoneTypes.Deck, _game.GetMe());
-            CreateZone("Your Cards", leftOffset + cardWidth + 20, bottomOffset, playingCardsWidth, cardHeight, ZoneTypes.Hand, _game.GetMe());
-            CreateZone("Discard Pile", leftOffset + playingCardsWidth + 20 + cardWidth + 20, bottomOffset, cardWidth, cardHeight, ZoneTypes.DiscardPile, _game.GetMe());
-            CreateZone($"{_game.GetMe().Name}\nHealth: {_game.GetMe().Health}\nEssence: {_game.GetMe().Essence}", leftOffset, bottomOffset - 20 - (cardHeight / 2 - 25), cardWidth, cardHeight / 2 - 25, ZoneTypes.PlayerInfo, _game.GetMe());
-            CreateZone("Your Field", leftOffset + cardWidth + 20, bottomOffset - cardHeight - 20, fieldWidth, cardHeight, ZoneTypes.PlayingField, _game.GetMe());
-            CreateZone("Your Essence", leftOffset + cardWidth + 20 + fieldWidth + 20, bottomOffset - cardHeight - 20, essenseWidth, cardHeight, ZoneTypes.EssenceField, _game.GetMe());
+            CreateZone("Your Deck", leftOffset, bottomOffset, cardWidth, cardHeight, ZoneTypes.Deck, _game.Me);
+            CreateZone("Your Cards", leftOffset + cardWidth + 20, bottomOffset, playingCardsWidth, cardHeight, ZoneTypes.Hand, _game.Me);
+            CreateZone("Discard Pile", leftOffset + playingCardsWidth + 20 + cardWidth + 20, bottomOffset, cardWidth, cardHeight, ZoneTypes.DiscardPile, _game.Me);
+            CreateZone($"{_game.Me.Name}\nHealth: {_game.Me.Health}\nEssence: {_game.Me.Essence}", leftOffset, bottomOffset - 20 - (cardHeight / 2 - 25), cardWidth, cardHeight / 2 - 25, ZoneTypes.PlayerInfo, _game.Me);
+            CreateZone("Your Field", leftOffset + cardWidth + 20, bottomOffset - cardHeight - 20, fieldWidth, cardHeight, ZoneTypes.PlayingField, _game.Me);
+            CreateZone("Your Essence", leftOffset + cardWidth + 20 + fieldWidth + 20, bottomOffset - cardHeight - 20, essenseWidth, cardHeight, ZoneTypes.EssenceField, _game.Me);
 
             // Enemy Zones
-            CreateZone("Enemy Deck", leftOffset, topOffset, cardWidth, cardHeight, ZoneTypes.Deck, _game.GetOpponent());
-            CreateZone("Enemy Cards", leftOffset + cardWidth + 20, topOffset, playingCardsWidth, cardHeight, ZoneTypes.Hand, _game.GetOpponent());
-            CreateZone("Enemy Discard Pile", leftOffset + playingCardsWidth + 20 + cardWidth + 20, topOffset, cardWidth, cardHeight, ZoneTypes.DiscardPile, _game.GetOpponent());
-            CreateZone($"{_game.GetOpponent().Name}\nHealth: {_game.GetOpponent().Health}\nEssence: {_game.GetOpponent().Essence}", leftOffset, 20 + cardHeight + 20, cardWidth, cardHeight / 2 - 25, ZoneTypes.PlayerInfo, _game.GetOpponent());
-            CreateZone("Enemy Field", leftOffset + cardWidth + 20, topOffset + cardHeight + 20, fieldWidth, cardHeight, ZoneTypes.PlayingField, _game.GetOpponent());
-            CreateZone("Enemy Essence", leftOffset + cardWidth + 20 + fieldWidth + 20, topOffset + cardHeight + 20, essenseWidth, cardHeight, ZoneTypes.EssenceField, _game.GetOpponent());
+            CreateZone("Enemy Deck", leftOffset, topOffset, cardWidth, cardHeight, ZoneTypes.Deck, _game.Opponent);
+            CreateZone("Enemy Cards", leftOffset + cardWidth + 20, topOffset, playingCardsWidth, cardHeight, ZoneTypes.Hand, _game.Opponent);
+            CreateZone("Enemy Discard Pile", leftOffset + playingCardsWidth + 20 + cardWidth + 20, topOffset, cardWidth, cardHeight, ZoneTypes.DiscardPile, _game.Opponent);
+            CreateZone($"{_game.Opponent.Name}\nHealth: {_game.Opponent.Health}\nEssence: {_game.Opponent.Essence}", leftOffset, 20 + cardHeight + 20, cardWidth, cardHeight / 2 - 25, ZoneTypes.PlayerInfo, _game.Opponent);
+            CreateZone("Enemy Field", leftOffset + cardWidth + 20, topOffset + cardHeight + 20, fieldWidth, cardHeight, ZoneTypes.PlayingField, _game.Opponent);
+            CreateZone("Enemy Essence", leftOffset + cardWidth + 20 + fieldWidth + 20, topOffset + cardHeight + 20, essenseWidth, cardHeight, ZoneTypes.EssenceField, _game.Opponent);
 
             // Neutral Zones
             CreateZone("Stage", leftOffset, 400, cardWidth, cardHeight, ZoneTypes.Stage, null);
@@ -460,7 +460,7 @@ namespace BrawlTCG_alpha
                 // indicate turn
                 if (zone.ZoneType == ZoneTypes.PlayerInfo)
                 {
-                    if (zone.Owner == _game.GetActivePlayer())
+                    if (zone.Owner == _game.ActivePlayer)
                     {
                         zone.BackColor = Color.Green;
                     }
@@ -477,7 +477,7 @@ namespace BrawlTCG_alpha
 
             foreach (ZoneControl zone in zones)
             {
-                Player player = (zone.Owner == _game.GetMe()) ? _game.GetMe() : _game.GetOpponent();
+                Player player = (zone.Owner == _game.Me) ? _game.Me : _game.Opponent;
 
                 if (player.Deck.Count > 0)
                 {
@@ -611,7 +611,7 @@ namespace BrawlTCG_alpha
         // LegendCard.cs
         void BurnWeaponCard(LegendCard legendCard, WeaponCard wepCard)
         {
-            Player player = _game.GetActivePlayer();
+            Player player = _game.ActivePlayer;
             ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
             foreach (CardControl cardControl in zone.CardsControls)
             {
@@ -1178,10 +1178,10 @@ namespace BrawlTCG_alpha
             _game.StartTurn();
 
             // Update UI (turn indication)
-            ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, _game.GetActivePlayer());
+            ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, _game.ActivePlayer);
             zone.BackColor = Color.Green;
 
-            ZoneControl zone2 = GetMyZone(ZoneTypes.PlayerInfo, _game.GetInactivePlayer());
+            ZoneControl zone2 = GetMyZone(ZoneTypes.PlayerInfo, _game.InactivePlayer);
             zone2.BackColor = SystemColors.ControlDarkDark;
         }
         void PlayEssenceCard(Player player, Card card, CardControl cardControlOld, ZoneControl essenceZone)
@@ -1215,8 +1215,8 @@ namespace BrawlTCG_alpha
             // when played effect - (first get all cards on screen then do)
             if (stageCard.WhenPlayedEffect != null)
             {
-                List<Card> l1 = _game.GetMe().GetAllCardsInPlayingField();
-                List<Card> l2 = _game.GetOpponent().GetAllCardsInPlayingField();
+                List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
                 List<Card> allCards = l1.Concat(l2).ToList();
                 stageCard.WhenPlayedEffect.Invoke(allCards, stageCard, _game);
             }
@@ -1238,8 +1238,8 @@ namespace BrawlTCG_alpha
                 _game.AddCardToDiscardPile(oldOwner, oldStageCard);
                 if (_game.GetActiveStageCard().WhenDiscardedEffect != null)
                 {
-                    List<Card> l1 = _game.GetMe().GetAllCardsInPlayingField();
-                    List<Card> l2 = _game.GetOpponent().GetAllCardsInPlayingField();
+                    List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                    List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
                     List<Card> allCards = l1.Concat(l2).ToList();
                     _game.GetActiveStageCard().WhenDiscardedEffect.Invoke(null, stageCard, _game);
                 }
@@ -1344,7 +1344,7 @@ namespace BrawlTCG_alpha
         // Events
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Space && _game.GetMe() == _game.GetActivePlayer())
+            if (keyData == Keys.Space && _game.Me == _game.ActivePlayer)
             {
                 // Send END_TURN to the server
                 SendMessageToPeer("SWITCH_TURN");

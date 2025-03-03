@@ -82,8 +82,8 @@ namespace BrawlTCG_alpha.Logic.Cards
             // first give the player essence before playing it!
             StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(102); // #102: Matrix
             StageCard card2 = generatedCard;
-            game.GetActivePlayer().GainEssence(card2.Cost);
-            game.AddCardToHandZone(game.GetActivePlayer(), card2);
+            game.ActivePlayer.GainEssence(card2.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
 
             //// add to hand
@@ -97,8 +97,8 @@ namespace BrawlTCG_alpha.Logic.Cards
             // first give the player essence before playing it!
             StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(103); // #103: Workshop
             StageCard card2 = generatedCard;
-            game.GetActivePlayer().GainEssence(card2.Cost);
-            game.AddCardToHandZone(game.GetActivePlayer(), card2);
+            game.ActivePlayer.GainEssence(card2.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
         }
 
@@ -113,7 +113,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 // send random card id
                 game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
                 // add card to deck
-                game.AddCardToHandZone(game.GetActivePlayer(), generatedCard);
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
             }
             else
             {
@@ -127,7 +127,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
                 Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
                 // add to his hand
-                game.AddCardToHandZone(game.GetActivePlayer(), generatedCard);
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
                 // reset the property
                 game.RandomCardID = -1;
             }
@@ -169,7 +169,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             // target is everyone
 
             // my cards
-            foreach (Card c in game.GetMe().PlayingField)
+            foreach (Card c in game.Me.PlayingField)
             {
                 if (c is LegendCard legend)
                 {
@@ -182,7 +182,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
             // enemy cards
-            foreach (Card c in game.GetOpponent().PlayingField)
+            foreach (Card c in game.Opponent.PlayingField)
             {
                 if (c is LegendCard legend)
                 {
@@ -212,7 +212,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             // target is everyone
 
             // my cards
-            foreach (Card c in game.GetMe().PlayingField)
+            foreach (Card c in game.Me.PlayingField)
             {
                 if (c is LegendCard legend)
                 {
@@ -225,7 +225,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
             // enemy cards
-            foreach (Card c in game.GetOpponent().PlayingField)
+            foreach (Card c in game.Opponent.PlayingField)
             {
                 if (c is LegendCard legend)
                 {

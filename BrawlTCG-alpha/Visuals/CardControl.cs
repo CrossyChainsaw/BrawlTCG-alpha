@@ -64,7 +64,7 @@ namespace BrawlTCG_alpha.Visuals
             // Dragging
             this.MouseDown += (sender, e) =>
             {
-                if (_canDrag && !Card.IsDiscarded && Owner == _game.GetActivePlayer()) // i.e. can drag && card is not in discard pile && it is your own card
+                if (_canDrag && !Card.IsDiscarded && Owner == _game.ActivePlayer) // i.e. can drag && card is not in discard pile && it is your own card
                 {
                     StartDragging(e);
                 }
@@ -433,7 +433,7 @@ namespace BrawlTCG_alpha.Visuals
             LegendCard legendCard = (LegendCard)legendCC.Card;
 
             // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.GetActivePlayer(), _game); // send attack name? // attacking legend card index
+            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
             UI_UpdatePlayerInformation(otherPlayer);
 
             // Notify
@@ -450,7 +450,7 @@ namespace BrawlTCG_alpha.Visuals
             LegendCard targetLegend = (LegendCard)enemyCC.Card;
 
             // Apply the Damage
-            _game.GetSelectedAttack().Effect.Invoke(legendCard, targetLegend, _game.GetSelectedAttack(), _game.GetActivePlayer(), _game);
+            _game.GetSelectedAttack().Effect.Invoke(legendCard, targetLegend, _game.GetSelectedAttack(), _game.ActivePlayer, _game);
             
             // Update cc
             enemyCC.Invalidate();

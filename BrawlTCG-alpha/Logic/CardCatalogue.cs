@@ -33,7 +33,7 @@ namespace BrawlTCG_alpha.Logic
             { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 10, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AC.Spear_Stab, attack2: AC.Orb_Throw, attack3: AC.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 5, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AC.Axe_Swing, attack2: AC.Gauntlets_Punch, attack3: AC.Gauntlets_PowerPunch) },
             { 1004, new LegendCard(id: 1004, "Kor", 2, Elements.Nature, Images.Kor, 0, 0, 16, 0, Weapons.Gauntlets, Weapons.Hammer) },
-            { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 5, 12, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack2: AC.Hammer_Gimp, attack3:AC.Yumiko_GrabOrbs) },
+            { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack2: AC.Hammer_Gimp, attack3:AC.Yumiko_GrabOrbs) },
             { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: AC.ForestSpirit_Explode, attack2: AC.ForestSpirit_Heal) }, // bugged
 
             // Fire
