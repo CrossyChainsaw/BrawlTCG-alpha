@@ -123,6 +123,26 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CardChest {
+            get {
+                object obj = ResourceManager.GetObject("CardChest", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Dander {
+            get {
+                object obj = ResourceManager.GetObject("Dander", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DarkMage {
             get {
                 object obj = ResourceManager.GetObject("DarkMage", resourceCulture);
@@ -503,6 +523,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SpaceTime {
+            get {
+                object obj = ResourceManager.GetObject("SpaceTime", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SpearIcon {
             get {
                 object obj = ResourceManager.GetObject("SpearIcon", resourceCulture);
@@ -586,6 +616,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Vial_of_Crows {
             get {
                 object obj = ResourceManager.GetObject("Vial_of_Crows", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap XullsFury {
+            get {
+                object obj = ResourceManager.GetObject("XullsFury", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

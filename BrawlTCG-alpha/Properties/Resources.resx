@@ -136,6 +136,12 @@
   <data name="BriarRose" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BriarRose.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CardChest" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CardChest.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Dander" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Dander.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="DarkMage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DarkMage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -250,6 +256,9 @@
   <data name="Snowball" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Snowball.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SpaceTime" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SpaceTime.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SpearIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SpearIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -276,6 +285,9 @@
   </data>
   <data name="Vial_of_Crows" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Vial_of_Crows.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="XullsFury" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\XullsFury.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Yumiko" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Yumiko.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

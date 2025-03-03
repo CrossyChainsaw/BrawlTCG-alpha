@@ -18,7 +18,7 @@ namespace BrawlTCG_alpha.Logic
         public Player InactivePlayer => _playerManager.InactivePlayer;
         public Player Me => _playerManager.Me;
         public Player Opponent => _playerManager.Opponent;
-        public int RandomCardID { get; set; }
+        public int RandomCardID { get; set; } = -1;
 
         // Fields
         const int STARTING_ESSENCE = 1; // 1
@@ -113,18 +113,21 @@ namespace BrawlTCG_alpha.Logic
         }
         public Task StartTurn()
         {
-            // Before you start
-            UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.Hand, false); // disable enemy cards
+            // Start Turn
             DrawCardFromDeck(ActivePlayer); // draw card
-            ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
+            _stageCardManager.StartTurnEffect(ActivePlayer);
+            BurnDamage();
+            UI_UpdateCardControlInPlayingFieldInformation.Invoke();
             _playerManager.ActivePlayer.GetEssence();
+
+            ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
             UI_UpdatePlayerInformation.Invoke(ActivePlayer);
             return Task.CompletedTask;
         }
         public void ShowCards()
         {
             UI_ShowCards(_playerManager.Me, true);
-            //UI_ShowCards(Opponent, true);
+            //UI_ShowCards(Opponent, true); // show opponent cards for debugging
         }
 
         public void SwitchTurn()
@@ -151,20 +154,14 @@ namespace BrawlTCG_alpha.Logic
             // Enable all the cards on the field
             UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
             UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
-
-            // START TURN
-            // stage start turn effect
-            _stageCardManager.StartTurnEffect(ActivePlayer);
-
-            // burn damage
+        }
+        void BurnDamage()
+        {
             List<LegendCard> legends = GetAllMyLegendsOnThePlayingField(ActivePlayer);
             foreach (LegendCard legend in legends)
             {
                 legend.TakeBurnDamage();
             }
-
-            // Update legends information in playing field
-            UI_UpdateCardControlInPlayingFieldInformation.Invoke();
         }
         public void DrawCardFromDeck(Player player)
         {

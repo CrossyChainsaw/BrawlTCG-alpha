@@ -206,6 +206,11 @@ namespace BrawlTCG_alpha.Logic.Cards
             DefaultAttack(attacker, target, attack);
         });
 
+        public static Attack Katar_Slash = new Attack("Slash", 0, Weapons.Katars, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+
 
 
 
@@ -271,13 +276,13 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack ForestSpirit_Explode = new Attack("Explode", 1, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack ForestSpirit_Explode = new Attack("Explode", 0, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int recoil = int.MaxValue;
             DefaultAttack(attacker, target, attack);
             attacker.LoseHealth(recoil);
         });
-        public static Attack ForestSpirit_Heal = new Attack("Heal", 1, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack ForestSpirit_Heal = new Attack("Heal", 0, Weapons.Any, 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int healAmount = attacker.Power;
             LegendCard legend = (LegendCard)target;
