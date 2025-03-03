@@ -108,12 +108,14 @@ namespace BrawlTCG_alpha
             game.UI_Multi_InitializeDeckPiles += InitializeDeckPiles;
             // Non-Player
             game.UI_PopUpNotification += (message) => MessageBox.Show(message);
+            // Network
+            game.NETWORK_SendMessage += SendMessageToPeer;
         }
 
 
         // Networking Methods
 
-        public void SendMessageToServer(string message)
+        public void SendMessageToPeer(string message)
         {
             try
             {
@@ -316,6 +318,10 @@ namespace BrawlTCG_alpha
                         {
                             legendCC.AttackLegendCard(legendCC, targetCC);
                         }));
+                    }
+                    else if (parts[0] == "RANDOM_CARD_ID")
+                    {
+                        _game.RandomCardID = Convert.ToInt32(parts[1]);
                     }
                 }
             }
@@ -861,7 +867,7 @@ namespace BrawlTCG_alpha
                             PlayWeaponCard(player, legendCard, weapon, cardControlOld);
 
                             // communicate to opponent
-                            SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}");
+                            SendMessageToPeer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}");
 
                             return true;
                         }
@@ -895,7 +901,7 @@ namespace BrawlTCG_alpha
                         PlayLegendCard(player, legendCard, cardControlOld, playZone);
 
                         // communicate to opponent
-                        SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.PlayingField}");
+                        SendMessageToPeer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.PlayingField}");
 
                         return true;
                     }
@@ -927,7 +933,7 @@ namespace BrawlTCG_alpha
                     PlayStageCard(player, (StageCard)card);
 
                     // communicate to opponent
-                    SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.Stage}");
+                    SendMessageToPeer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.Stage}");
 
                     return true;
                 }
@@ -953,7 +959,7 @@ namespace BrawlTCG_alpha
                     PlayEssenceCard(player, card, cardControlOld, essenceZone);
 
                     // Communicate to opponent
-                    SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.EssenceField}");
+                    SendMessageToPeer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.EssenceField}");
 
                     return true;
                 }
@@ -1025,7 +1031,7 @@ namespace BrawlTCG_alpha
                         PlayBattleCard(player, battleCard, cardControlOld, targetCardControl);
 
                         // Communicate to opponent
-                        SendMessageToServer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}:FRIENDLY_FIRE:{friendlyFire}");
+                        SendMessageToPeer($"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_LEGEND:{fieldIndexCC}:FRIENDLY_FIRE:{friendlyFire}");
 
                         return true;
                     }
@@ -1341,7 +1347,7 @@ namespace BrawlTCG_alpha
             if (keyData == Keys.Space && _game.GetMe() == _game.GetActivePlayer())
             {
                 // Send END_TURN to the server
-                SendMessageToServer("SWITCH_TURN");
+                SendMessageToPeer("SWITCH_TURN");
                 SwitchTurn();
             }
             return base.ProcessCmdKey(ref msg, keyData);

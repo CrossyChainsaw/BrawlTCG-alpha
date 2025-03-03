@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 using BrawlTCG_alpha.Logic.Cards;
+using BrawlTCG_alpha.Logic;
 using BrawlTCG_alpha.Visuals;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,12 @@ namespace BrawlTCG_alpha.Logic
     internal class Game
     {
         // Properties
-        private Player ActivePlayer => _playerManager.ActivePlayer;
-        private Player InactivePlayer => _playerManager.InactivePlayer;
-        
+        public Player ActivePlayer => _playerManager.ActivePlayer;
+        public Player InactivePlayer => _playerManager.InactivePlayer;
+        public Player Me => _playerManager.Me;
+        public Player Opponent => _playerManager.Opponent;
+        public int RandomCardID { get; set; }
+
         // Fields
         const int STARTING_ESSENCE = 1; // 1
         const int STARTING_HAND_CARDS = 7; // 7
@@ -37,6 +41,8 @@ namespace BrawlTCG_alpha.Logic
         // Set in Ctor
         public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
         public event Action<string> UI_PopUpNotification;
+        // Networking
+        public event Action<string> NETWORK_SendMessage;
         // Fields
         StageCardManager _stageCardManager;
         PlayerManager _playerManager;
@@ -203,6 +209,10 @@ namespace BrawlTCG_alpha.Logic
                 legends.Add(legend);
             }
             return legends;
+        }
+        public void SendMessageToPeer(string msg)
+        {
+            NETWORK_SendMessage.Invoke(msg);
         }
 
         // AttackManager

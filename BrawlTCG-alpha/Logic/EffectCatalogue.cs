@@ -104,8 +104,33 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static void GenerateRandomCard(object target, Card card, Game game)
         {
-            Card generatedCard = CardCatalogue.GetRandomCard();
-            game.AddCardToHandZone(game.GetActivePlayer(), generatedCard);
+            // target must be the form here if possible
+
+            if (game.ActivePlayer == game.Me)
+            {
+                // generate random card
+                Card generatedCard = CardCatalogue.GetRandomCard();
+                // send random card id
+                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
+                // add card to deck
+                game.AddCardToHandZone(game.GetActivePlayer(), generatedCard);
+            }
+            else
+            {
+                // get the random card the peer got
+                if (game.RandomCardID == -1)
+                {
+                    while (game.RandomCardID == -1)
+                    {
+                        // wait till its not -1
+                    }
+                }
+                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
+                // add to his hand
+                game.AddCardToHandZone(game.GetActivePlayer(), generatedCard);
+                // reset the property
+                game.RandomCardID = -1;
+            }
         }
 
         public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)

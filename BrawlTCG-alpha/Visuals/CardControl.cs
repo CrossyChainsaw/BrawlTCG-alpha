@@ -334,7 +334,7 @@ namespace BrawlTCG_alpha.Visuals
                     Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
                 };
                 legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
-                legendCardControl.NETWORK_SendMessage += frm.SendMessageToServer;
+                legendCardControl.NETWORK_SendMessage += frm.SendMessageToPeer;
                 // UI
                 parentForm.Controls.Add(legendCardControl);
                 legendCardControl.BringToFront();
