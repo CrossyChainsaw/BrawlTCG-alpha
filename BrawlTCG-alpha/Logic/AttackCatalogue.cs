@@ -173,10 +173,17 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
+
+        // Tap Out
         public static Attack Any_Seduce = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             TapEnemyCard(attacker, target, attack);
         });
+        public static Attack Any_Freeze = new Attack("Freeze", 0, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            TapEnemyCard(attacker, target, attack);
+        });
+
         public static Attack Any_BurnForThreeCard = new Attack("Draw Three Cards", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DrawCards(attacker, target, attack, activePlayer, game, nCards: 3);
@@ -207,6 +214,15 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
 
         public static Attack Katar_Slash = new Attack("Slash", 0, Weapons.Katars, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+        public static Attack Sword_Slash = new Attack("Slash", 0, Weapons.Sword, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+
+        public static Attack Blaster_Shot = new Attack("Shot", 0, Weapons.Blasters, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });

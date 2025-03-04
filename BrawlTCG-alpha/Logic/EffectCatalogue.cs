@@ -91,6 +91,20 @@ namespace BrawlTCG_alpha.Logic.Cards
             //// flip to show
             //game.ShowCards();
         }
+        public static void GenerateAndPlayMustafar(object target, Card card, Game game)
+        {
+            // first give the player essence before playing it!
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(100); // #100: Mustafar
+            StageCard card2 = generatedCard;
+            game.ActivePlayer.GainEssence(card2.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, card2);
+            game.PlayStageCard(card2);
+
+            //// add to hand
+            //game.AddCardToHandZone(game.ActivePlayer, card2);
+            //// flip to show
+            //game.ShowCards();
+        }
 
         public static void GenerateAndPlayWorkshop(object target, Card card, Game game)
         {

@@ -211,6 +211,10 @@ namespace BrawlTCG_alpha.Logic
         {
             NETWORK_SendMessage.Invoke(msg);
         }
+        public void EnableCardsInZone(Player p, ZoneTypes z, bool enabled)
+        {
+            UI_EnableCardsInZone.Invoke(p, z, enabled);
+        }
 
         // AttackManager
         public Attack GetSelectedAttack()

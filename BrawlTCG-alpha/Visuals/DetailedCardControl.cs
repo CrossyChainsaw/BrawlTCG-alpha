@@ -306,6 +306,8 @@ namespace BrawlTCG_alpha.Visuals
                             {
                                 cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
                             }
+                            // enable friendly cards
+                            _game.EnableCardsInZone(Owner, ZoneTypes.PlayingField, true);
                         }
                         else if (otherPlayer.PlayingField.Count > 0)
                         {
@@ -354,7 +356,7 @@ namespace BrawlTCG_alpha.Visuals
                                 _game.StartAttack(attack);
                             }
                         }
-                        foreach (Button attackButton in _attackButtons.ToList())
+                        foreach (Button attackButton in _attackButtons.ToList()) // wtf why everyone's attacks
                         {
                             attackButton.Enabled = false;
                         }

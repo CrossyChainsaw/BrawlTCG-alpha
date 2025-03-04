@@ -360,12 +360,6 @@ namespace BrawlTCG_alpha
             {
                 if (enable && CC.Card.IsOpen)
                 {
-                    // if already attacked, don't enable
-                    if (CC.Card is LegendCard legend && legend.AttackedThisTurn)
-                    {
-                        EnableCC(CC, false);
-                        continue;
-                    }
                     EnableCC(CC, true);
                 }
                 else
