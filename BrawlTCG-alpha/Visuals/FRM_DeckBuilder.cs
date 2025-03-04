@@ -34,7 +34,7 @@ namespace BrawlTCG_alpha.Visuals
         private bool isPlayer1Turn = true; // Track whose turn it is to build the deck
         private bool isPlayer1DeckSaved = false;
         private bool isPlayer2DeckSaved = false;
-        private ListBox listLegendAttacks; // Add this as a class-level variable
+        private ListBox listLegendAttacks, listCardEffects;
 
         public FRM_DeckBuilder()
         {
@@ -97,6 +97,9 @@ namespace BrawlTCG_alpha.Visuals
 
             listLegendAttacks = new ListBox { Location = new Point(20, 460), Size = new Size(600, 100), Visible = false };
             Controls.Add(listLegendAttacks);
+
+            listCardEffects = new ListBox { Location = new Point(20, 570), Size = new Size(600, 100), Visible = false };
+            Controls.Add(listCardEffects);
         }
 
         private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
@@ -111,15 +114,14 @@ namespace BrawlTCG_alpha.Visuals
                 if (selectedCard is LegendCard legend)
                 {
                     listLegendAttacks.Items.Clear();
-                    listLegendAttacks.Visible = true; // Show the attack list
+                    listLegendAttacks.Visible = true;
 
-                    // Add each attack's name and damage
                     foreach (var attack in legend.GetAttacks())
                     {
                         string weaponDescription = attack.WeaponTwo != null
-                        ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)} + {attack.WeaponTwoAmount}x {attack.WeaponTwo} {GetBurnWeaponEmojis(attack.WeaponTwoBurnAmount)}"
-                        : $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)}";
-                        weaponDescription += attack.MultiHit ? "- Hits All" : "";
+                            ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)} + {attack.WeaponTwoAmount}x {attack.WeaponTwo} {GetBurnWeaponEmojis(attack.WeaponTwoBurnAmount)}"
+                            : $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)}";
+                        weaponDescription += attack.MultiHit ? " - Hits All" : "";
 
                         int dmg = AttackCatalogue.CalculateDamage(legend, attack);
                         listLegendAttacks.Items.Add($"{weaponDescription} - {dmg} Damage - {attack.Name}");
@@ -127,8 +129,33 @@ namespace BrawlTCG_alpha.Visuals
                 }
                 else
                 {
-                    listLegendAttacks.Visible = false; // Hide if it's not a Legend card
+                    listLegendAttacks.Visible = false;
                 }
+
+                // Display card effects
+                listCardEffects.Items.Clear();
+                listCardEffects.Visible = false;
+
+                if (selectedCard.StartTurnEffect != null) listCardEffects.Items.Add("Start Turn Effect");
+                if (selectedCard.EndTurnEffect != null) listCardEffects.Items.Add("End Turn Effect");
+                if (selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add("When Played Effect");
+                if (selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add("When Discarded Effect");
+
+                // Check for WhileInPlayEffect if it's a StageCard
+                if (selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
+                {
+                    listCardEffects.Items.Add("While In Play Effect");
+                }
+
+                if (listCardEffects.Items.Count > 0)
+                {
+                    listCardEffects.Visible = true;
+                }
+            }
+            else
+            {
+                listLegendAttacks.Visible = false;
+                listCardEffects.Visible = false;
             }
         }
         string GetBurnWeaponEmojis(int nBurn)
