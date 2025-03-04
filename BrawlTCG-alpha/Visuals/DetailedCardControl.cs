@@ -361,8 +361,8 @@ namespace BrawlTCG_alpha.Visuals
                             attackButton.Enabled = false;
                         }
                         attackButton.BackColor = Color.LightGreen;
-                        
-                        
+
+
                         // Recoil Check dead
                         if (attack.Recoil > 0)
                         {
@@ -422,16 +422,16 @@ namespace BrawlTCG_alpha.Visuals
                         attackButton.Enabled = false;
                     }
                 }
-                string GetBurnWeaponEmojis(int nBurn)
-                {
-                    string emojis = "";
-                    for (int i = 0; i < nBurn; i++)
-                    {
-                        emojis += "🔥";
-                    }
-                    return emojis;
-                }
             }
+        }
+        string GetBurnWeaponEmojis(int nBurn)
+        {
+            string emojis = "";
+            for (int i = 0; i < nBurn; i++)
+            {
+                emojis += "🔥";
+            }
+            return emojis;
         }
         public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
         {

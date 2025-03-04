@@ -34,6 +34,7 @@ namespace BrawlTCG_alpha.Visuals
         private bool isPlayer1Turn = true; // Track whose turn it is to build the deck
         private bool isPlayer1DeckSaved = false;
         private bool isPlayer2DeckSaved = false;
+        private ListBox listLegendAttacks; // Add this as a class-level variable
 
         public FRM_DeckBuilder()
         {
@@ -74,8 +75,7 @@ namespace BrawlTCG_alpha.Visuals
             btnSaveDeck.Click += BtnSaveDeck_Click;
             Controls.Add(btnSaveDeck);
 
-
-            btnSwitchPlayer = new Button { Text = "Switch to Player 2", Location = new Point(20, 460), Size = new Size(150, 30) };
+            btnSwitchPlayer = new Button { Text = "Switch to Player 2", Location = new Point(840, 580), Size = new Size(100, 60) };
             btnSwitchPlayer.Click += BtnSwitchPlayer_Click;
             Controls.Add(btnSwitchPlayer);
 
@@ -94,6 +94,51 @@ namespace BrawlTCG_alpha.Visuals
 
             picCardPreview = new PictureBox { Location = new Point(640, 460), Size = new Size(180, 240), BorderStyle = BorderStyle.FixedSingle };
             Controls.Add(picCardPreview);
+
+            listLegendAttacks = new ListBox { Location = new Point(20, 460), Size = new Size(600, 100), Visible = false };
+            Controls.Add(listLegendAttacks);
+        }
+
+        private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listAvailableCards.SelectedItems.Count > 0)
+            {
+                var selectedCard = (Card)listAvailableCards.SelectedItems[0].Tag;
+                picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
+                picCardPreview.Image = selectedCard.Image ?? null;
+
+                // Check if the selected card is a Legend
+                if (selectedCard is LegendCard legend)
+                {
+                    listLegendAttacks.Items.Clear();
+                    listLegendAttacks.Visible = true; // Show the attack list
+
+                    // Add each attack's name and damage
+                    foreach (var attack in legend.GetAttacks())
+                    {
+                        string weaponDescription = attack.WeaponTwo != null
+                        ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)} + {attack.WeaponTwoAmount}x {attack.WeaponTwo} {GetBurnWeaponEmojis(attack.WeaponTwoBurnAmount)}"
+                        : $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)}";
+                        weaponDescription += attack.MultiHit ? "- Hits All" : "";
+
+                        int dmg = AttackCatalogue.CalculateDamage(legend, attack);
+                        listLegendAttacks.Items.Add($"{weaponDescription} - {dmg} Damage - {attack.Name}");
+                    }
+                }
+                else
+                {
+                    listLegendAttacks.Visible = false; // Hide if it's not a Legend card
+                }
+            }
+        }
+        string GetBurnWeaponEmojis(int nBurn)
+        {
+            string emojis = "";
+            for (int i = 0; i < nBurn; i++)
+            {
+                emojis += "🔥";
+            }
+            return emojis;
         }
 
         private void LoadCards()
@@ -216,15 +261,15 @@ namespace BrawlTCG_alpha.Visuals
             ToggleSaveDeckButton();
         }
 
-        private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listAvailableCards.SelectedItems.Count > 0)
-            {
-                var card = (Card)listAvailableCards.SelectedItems[0].Tag;
-                picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
-                picCardPreview.Image = card.Image ?? null;
-            }
-        }
+        //private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (listAvailableCards.SelectedItems.Count > 0)
+        //    {
+        //        var card = (Card)listAvailableCards.SelectedItems[0].Tag;
+        //        picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
+        //        picCardPreview.Image = card.Image ?? null;
+        //    }
+        //}
 
         private void BtnSaveDeck_Click(object sender, EventArgs e)
         {
