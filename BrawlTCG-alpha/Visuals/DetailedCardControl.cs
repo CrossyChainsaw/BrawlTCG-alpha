@@ -256,6 +256,11 @@ namespace BrawlTCG_alpha.Visuals
                 // Add click event
                 attackButton.Click += (sender, e) =>
                 {
+                    if (_game.ActivePlayer != _game.Me)
+                    {
+                        MessageBox.Show("It is not your turn!");
+                        return;
+                    }
                     if (this.OriginalCardControl.Card is LegendCard legend && legend.AttackedThisTurn == true)
                     {
                         MessageBox.Show("This legend already attacked this turn");
