@@ -25,12 +25,12 @@ namespace BrawlTCG_alpha.Logic
             { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: EffectCatalogue.GenerateRandomCard) },
             { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: EffectCatalogue.EvilHideoutWhenPlayed, whileInPlayEffect: EffectCatalogue.EvilHideoutWhilePlay, whenDiscardedEffect: EffectCatalogue.EvilHideoutWhenDiscard) }, // all fire, wild, shadow legends get+3 attack
             { 105, new StageCard(id:105, "Space Time", 2, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: EffectCatalogue.DrawTwoCards) },
-
+            // only cosmic cards can attack cost: 5
 
             // Nature
-            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 7, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_Seduce) }, // speed stance 
+            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_Seduce) }, // speed stance 
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: AC.Greatsword_Swing, attack2: AC.Greatsword_String) },
-            { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 10, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AC.Spear_Stab, attack2: AC.Orb_Throw, attack3: AC.DeathCap_Storm) },
+            { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 5, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AC.Spear_Stab, attack2: AC.Orb_Throw, attack3: AC.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 5, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AC.Axe_Swing, attack2: AC.Gauntlets_Punch, attack3: AC.Gauntlets_PowerPunch) },
             { 1004, new LegendCard(id: 1004, "Kor", 2, Elements.Nature, Images.Kor, 0, 0, 16, 0, Weapons.Gauntlets, Weapons.Hammer) },
             { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack2: AC.Hammer_Gimp, attack3:AC.Yumiko_GrabOrbs) },
@@ -41,11 +41,15 @@ namespace BrawlTCG_alpha.Logic
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: AC.Spear_Stab, attack2: AC.Heatblast_Burn) },
             { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: AC.Axe_Swing, attack2: AC.Lance_Flamethrower, whenPlayedEffect: EffectCatalogue.GenerateAndPlayWorkshop) }, // craft a fire card
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.BrawlLogo, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMustafar)},
+            { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.BrawlLogo, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: AC.Sword_Slash, attack2: AC.Axe_Swing)},
+
 
             // Cosmic
             { 3000, new LegendCard(id: 3000, "Artemis", 3, Elements.Cosmic, Images.Artemis, 5, 5, 12, 0, Weapons.RocketLance, Weapons.Scythe, attack1: AC.Scythe_Slash, attack2: AC.Scythe_Gimp, attack3: AC.Lance_Flamethrower) },
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: AC.Spear_Stab, attack2: AC.Lance_Flamethrower) },
             { 3002, new LegendCard(id: 3002, "Wu Shang", 4, Elements.Cosmic, Images.Spyrox_WuShang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: AC.Spear_Stab, attack2: AC.Gauntlets_Punch, attack3: AC.WuShang_DownSig) },
+            { 3003, new LegendCard(id: 3003, "Aurora Brynn", 5, Elements.Cosmic, Images.BrawlLogo, 10, 2, 16, 0, Weapons.Axe, Weapons.Spear, attack1: AC.Axe_Swing, attack2: AC.Spear_Stab) },
+            { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.BrawlLogo, 14, 1, 4, 0, Weapons.Blasters, Weapons.Spear, attack1: AC.Blaster_Shot) },
 
 
             // Magic

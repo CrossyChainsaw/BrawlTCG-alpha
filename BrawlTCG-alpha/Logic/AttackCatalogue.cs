@@ -217,6 +217,15 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
+        public static Attack Sword_Slash = new Attack("Slash", 0, Weapons.Sword, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
+
+        public static Attack Blaster_Shot = new Attack("Shot", 0, Weapons.Blasters, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
 
 
 
