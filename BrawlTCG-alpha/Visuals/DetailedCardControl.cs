@@ -392,7 +392,7 @@ namespace BrawlTCG_alpha.Visuals
                 void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
                 {
                     // only enable them if this is your legend && if the card is on the playing field
-                    if (Owner == _game.ActivePlayer)
+                    if (Owner == _game.ActivePlayer && legendCard.OnPlayingField)
                     {
                         // Assume the attack can be played unless we find a reason it can't
                         bool canPlayAttack = true;
