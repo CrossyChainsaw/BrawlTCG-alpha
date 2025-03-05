@@ -36,8 +36,6 @@ namespace BrawlTCG_alpha
         private bool _isHost, _myTurn;
 
         // Methods
-
-        // For Host
         internal FRM_Game(TcpListener host, TcpClient client, Player hostPlayer, Player peerPlayer)
         {
             // setup
@@ -54,15 +52,13 @@ namespace BrawlTCG_alpha
 
             // SETUP GAME
             _game = new Game(hostPlayer, peerPlayer, (message) => MessageBox.Show(message), EnableCardsInZone);
-            SetupBoard(_game);
+            InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
 
             // Start listening for incoming messages
             Task.Run(() => ListenForMessages());
-        }
-
-        // For Peer
+        } // Host
         internal FRM_Game(TcpClient client, Player hostPlayer, Player peerPlayer)
         {
             // setup
@@ -79,15 +75,16 @@ namespace BrawlTCG_alpha
 
             // SETUP GAME
             _game = new Game(peerPlayer, hostPlayer, (message) => MessageBox.Show(message), EnableCardsInZone);
-            SetupBoard(_game);
+            InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
 
             // Start listening for incoming messages
             Task.Run(() => ListenForMessages());
-        }
+        } // Peer
 
-        void SetupBoard(Game game)
+
+        void InitializeGameUI(Game game)
         {
             BackColor = _gameBackgroundColor; // background color
 
@@ -132,8 +129,6 @@ namespace BrawlTCG_alpha
                 MessageBox.Show($"Failed to send message: {ex.Message}");
             }
         }
-
-        // Methods
         async Task ListenForMessages()
         {
             while (true)

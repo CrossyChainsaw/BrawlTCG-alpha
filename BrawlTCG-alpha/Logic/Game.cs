@@ -129,7 +129,6 @@ namespace BrawlTCG_alpha.Logic
             UI_ShowCards(_playerManager.Me, true);
             //UI_ShowCards(Opponent, true); // show opponent cards for debugging
         }
-
         public void SwitchTurn()
         {
             // END TURN
