@@ -11,7 +11,7 @@ using AC = BrawlTCG_alpha.Logic.Cards.AttackCatalogue;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class CardCatalogue
+    public class CardCatalogue
     {
         public static Dictionary<int, Card> CardDictionary = new Dictionary<int, Card>()
         {

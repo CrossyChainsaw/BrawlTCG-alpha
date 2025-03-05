@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class Deck
+    public class Deck
     {
         public static List<Card> LoadDeckFromFile(string filePath)
         {

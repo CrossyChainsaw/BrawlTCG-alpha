@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class Game
+    public class Game
     {
         // Properties
         public Player ActivePlayer => _playerManager.ActivePlayer;
@@ -27,12 +27,10 @@ namespace BrawlTCG_alpha.Logic
 
         // VISUALS
         public event Action UI_InitializeZones;
-        public event Action UI_Multi_InitializeDeckPiles;
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
         public event Action<Player, Card> UI_AddCardToHandZone;
         public event Action<Player, StageCard> UI_PlayStageCard;
-        public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
         public event Action<Player, bool> UI_ShowCards;
@@ -40,46 +38,48 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_UntapPlayerCards;
         // Set in Ctor
         public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
-        public event Action<string> UI_PopUpNotification;
-        // Networking
-        public event Action<string> NETWORK_SendMessage;
+
         // Fields
         StageCardManager _stageCardManager;
         PlayerManager _playerManager;
         AttackManager _attackManager;
+        NetworkManager _networkManager;
+        UIManager _uiManager;
 
 
 
-        public Game(Player player1, Player player2, Action<string> ui_PopUpNotification, Action<Player, ZoneTypes, bool> ui_EnableCardsInZone)
+        public Game(Player player1, Player player2, Action<Player, ZoneTypes, bool> ui_EnableCardsInZone, NetworkManager networkManager, UIManager uiManager)
         {
             // UI Stuff
-            UI_PopUpNotification += ui_PopUpNotification;
             UI_EnableCardsInZone += ui_EnableCardsInZone;
 
             // Managers
+            _uiManager = uiManager;
             _stageCardManager = new StageCardManager(this);
-            _playerManager = new PlayerManager(player1, player2, UI_PopUpNotification);
+            _playerManager = new PlayerManager(player1, player2, _uiManager);
             _attackManager = new AttackManager(UI_EnableCardsInZone);
+            _networkManager = networkManager;
         }
         public void Prepare()
         {
             // Setup all the zones visually
-            UI_InitializeZones.Invoke();
+            _uiManager.InitializeZones();
 
             // Define Players
             //RandomizeStartingPlayer(); // host always starts
 
             // Initialize Decks Visually
-            UI_Multi_InitializeDeckPiles.Invoke();
+            _uiManager.InitializeDeckPile(ActivePlayer);
+            _uiManager.InitializeDeckPile(InactivePlayer);
+
             UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
             UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
             DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
             DrawStartingHand(InactivePlayer, STARTING_HAND_CARDS);
-
-            UI_InitializeCardsInHand.Invoke(ActivePlayer);
-            UI_InitializeCardsInHand.Invoke(InactivePlayer);
+            _uiManager.InitializeCardsInHand(ActivePlayer);
+            _uiManager.InitializeCardsInHand(InactivePlayer);
 
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
@@ -206,13 +206,15 @@ namespace BrawlTCG_alpha.Logic
             }
             return legends;
         }
-        public void SendMessageToPeer(string msg)
-        {
-            NETWORK_SendMessage.Invoke(msg);
-        }
         public void EnableCardsInZone(Player p, ZoneTypes z, bool enabled)
         {
             UI_EnableCardsInZone.Invoke(p, z, enabled);
+        }
+
+        // NetworkManager
+        public void SendMessageToPeer(string msg)
+        {
+            _networkManager.SendMessageToPeer(msg);
         }
 
         // AttackManager

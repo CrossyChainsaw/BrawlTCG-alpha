@@ -17,11 +17,13 @@ namespace BrawlTCG_alpha.Logic
         public bool MyTurn { get; set; } = false;
 
         // Fields
-        public event Action<string> UI_PopUpNotification;
+        UIManager _uiManager;
 
         // Methods
-        public PlayerManager(Player p1, Player p2, Action<string> ui_popUpNotification)
+        public PlayerManager(Player p1, Player p2, UIManager uiManager)
         {
+            _uiManager = uiManager;
+
             // Determine Me & Opponent
             if (p1.IsMe)
             {
@@ -48,8 +50,7 @@ namespace BrawlTCG_alpha.Logic
                 MyTurn = false;
             }
 
-            // Setup popup
-            UI_PopUpNotification += ui_popUpNotification;
+            _uiManager.MessageBox($"{ActivePlayer.Name} Starts");
         }
         public Player GetOtherPlayer(Player p)
         {
@@ -79,7 +80,6 @@ namespace BrawlTCG_alpha.Logic
                 InactivePlayer = Me;
                 ActivePlayer = Opponent;
                 MyTurn = false;
-                UI_PopUpNotification("Top Player Starts");
             }
             else
             {
@@ -87,8 +87,8 @@ namespace BrawlTCG_alpha.Logic
                 InactivePlayer = Opponent;
                 ActivePlayer = Me;
                 MyTurn = true;
-                UI_PopUpNotification("Bottom Player Starts");
             }
+            _uiManager.MessageBox($"{ActivePlayer.Name} Starts");
         }
         public void SwitchActivePlayer()
         {

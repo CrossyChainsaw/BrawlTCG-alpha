@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    enum Weapons
+    public enum Weapons
     {
         Any,
         Blasters,
@@ -26,7 +26,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         Hammer,
     }
 
-    internal class WeaponCard : Card
+    public class WeaponCard : Card
     {
         // Properties
         public Weapons Weapon { get; internal set; }

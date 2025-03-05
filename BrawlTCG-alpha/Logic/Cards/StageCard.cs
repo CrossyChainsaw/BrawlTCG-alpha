@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BrawlTCG_alpha.Logic.Cards
 {
     // ideas: start turn both players get a x sword
-    internal class StageCard : Card
+    public class StageCard : Card
     {
         public Action<object, Card, Game>? WhileInPlayEffect { get; internal set; }
 

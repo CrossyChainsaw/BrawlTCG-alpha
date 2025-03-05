@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Visuals
 {
-    enum ZoneTypes
+    public enum ZoneTypes
     {
         Deck,
         Hand,
@@ -18,7 +18,7 @@ namespace BrawlTCG_alpha.Visuals
         PlayerInfo
     }
 
-    internal class ZoneControl : UserControl
+    public  class ZoneControl : UserControl
     {
         // Fields
         public ZoneTypes ZoneType { get; internal set; }

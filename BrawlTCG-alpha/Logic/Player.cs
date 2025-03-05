@@ -9,7 +9,7 @@ using BrawlTCG_alpha.Visuals;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class Player
+    public class Player
     {
         // Fields
         const int STARTING_HEALTH = 30;

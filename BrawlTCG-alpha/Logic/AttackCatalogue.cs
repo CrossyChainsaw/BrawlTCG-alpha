@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class AttackCatalogue
+    public class AttackCatalogue
     {
         // target is Player or LegendCard
         public static void DefaultAttack(LegendCard attacker, object target, Attack attack, bool burn = false)

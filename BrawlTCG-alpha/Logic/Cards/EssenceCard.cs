@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class EssenceCard : Card
+    public class EssenceCard : Card
     {
         const int ESSENCE_GAIN = 1;
         public EssenceCard(int id, string name, int cost, Elements element, Image image) : base(id, name, cost, element, image)
