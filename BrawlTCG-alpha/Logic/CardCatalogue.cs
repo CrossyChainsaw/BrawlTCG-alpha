@@ -39,7 +39,7 @@ namespace BrawlTCG_alpha.Logic
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: AC.Scythe_Slash, attack2: AC.Scythe_Gimp, attack3: AC.Lance_Flamethrower, attack4: AC.Artemis_IronLady_MeltDown) },
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: AC.Spear_Stab, attack2: AC.Heatblast_Burn) },
-            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: AC.Axe_Swing, attack2: AC.Lance_Flamethrower, whenPlayedEffect: EffectCatalogue.GenerateAndPlayWorkshop) }, // craft a fire card
+            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: AC.Axe_Swing, attack2: AC.Lance_Flamethrower, attack3: AC.Any_CraftFireCard, whenPlayedEffect: EffectCatalogue.GenerateAndPlayWorkshop) }, // craft a fire card
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: AC.Sword_Slash, attack2: AC.Axe_Swing)},
 
@@ -239,6 +239,24 @@ namespace BrawlTCG_alpha.Logic
 
             return CardDictionary[randomKey].Clone(); // Clone to avoid modifying the original
         }
+        public static Card GetRandomFireCard()
+        {
+            var random = new Random();
+
+            // Filter fire cards from the dictionary
+            var fireCards = CardDictionary.Values.Where(card => card.Element == Elements.Fire).ToList();
+
+            // Ensure there are fire cards available
+            if (fireCards.Count == 0)
+            {
+                throw new Exception("No fire cards available.");
+            }
+
+            // Select a random fire card
+            return fireCards[random.Next(fireCards.Count)].Clone(); // Clone to avoid modifying the original
+        }
+
+
 
 
         public static List<Card> CloneList(List<Card> originalList)

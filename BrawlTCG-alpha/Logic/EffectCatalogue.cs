@@ -147,6 +147,38 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         }
 
+        public static void GenerateRandomFireCard(object target, Card card, Game game)
+        {
+            // target must be the form here if possible
+
+            if (game.ActivePlayer == game.Me)
+            {
+                // generate random card
+                Card generatedCard = CardCatalogue.GetRandomFireCard();
+                // send random card id
+                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
+                // add card to deck
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+            }
+            else
+            {
+                // get the random card the peer got
+                if (game.RandomCardID == -1)
+                {
+                    while (game.RandomCardID == -1)
+                    {
+                        // wait till its not -1
+                    }
+                }
+                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
+                // add to his hand
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                // reset the property
+                game.RandomCardID = -1;
+            }
+        }
+
+
         public static void DrawCard(object target, Card card, Game game)
         {
             game.DrawCardFromDeck(game.ActivePlayer);

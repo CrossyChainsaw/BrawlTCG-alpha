@@ -139,6 +139,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             // flip to show
             game.ShowCards();
         }
+        public static void GenerateRandomFireCard(object target, Card card, Game game)
+        {
+            EffectCatalogue.GenerateRandomFireCard(target, card, game);
+        }
 
         // Default Weapon Attacks
         public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -227,7 +231,11 @@ namespace BrawlTCG_alpha.Logic.Cards
             DefaultAttack(attacker, target, attack);
         });
 
-
+        public static Attack Any_CraftFireCard = new Attack("Craft Fire Card", -1000, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            GenerateRandomFireCard(target, attacker, game);
+            game.ShowCards();
+        }, instaEffect: true);
 
 
         // Signature Attacks
