@@ -306,7 +306,7 @@ namespace BrawlTCG_alpha.Visuals
                         // PREPARE FOR A LEGEND ATTACK
                         else if (attack.FriendlyFire == true)
                         {
-                            ZoneControl myPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, Owner);
+                            ZoneControl myPlayingFieldZone = parentForm.UI.GetMyZone(ZoneTypes.PlayingField, Owner);
                             foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
                             {
                                 cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
@@ -319,7 +319,7 @@ namespace BrawlTCG_alpha.Visuals
                             if (attack.MultiHit)
                             {
                                 // Attack Everyone
-                                ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
+                                ZoneControl opponentPlayingFieldZone = parentForm.UI.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
                                 foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls.ToList())
                                 {
                                     // Setup for the message
@@ -350,7 +350,7 @@ namespace BrawlTCG_alpha.Visuals
                                 // Enable enemy cards to be able to be clicked to take damage
                                 if (attack.FriendlyFire == false)
                                 {
-                                    ZoneControl opponentPlayingFieldZone = parentForm.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
+                                    ZoneControl opponentPlayingFieldZone = parentForm.UI.GetMyZone(ZoneTypes.PlayingField, otherPlayer);
                                     foreach (CardControl cardControl in opponentPlayingFieldZone.CardsControls)
                                     {
                                         cardControl.CardClicked += OnClickCardControlDuringAttack; // Subscribing to the click event
@@ -557,7 +557,7 @@ namespace BrawlTCG_alpha.Visuals
             {
                 foreach (Player player in Players)
                 {
-                    ZoneControl opponentZone = playingField.GetMyZone(ZoneTypes.PlayingField, player);
+                    ZoneControl opponentZone = playingField.UI.GetMyZone(ZoneTypes.PlayingField, player);
                     foreach (CardControl cardControl in opponentZone.CardsControls)
                     {
                         cardControl.CardClicked -= OnClickCardControlDuringAttack;
