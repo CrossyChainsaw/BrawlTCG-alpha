@@ -18,24 +18,22 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player> UI_InitializeCardsInHand;
         public event Action<Player> UI_InitializeDeckPile;
         // Update
+        public event Action UI_UpdateCardControlsInPlayingFieldInformation;
+        public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
+        public event Action<Player> UI_UpdatePlayerInformation;
         // Cards
+        public event Action<Player, Card> UI_AddCardToHandZone;
         public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
+        public event Action<Player, Card> UI_MoveCardFromDeckZoneToHandZone;
+        public event Action<Player, StageCard> UI_PlayStageCard;
         public event Action<Player, bool> UI_ShowCards;
+        public event Action<Player> UI_UntapPlayerCards;
         // Other
         public event Action<string> UI_PopUpNotification;
 
 
 
         // To do
-        public event Action UI_UpdateCardControlInPlayingFieldInformation;
-        public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
-        public event Action<Player, Card> UI_AddCardToHandZone;
-        public event Action<Player, StageCard> UI_PlayStageCard;
-        public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
-        public event Action<Player> UI_UpdateCardsInDeckPile;
-        public event Action<Player> UI_UpdatePlayerInformation;
-        public event Action<Player> UI_UntapPlayerCards;
-        // Set in Ctor
 
 
 
@@ -64,15 +62,51 @@ namespace BrawlTCG_alpha.Logic
             UI_InitializeDeckPile.Invoke(p);
         }
 
+        //Update
+        public void UpdateCardControlsInPlayingFieldInformation()
+        {
+            UI_UpdateCardControlsInPlayingFieldInformation.Invoke();
+        }
+
+        public void UpdateEssenceCardsInEssenceField(Player p)
+        {
+            UI_UpdateEssenceCardsInEssenceField(p);
+        }
+
+        public void UpdatePlayerInformation(Player p)
+        {
+            UI_UpdatePlayerInformation(p);
+        }
+
         // Cards
+        public void AddCardToHandZone(Player p, Card card)
+        {
+            UI_AddCardToHandZone.Invoke(p, card);
+        }
+
         public void EnableCardsInZone(Player p, ZoneTypes zoneType, bool enable)
         {
             UI_EnableCardsInZone.Invoke(p, zoneType, enable);
         }
 
+        public void MoveCardFromDeckZoneToHandZone(Player p, Card card)
+        {
+            UI_MoveCardFromDeckZoneToHandZone.Invoke(p, card);
+        }
+
+        public void PlayStageCard(Player p, StageCard stage)
+        {
+            UI_PlayStageCard.Invoke(p, stage);
+        }
+
         public void ShowCards(Player p, bool enable)
         {
             UI_ShowCards.Invoke(p, enable);
+        }
+
+        public void UntapPlayerCards(Player p)
+        {
+            UI_UntapPlayerCards.Invoke(p);
         }
 
         // Other

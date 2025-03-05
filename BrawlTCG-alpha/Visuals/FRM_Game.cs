@@ -48,7 +48,6 @@ namespace BrawlTCG_alpha
 
             // SETUP GAME
             _game = new Game(hostPlayer, peerPlayer, Network, _uiManager);
-            InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
 
@@ -70,7 +69,6 @@ namespace BrawlTCG_alpha
 
             // SETUP GAME
             _game = new Game(peerPlayer, hostPlayer, Network, _uiManager);
-            InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
 
@@ -85,22 +83,19 @@ namespace BrawlTCG_alpha
             _uiManager.UI_InitializeZones += InitializeZones;
             _uiManager.UI_InitializeCardsInHand += InitializeCardsInHand;
             _uiManager.UI_InitializeDeckPile += InitializeDeckPile;
+            // Update
+            _uiManager.UI_UpdateCardControlsInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
+            _uiManager.UI_UpdateEssenceCardsInEssenceField += UpdateEssenceCardsInEssenceField;
+            _uiManager.UI_UpdatePlayerInformation += UpdatePlayerInformation;
             // Card
+            _uiManager.UI_AddCardToHandZone += AddCardToHandZone;
+            _uiManager.UI_MoveCardFromDeckZoneToHandZone += MoveCardFromDeckZoneToHandZone;
             _uiManager.UI_EnableCardsInZone += EnableCardsInZone;
+            _uiManager.UI_PlayStageCard += PlayStageCard;
             _uiManager.UI_ShowCards += ShowCards;
+            _uiManager.UI_UntapPlayerCards += UntapPlayerCards;
             // Other
             _uiManager.UI_PopUpNotification += (message) => MessageBox.Show(message);
-        }
-
-        void InitializeGameUI(Game game)
-        {
-            game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
-            game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
-            game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
-            game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
-            game.UI_UntapPlayerCards += UntapPlayerCards;
-            game.UI_AddCardToHandZone += AddCardToHandZone;
-            game.UI_PlayStageCard += PlayStageCard;
         }
 
 
@@ -516,7 +511,7 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        void InitializeCardsInEssenceField(Player player)
+        void UpdateEssenceCardsInEssenceField(Player player)
         {
             if (player.EssenceField.Count > 0)
             {
@@ -611,7 +606,7 @@ namespace BrawlTCG_alpha
             }
         }
         // Multiple
-        internal void UpdatePlayerInfo(Player player)
+        internal void UpdatePlayerInformation(Player player)
         {
             ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
             zone.Label.Text = $"{player.Name}\nHealth: {player.Health}\nEssence: {player.Essence}";
@@ -1092,7 +1087,7 @@ namespace BrawlTCG_alpha
             AddCardControl(cardControl, targetZone);
 
             // Update info for essence
-            UpdatePlayerInfo(player);
+            UpdatePlayerInformation(player);
 
             return cardControl;
         }
@@ -1118,7 +1113,7 @@ namespace BrawlTCG_alpha
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
 
             // Update player essence
-            UpdatePlayerInfo(player);
+            UpdatePlayerInformation(player);
 
             // Return the new Control
             return cardControl;
@@ -1133,7 +1128,7 @@ namespace BrawlTCG_alpha
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, card, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
-            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInfo;
+            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInformation;
             return cardControl;
         }
         /// <summary>Create a WeaponCardControl on top of a Legend</summary>
@@ -1145,7 +1140,7 @@ namespace BrawlTCG_alpha
             };
             cardControl.CardReleased += async () => await TryToSnapCard(cardControl, weapon, player);
             cardControl.UI_AddCardToDiscardPile += MoveCardControlFromPlayingFieldToDiscardPile;
-            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInfo;
+            cardControl.UI_UpdatePlayerInformation += UpdatePlayerInformation;
             cardControl.SetCanDrag(false);
             return cardControl;
         }
@@ -1245,7 +1240,7 @@ namespace BrawlTCG_alpha
             // Stack Card
             legendCard.StackCard(weapon);
             player.PlayCard(weapon); // play in memory
-            UpdatePlayerInfo(player); // update essence
+            UpdatePlayerInformation(player); // update essence
 
             // play in UI
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
@@ -1305,7 +1300,7 @@ namespace BrawlTCG_alpha
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
 
             // Update player info
-            UpdatePlayerInfo(player);
+            UpdatePlayerInformation(player);
         }
 
         // Events
