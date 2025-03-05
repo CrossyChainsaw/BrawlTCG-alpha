@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    enum Stats
+    public enum Stats
     {
         Health,
         Power,
     }
-    internal class LegendCard : Card
+    public class LegendCard : Card
     {
         // Constants
         const int BURN_DAMAGE = 1;

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Visuals
 {
-    internal class CardControl : Control
+    public class CardControl : Control
     {
         // Constants
         const int CARD_WIDTH = 150;
@@ -333,8 +333,8 @@ namespace BrawlTCG_alpha.Visuals
                     Size = new Size(CARD_WIDTH * 3, CARD_HEIGHT * 3), // 3x size
                     Location = new Point(parentForm.ClientSize.Width - CARD_WIDTH * 3 - 20, 20)
                 };
-                legendCardControl.UI_UpdatePlayerInformation += frm.UpdatePlayerInfo;
-                legendCardControl.NETWORK_SendMessage += frm.SendMessageToPeer;
+                legendCardControl.UI_UpdatePlayerInformation += frm.UI.UpdatePlayerInformation; // this is a bad practise no?
+                legendCardControl.NETWORK_SendMessage += frm.Network.SendMessageToPeer;
                 // UI
                 parentForm.Controls.Add(legendCardControl);
                 legendCardControl.BringToFront();

@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class BattleCard : Card
+    public class BattleCard : Card
     {
         public bool OneTimeUse { get; private set; }
         public bool Stackable { get; private set; }

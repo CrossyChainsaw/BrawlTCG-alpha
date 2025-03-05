@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class Attack
+    public class Attack
     {
         // Req
         public string Name { get; private set; }

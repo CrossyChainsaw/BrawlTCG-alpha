@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-enum Elements
+public enum Elements
 {
     Fire,
     Magic,
@@ -18,7 +18,7 @@ enum Elements
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal abstract class Card
+    public abstract class Card
     {
         public int ID {  get; internal set; }
         public string Name { get; internal set; }

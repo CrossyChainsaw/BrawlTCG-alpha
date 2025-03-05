@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class Game
+    public class Game
     {
         // Properties
         public Player ActivePlayer => _playerManager.ActivePlayer;
@@ -23,76 +23,57 @@ namespace BrawlTCG_alpha.Logic
         // Fields
         const int STARTING_ESSENCE = 1; // 1
         const int STARTING_HAND_CARDS = 7; // 7
-
-
-        // VISUALS
-        public event Action UI_InitializeZones;
-        public event Action UI_Multi_InitializeDeckPiles;
-        public event Action UI_UpdateCardControlInPlayingFieldInformation;
-        public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
-        public event Action<Player, Card> UI_AddCardToHandZone;
-        public event Action<Player, StageCard> UI_PlayStageCard;
-        public event Action<Player> UI_InitializeCardsInHand;
-        public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
-        public event Action<Player> UI_UpdateCardsInDeckPile;
-        public event Action<Player, bool> UI_ShowCards;
-        public event Action<Player> UI_UpdatePlayerInformation;
-        public event Action<Player> UI_UntapPlayerCards;
-        // Set in Ctor
-        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
-        public event Action<string> UI_PopUpNotification;
-        // Networking
-        public event Action<string> NETWORK_SendMessage;
-        // Fields
         StageCardManager _stageCardManager;
         PlayerManager _playerManager;
         AttackManager _attackManager;
+        NetworkManager _networkManager;
+        UIManager _uiManager;
 
 
 
-        public Game(Player player1, Player player2, Action<string> ui_PopUpNotification, Action<Player, ZoneTypes, bool> ui_EnableCardsInZone)
+        public Game(Player player1, Player player2, NetworkManager networkManager, UIManager uiManager)
         {
-            // UI Stuff
-            UI_PopUpNotification += ui_PopUpNotification;
-            UI_EnableCardsInZone += ui_EnableCardsInZone;
-
             // Managers
+            _uiManager = uiManager;
             _stageCardManager = new StageCardManager(this);
-            _playerManager = new PlayerManager(player1, player2, UI_PopUpNotification);
-            _attackManager = new AttackManager(UI_EnableCardsInZone);
+            _playerManager = new PlayerManager(player1, player2, _uiManager);
+            _attackManager = new AttackManager(_uiManager);
+            _networkManager = networkManager;
         }
         public void Prepare()
         {
             // Setup all the zones visually
-            UI_InitializeZones.Invoke();
+            _uiManager.InitializeZones();
 
             // Define Players
             //RandomizeStartingPlayer(); // host always starts
 
             // Initialize Decks Visually
-            UI_Multi_InitializeDeckPiles.Invoke();
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
+            _uiManager.InitializeDeckPile(ActivePlayer);
+            _uiManager.InitializeDeckPile(InactivePlayer);
+
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
             DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
             DrawStartingHand(InactivePlayer, STARTING_HAND_CARDS);
-
-            UI_InitializeCardsInHand.Invoke(ActivePlayer);
-            UI_InitializeCardsInHand.Invoke(InactivePlayer);
+            _uiManager.InitializeCardsInHand(ActivePlayer);
+            _uiManager.InitializeCardsInHand(InactivePlayer);
 
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
             {
-                _playerManager.ActivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0)); // 0 is essence card
-                _playerManager.InactivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0));
+                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0)); // 0 is essence card
+                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0));
             }
+
             // update cards in essence fields
-            UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
-            UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
+            _uiManager.UpdateEssenceCardsInEssenceField(ActivePlayer);
+            _uiManager.UpdateEssenceCardsInEssenceField(InactivePlayer);
             // Disable cards in essence zones
-            UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.EssenceField, false);
-            UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.EssenceField, false);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.EssenceField, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.EssenceField, false);
 
             // only show your own cards
             ShowCards();
@@ -102,7 +83,7 @@ namespace BrawlTCG_alpha.Logic
             for (int i = 0; i < nCards; i++)
             {
                 Card card = player.DrawCardFromDeck();
-                UI_MoveCardZoneFromDeckToHand(player, card);
+                _uiManager.MoveCardFromDeckZoneToHandZone(player, card);
             }
 
         }
@@ -117,25 +98,20 @@ namespace BrawlTCG_alpha.Logic
             DrawCardFromDeck(ActivePlayer); // draw card
             _stageCardManager.StartTurnEffect(ActivePlayer);
             BurnDamage();
-            UI_UpdateCardControlInPlayingFieldInformation.Invoke();
-            _playerManager.ActivePlayer.GetEssence();
+            _uiManager.UpdateCardControlsInPlayingFieldInformation();
+            ActivePlayer.GetEssence();
 
             ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
-            UI_UpdatePlayerInformation.Invoke(ActivePlayer);
+            _uiManager.UpdatePlayerInformation(ActivePlayer);
             return Task.CompletedTask;
         }
-        public void ShowCards()
-        {
-            UI_ShowCards(_playerManager.Me, true);
-            //UI_ShowCards(Opponent, true); // show opponent cards for debugging
-        }
-
         public void SwitchTurn()
         {
             // END TURN
             // ...
             // untap all cards of the active player
-            UI_UntapPlayerCards.Invoke(ActivePlayer);
+            _uiManager.UntapPlayerCards(ActivePlayer);
+
             // Legends can attack again
             foreach (LegendCard legend in GetAllMyLegendsOnThePlayingField(ActivePlayer))
             {
@@ -146,14 +122,14 @@ namespace BrawlTCG_alpha.Logic
             _playerManager.SwitchActivePlayer();
 
             // Reset Variables
-            _playerManager.ActivePlayer.PlayedEssenceCardThisTurn(false);
+            ActivePlayer.PlayedEssenceCardThisTurn(false);
             // Hide Enemy Hand and Disable it
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
             // Show Player Hand and Enable it
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
             // Enable all the cards on the field
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
         }
         void BurnDamage()
         {
@@ -166,10 +142,10 @@ namespace BrawlTCG_alpha.Logic
         public void DrawCardFromDeck(Player player)
         {
             // Logic
-            Card? card = _playerManager.ActivePlayer.DrawCardFromDeck();
+            Card? card = ActivePlayer.DrawCardFromDeck();
             if (card != null)
             {
-                UI_MoveCardZoneFromDeckToHand.Invoke(player, card);
+                _uiManager.MoveCardFromDeckZoneToHandZone(player, card);
             }
         }
         public List<LegendCard> GetAllLegendsOnPlayingField()
@@ -196,7 +172,7 @@ namespace BrawlTCG_alpha.Logic
             // logically
             player.AddCardToHand(card);
             // visually
-            UI_AddCardToHandZone.Invoke(player, card);
+            _uiManager.AddCardToHandZone(player, card);
         }
         public List<LegendCard> GetAllMyLegendsOnThePlayingField(Player player)
         {
@@ -207,13 +183,26 @@ namespace BrawlTCG_alpha.Logic
             }
             return legends;
         }
+
+        // UI-Manager
+        public void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enabled)
+        {
+            _uiManager.EnableCardsInZone(player, zoneType, enabled);
+        }
+        public void PlayStageCard(StageCard card)
+        {
+            _uiManager.PlayStageCard(ActivePlayer, card);
+        }
+        public void ShowCards()
+        {
+            _uiManager.ShowCards(Me, true);
+            //_uiManager.ShowCards(Opponent, true); // show opponent cards for debugging
+        }
+
+        // NetworkManager
         public void SendMessageToPeer(string msg)
         {
-            NETWORK_SendMessage.Invoke(msg);
-        }
-        public void EnableCardsInZone(Player p, ZoneTypes z, bool enabled)
-        {
-            UI_EnableCardsInZone.Invoke(p, z, enabled);
+            _networkManager.SendMessageToPeer(msg);
         }
 
         // AttackManager
@@ -253,10 +242,6 @@ namespace BrawlTCG_alpha.Logic
         public void SetStageCardFromForm(Player owner, StageCard stage)
         {
             _stageCardManager.SetStageCard(owner, stage);
-        }
-        public void PlayStageCard(StageCard card)
-        {
-            UI_PlayStageCard(ActivePlayer, card);
         }
         public StageCard? GetActiveStageCard()
         {

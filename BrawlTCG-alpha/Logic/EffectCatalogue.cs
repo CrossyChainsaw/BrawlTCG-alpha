@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class EffectCatalogue
+    public class EffectCatalogue
     {
         // Start Turn Effect
         public static void MustafarEffect(object target, Card card, Game game)

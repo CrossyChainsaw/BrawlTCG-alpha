@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
-    internal class AttackCatalogue
+    public class AttackCatalogue
     {
         // target is Player or LegendCard
         public static void DefaultAttack(LegendCard attacker, object target, Attack attack, bool burn = false)
@@ -241,22 +241,22 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack Enchantress_CursePower = new Attack("Curse Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = -2;
+            int modifyAmount = -3;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         });
         public static Attack Enchantress_CurseHealth = new Attack("Curse HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = -2;
+            int modifyAmount = -4;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
         });
         public static Attack Enchantress_EnchantPower = new Attack("Enchant Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = 1;
+            int modifyAmount = 3;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         }, friendlyFire: true);
         public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = 1;
+            int modifyAmount = 4;
             ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
         }, friendlyFire: true);
         public static Attack DeathCap_Storm = new Attack("Storm", 0, Weapons.Orb, 3, weaponOneBurnAmount: 3, execute: (attacker, target, attack, activePlayer, game) =>
