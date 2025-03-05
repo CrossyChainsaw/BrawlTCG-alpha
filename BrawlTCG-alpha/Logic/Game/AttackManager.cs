@@ -13,14 +13,14 @@ namespace BrawlTCG_alpha.Logic
         // Properties
         public bool SomeoneIsAttacking { get; private set; }
         public Attack SelectedAttack { get; private set; }
-        
+
         // Fields
-        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
+        UIManager _uiManager;
 
         // Methods
-        public AttackManager(Action<Player, ZoneTypes, bool> ui_enableCardsInZone)
+        public AttackManager(UIManager uiManager)
         {
-            UI_EnableCardsInZone += ui_enableCardsInZone;
+            _uiManager = uiManager;
         }
         public void SetSelectedAttack(Attack a)
         {
@@ -36,7 +36,7 @@ namespace BrawlTCG_alpha.Logic
             SelectedAttack = null;
 
             // enable your cards again
-            UI_EnableCardsInZone.Invoke(playerManager.ActivePlayer, ZoneTypes.PlayingField, true);
+            _uiManager.EnableCardsInZone(playerManager.ActivePlayer, ZoneTypes.PlayingField, true);
         }
         public void StartAttack(Attack attack, PlayerManager playerManager)
         {
@@ -47,13 +47,13 @@ namespace BrawlTCG_alpha.Logic
             // enable disable correct cards
             if (attack.FriendlyFire)
             {
-                UI_EnableCardsInZone.Invoke(playerManager.ActivePlayer, ZoneTypes.PlayingField, true);
-                UI_EnableCardsInZone.Invoke(playerManager.InactivePlayer, ZoneTypes.PlayingField, false);
+                _uiManager.EnableCardsInZone(playerManager.ActivePlayer, ZoneTypes.PlayingField, true);
+                _uiManager.EnableCardsInZone(playerManager.InactivePlayer, ZoneTypes.PlayingField, false);
             }
             else
             {
-                UI_EnableCardsInZone.Invoke(playerManager.ActivePlayer, ZoneTypes.PlayingField, false);
-                UI_EnableCardsInZone.Invoke(playerManager.InactivePlayer, ZoneTypes.PlayingField, true);
+                _uiManager.EnableCardsInZone(playerManager.ActivePlayer, ZoneTypes.PlayingField, false);
+                _uiManager.EnableCardsInZone(playerManager.InactivePlayer, ZoneTypes.PlayingField, true);
             }
         }
     }

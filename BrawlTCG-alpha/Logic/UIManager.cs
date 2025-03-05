@@ -13,13 +13,19 @@ namespace BrawlTCG_alpha.Logic
         // Fields
         private FRM_Game _mainForm;
         private List<ZoneControl> _zones;
-        public event Action<string> UI_PopUpNotification;
+        // Initialize
         public event Action UI_InitializeZones;
-        public event Action<Player> UI_InitializeDeckPile;
-
-
-
         public event Action<Player> UI_InitializeCardsInHand;
+        public event Action<Player> UI_InitializeDeckPile;
+        // Update
+        // Cards
+        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
+        public event Action<Player, bool> UI_ShowCards;
+        // Other
+        public event Action<string> UI_PopUpNotification;
+
+
+
         // To do
         public event Action UI_UpdateCardControlInPlayingFieldInformation;
         public event Action<Player, Card> UI_MoveCardZoneFromDeckToHand;
@@ -27,11 +33,9 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player, StageCard> UI_PlayStageCard;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
-        public event Action<Player, bool> UI_ShowCards;
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<Player> UI_UntapPlayerCards;
         // Set in Ctor
-        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
 
 
 
@@ -44,7 +48,7 @@ namespace BrawlTCG_alpha.Logic
             _mainForm = mainForm;
             _zones = new List<ZoneControl>();
         }
-
+        // Initialize
         public void InitializeZones()
         {
             UI_InitializeZones.Invoke();
@@ -60,6 +64,18 @@ namespace BrawlTCG_alpha.Logic
             UI_InitializeDeckPile.Invoke(p);
         }
 
+        // Cards
+        public void EnableCardsInZone(Player p, ZoneTypes zoneType, bool enable)
+        {
+            UI_EnableCardsInZone.Invoke(p, zoneType, enable);
+        }
+
+        public void ShowCards(Player p, bool enable)
+        {
+            UI_ShowCards.Invoke(p, enable);
+        }
+
+        // Other
         public void MessageBox(string s)
         {
             UI_PopUpNotification.Invoke(s);

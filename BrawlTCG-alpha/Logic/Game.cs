@@ -33,11 +33,8 @@ namespace BrawlTCG_alpha.Logic
         public event Action<Player, StageCard> UI_PlayStageCard;
         public event Action<Player> UI_UpdateEssenceCardsInEssenceField;
         public event Action<Player> UI_UpdateCardsInDeckPile;
-        public event Action<Player, bool> UI_ShowCards;
         public event Action<Player> UI_UpdatePlayerInformation;
         public event Action<Player> UI_UntapPlayerCards;
-        // Set in Ctor
-        public event Action<Player, ZoneTypes, bool> UI_EnableCardsInZone;
 
         // Fields
         StageCardManager _stageCardManager;
@@ -48,16 +45,13 @@ namespace BrawlTCG_alpha.Logic
 
 
 
-        public Game(Player player1, Player player2, Action<Player, ZoneTypes, bool> ui_EnableCardsInZone, NetworkManager networkManager, UIManager uiManager)
+        public Game(Player player1, Player player2, NetworkManager networkManager, UIManager uiManager)
         {
-            // UI Stuff
-            UI_EnableCardsInZone += ui_EnableCardsInZone;
-
             // Managers
             _uiManager = uiManager;
             _stageCardManager = new StageCardManager(this);
             _playerManager = new PlayerManager(player1, player2, _uiManager);
-            _attackManager = new AttackManager(UI_EnableCardsInZone);
+            _attackManager = new AttackManager(_uiManager);
             _networkManager = networkManager;
         }
         public void Prepare()
@@ -72,8 +66,8 @@ namespace BrawlTCG_alpha.Logic
             _uiManager.InitializeDeckPile(ActivePlayer);
             _uiManager.InitializeDeckPile(InactivePlayer);
 
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
 
             // Draw Starting Hands and Display Visually
             DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
@@ -84,15 +78,15 @@ namespace BrawlTCG_alpha.Logic
             // Obtain first Essence card and display visually - and disable them
             for (int i = 0; i < STARTING_ESSENCE; i++)
             {
-                _playerManager.ActivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0)); // 0 is essence card
-                _playerManager.InactivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0));
+                ActivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0)); // 0 is essence card
+                InactivePlayer.EssenceField.Add(CardCatalogue.GetCardById(cardId: 0));
             }
             // update cards in essence fields
             UI_UpdateEssenceCardsInEssenceField.Invoke(ActivePlayer);
             UI_UpdateEssenceCardsInEssenceField.Invoke(InactivePlayer);
             // Disable cards in essence zones
-            UI_EnableCardsInZone.Invoke(ActivePlayer, ZoneTypes.EssenceField, false);
-            UI_EnableCardsInZone.Invoke(InactivePlayer, ZoneTypes.EssenceField, false);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.EssenceField, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.EssenceField, false);
 
             // only show your own cards
             ShowCards();
@@ -118,16 +112,11 @@ namespace BrawlTCG_alpha.Logic
             _stageCardManager.StartTurnEffect(ActivePlayer);
             BurnDamage();
             UI_UpdateCardControlInPlayingFieldInformation.Invoke();
-            _playerManager.ActivePlayer.GetEssence();
+            ActivePlayer.GetEssence();
 
             ShowCards(); // SHOWS THE CARDS BY FLIPPING THEM
             UI_UpdatePlayerInformation.Invoke(ActivePlayer);
             return Task.CompletedTask;
-        }
-        public void ShowCards()
-        {
-            UI_ShowCards(_playerManager.Me, true);
-            //UI_ShowCards(Opponent, true); // show opponent cards for debugging
         }
         public void SwitchTurn()
         {
@@ -145,14 +134,14 @@ namespace BrawlTCG_alpha.Logic
             _playerManager.SwitchActivePlayer();
 
             // Reset Variables
-            _playerManager.ActivePlayer.PlayedEssenceCardThisTurn(false);
+            ActivePlayer.PlayedEssenceCardThisTurn(false);
             // Hide Enemy Hand and Disable it
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
             // Show Player Hand and Enable it
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
             // Enable all the cards on the field
-            UI_EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
-            UI_EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
+            _uiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
+            _uiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
         }
         void BurnDamage()
         {
@@ -165,7 +154,7 @@ namespace BrawlTCG_alpha.Logic
         public void DrawCardFromDeck(Player player)
         {
             // Logic
-            Card? card = _playerManager.ActivePlayer.DrawCardFromDeck();
+            Card? card = ActivePlayer.DrawCardFromDeck();
             if (card != null)
             {
                 UI_MoveCardZoneFromDeckToHand.Invoke(player, card);
@@ -206,9 +195,16 @@ namespace BrawlTCG_alpha.Logic
             }
             return legends;
         }
-        public void EnableCardsInZone(Player p, ZoneTypes z, bool enabled)
+
+        // UI-Manager
+        public void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enabled)
         {
-            UI_EnableCardsInZone.Invoke(p, z, enabled);
+            _uiManager.EnableCardsInZone(player, zoneType, enabled);
+        }
+        public void ShowCards()
+        {
+            _uiManager.ShowCards(Me, true);
+            //_uiManager.ShowCards(Opponent, true); // show opponent cards for debugging
         }
 
         // NetworkManager

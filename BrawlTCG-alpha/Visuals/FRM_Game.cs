@@ -47,7 +47,7 @@ namespace BrawlTCG_alpha
             SetupUIManager(this);
 
             // SETUP GAME
-            _game = new Game(hostPlayer, peerPlayer, EnableCardsInZone, Network, _uiManager);
+            _game = new Game(hostPlayer, peerPlayer, Network, _uiManager);
             InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
@@ -69,7 +69,7 @@ namespace BrawlTCG_alpha
             SetupUIManager(this);
 
             // SETUP GAME
-            _game = new Game(peerPlayer, hostPlayer, EnableCardsInZone, Network, _uiManager);
+            _game = new Game(peerPlayer, hostPlayer, Network, _uiManager);
             InitializeGameUI(_game);
             _game.Prepare();
             _game.Start();
@@ -85,6 +85,9 @@ namespace BrawlTCG_alpha
             _uiManager.UI_InitializeZones += InitializeZones;
             _uiManager.UI_InitializeCardsInHand += InitializeCardsInHand;
             _uiManager.UI_InitializeDeckPile += InitializeDeckPile;
+            // Card
+            _uiManager.UI_EnableCardsInZone += EnableCardsInZone;
+            _uiManager.UI_ShowCards += ShowCards;
             // Other
             _uiManager.UI_PopUpNotification += (message) => MessageBox.Show(message);
         }
@@ -92,8 +95,6 @@ namespace BrawlTCG_alpha
         void InitializeGameUI(Game game)
         {
             game.UI_MoveCardZoneFromDeckToHand += MoveCardFromDeckZoneToHandZone;
-            game.UI_EnableCardsInZone += EnableCardsInZone;
-            game.UI_ShowCards += ShowCards;
             game.UI_UpdateEssenceCardsInEssenceField += InitializeCardsInEssenceField;
             game.UI_UpdateCardControlInPlayingFieldInformation += UpdateCardControlsInPlayingFieldInformation;
             game.UI_UpdatePlayerInformation += UpdatePlayerInfo;
