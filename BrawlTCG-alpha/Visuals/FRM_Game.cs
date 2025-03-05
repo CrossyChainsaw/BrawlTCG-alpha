@@ -76,9 +76,9 @@ namespace BrawlTCG_alpha
             Task.Run(() => ListenForMessages());
         } // Peer
 
-        void SetupUIManager(FRM_Game f)
+        void SetupUIManager(FRM_Game frm)
         {
-            _uiManager = new UIManager(f);
+            _uiManager = new UIManager(frm);
             // Initialization
             _uiManager.UI_InitializeZones += InitializeZones;
             _uiManager.UI_InitializeCardsInHand += InitializeCardsInHand;
@@ -307,89 +307,7 @@ namespace BrawlTCG_alpha
 
 
 
-
-        // Inside Game.cs
-        void ShowCards(Player player, bool show = true)
-        {
-            ZoneControl playerHand = GetMyZone(ZoneTypes.Hand, player);
-            foreach (CardControl cardControl in playerHand.CardsControls)
-            {
-                if (show)
-                {
-                    if (!cardControl.Card.IsOpen)
-                    {
-                        cardControl.FlipCard();
-                    }
-                }
-                else
-                {
-                    if (cardControl.Card.IsOpen)
-                    {
-                        cardControl.FlipCard();
-                    }
-                }
-            }
-        }
-        void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enable = true)
-        {
-            ZoneControl zone = GetMyZone(zoneType, player);
-
-
-            foreach (CardControl CC in zone.CardsControls)
-            {
-                if (enable && CC.Card.IsOpen)
-                {
-                    EnableCC(CC, true);
-                }
-                else
-                {
-                    EnableCC(CC, false);
-                }
-            }
-
-            // Local Methods
-            void EnableCC(CardControl CC, bool enable)
-            {
-                if (!CC.IsHandleCreated)
-                {
-                    CC.Enabled = enable;
-                    return; // Exit early if the control is not ready
-                }
-                CC.Invoke(new Action(() => CC.Enabled = enable));
-            }
-        }
-
-        void UpdateCardControlsInPlayingFieldInformation()
-        {
-            //List<CardControl> cardControls = new List<CardControl>();
-            List<ZoneControl> zoneControls = GetZones(ZoneTypes.PlayingField);
-            foreach (ZoneControl zoneControl in zoneControls)
-            {
-                foreach (CardControl cardControl in zoneControl.CardsControls.ToList())
-                {
-                    if (cardControl.Card is LegendCard legendCard && legendCard.IsTapped)
-                    {
-                        cardControl.Enabled = false;
-                    }
-                    cardControl.Invalidate();
-                    cardControl.Update();
-                    cardControl.CheckIfDead();
-                }
-            }
-        }
-        void UntapPlayerCards(Player player)
-        {
-            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
-            foreach (CardControl cardControl in zone.CardsControls)
-            {
-                if (!cardControl.Card.IsOpen)
-                {
-                    cardControl.Card.IsOpen = true;
-                    cardControl.Invalidate();
-                    cardControl.Update();
-                }
-            }
-        }
+        // UI - Initialize
         void InitializeZones()
         {
             // Fields
@@ -444,22 +362,6 @@ namespace BrawlTCG_alpha
             }
 
         }
-        void InitializeDeckPile(Player p)
-        {
-            ZoneControl zone = GetMyZone(ZoneTypes.Deck, p);
-
-            if (p.Deck.Count > 0)
-            {
-                for (int i = 0; i < p.Deck.Count; i++)
-                {
-                    Card card = p.Deck[i];
-                    CardControl cardControl = CreateCardControl(p, zone, card, false, extraPaddingY: i * 1);
-
-                    AddCardControl(cardControl, zone);
-                }
-            }
-
-        }
         void InitializeCardsInHand(Player player)
         {
             if (player.Hand.Count > 0)
@@ -511,6 +413,47 @@ namespace BrawlTCG_alpha
                 }
             }
         }
+        void InitializeDeckPile(Player p)
+        {
+            ZoneControl zone = GetMyZone(ZoneTypes.Deck, p);
+
+            if (p.Deck.Count > 0)
+            {
+                for (int i = 0; i < p.Deck.Count; i++)
+                {
+                    Card card = p.Deck[i];
+                    CardControl cardControl = CreateCardControl(p, zone, card, false, extraPaddingY: i * 1);
+
+                    AddCardControl(cardControl, zone);
+                }
+            }
+
+        }
+
+        // UI - Update
+        internal void UpdatePlayerInformation(Player player)
+        {
+            ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
+            zone.Label.Text = $"{player.Name}\nHealth: {player.Health}\nEssence: {player.Essence}";
+        }
+        void UpdateCardControlsInPlayingFieldInformation()
+        {
+            //List<CardControl> cardControls = new List<CardControl>();
+            List<ZoneControl> zoneControls = GetZones(ZoneTypes.PlayingField);
+            foreach (ZoneControl zoneControl in zoneControls)
+            {
+                foreach (CardControl cardControl in zoneControl.CardsControls.ToList())
+                {
+                    if (cardControl.Card is LegendCard legendCard && legendCard.IsTapped)
+                    {
+                        cardControl.Enabled = false;
+                    }
+                    cardControl.Invalidate();
+                    cardControl.Update();
+                    cardControl.CheckIfDead();
+                }
+            }
+        }
         void UpdateEssenceCardsInEssenceField(Player player)
         {
             if (player.EssenceField.Count > 0)
@@ -552,7 +495,77 @@ namespace BrawlTCG_alpha
                 }
             }
         }
-        // needs a rework, only used to change a card from deck to hand
+        
+        // UI - Card
+        void AddCardToHandZone(Player player, Card card)
+        {
+            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+            CardControl cardControl = CreateCardControl(player, handZone, card, false);
+            AddCardControl(cardControl, handZone);
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+        }
+        void UntapPlayerCards(Player player)
+        {
+            ZoneControl zone = GetMyZone(ZoneTypes.PlayingField, player);
+            foreach (CardControl cardControl in zone.CardsControls)
+            {
+                if (!cardControl.Card.IsOpen)
+                {
+                    cardControl.Card.IsOpen = true;
+                    cardControl.Invalidate();
+                    cardControl.Update();
+                }
+            }
+        }
+        void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enable = true)
+        {
+            ZoneControl zone = GetMyZone(zoneType, player);
+
+
+            foreach (CardControl CC in zone.CardsControls)
+            {
+                if (enable && CC.Card.IsOpen)
+                {
+                    EnableCC(CC, true);
+                }
+                else
+                {
+                    EnableCC(CC, false);
+                }
+            }
+
+            // Local Methods
+            void EnableCC(CardControl CC, bool enable)
+            {
+                if (!CC.IsHandleCreated)
+                {
+                    CC.Enabled = enable;
+                    return; // Exit early if the control is not ready
+                }
+                CC.Invoke(new Action(() => CC.Enabled = enable));
+            }
+        }
+        void ShowCards(Player player, bool show = true)
+        {
+            ZoneControl playerHand = GetMyZone(ZoneTypes.Hand, player);
+            foreach (CardControl cardControl in playerHand.CardsControls)
+            {
+                if (show)
+                {
+                    if (!cardControl.Card.IsOpen)
+                    {
+                        cardControl.FlipCard();
+                    }
+                }
+                else
+                {
+                    if (cardControl.Card.IsOpen)
+                    {
+                        cardControl.FlipCard();
+                    }
+                }
+            }
+        }
         void MoveCardFromDeckZoneToHandZone(Player player, Card card)
         {
             // set variables
@@ -568,13 +581,6 @@ namespace BrawlTCG_alpha
                 // Reinitailize in new zone
                 AddCardToHandZone(player, card);
             }
-        }
-        internal void AddCardToHandZone(Player player, Card card)
-        {
-            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-            CardControl cardControl = CreateCardControl(player, handZone, card, false);
-            AddCardControl(cardControl, handZone);
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
         }
 
         // LegendCard.cs
@@ -604,12 +610,6 @@ namespace BrawlTCG_alpha
                     }
                 }
             }
-        }
-        // Multiple
-        internal void UpdatePlayerInformation(Player player)
-        {
-            ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
-            zone.Label.Text = $"{player.Name}\nHealth: {player.Health}\nEssence: {player.Essence}";
         }
 
 
@@ -719,10 +719,6 @@ namespace BrawlTCG_alpha
                     }
                 }
             }
-        }
-        void RearrangeMyStackedCards()
-        {
-
         }
 
 
