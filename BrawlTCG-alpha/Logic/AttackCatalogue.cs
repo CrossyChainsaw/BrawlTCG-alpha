@@ -241,7 +241,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack Enchantress_CursePower = new Attack("Curse Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = -4;
+            int modifyAmount = -3;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         });
         public static Attack Enchantress_CurseHealth = new Attack("Curse HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -251,7 +251,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack Enchantress_EnchantPower = new Attack("Enchant Att", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            int modifyAmount = 4;
+            int modifyAmount = 3;
             ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
         }, friendlyFire: true);
         public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>

@@ -21,7 +21,7 @@ namespace BrawlTCG_alpha.Logic
         List<ZoneControl> _zones = new List<ZoneControl>();
         NetworkManager _networkManager;
         FRM_Game _mainForm;
-        private Game _game => _mainForm.Game;
+        private Game _game => _mainForm.game;
 
         // UI - Initialize
         public event Action UI_InitializeZones;
@@ -881,7 +881,7 @@ namespace BrawlTCG_alpha.Logic
         }
         public void PlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld, ZoneControl playZone)
         {
-            Game game = _mainForm.Game;
+            Game game = _mainForm.game;
             // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
             legendCard.UI_BurnWeaponCard += BurnWeaponCard;
             // Play Card

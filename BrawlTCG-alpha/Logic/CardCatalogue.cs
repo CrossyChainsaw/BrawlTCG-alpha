@@ -54,7 +54,7 @@ namespace BrawlTCG_alpha.Logic
 
             // Magic
             { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Greatsword_Swing, attack3: AC.Greatsword_String, attack4: AC.Arcadia_PinkRoses) }, // base stance
-            { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 18, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Enchantress_EnchantHealth, attack2: AC.Enchantress_EnchantPower, attack3: AC.Enchantress_CurseHealth, attack4: AC.Enchantress_CursePower) }, // bugged
+            { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Enchantress_EnchantHealth, attack2: AC.Enchantress_EnchantPower, attack3: AC.Enchantress_CurseHealth, attack4: AC.Enchantress_CursePower) }, // bugged
             { 4002, new LegendCard(id: 4002, "Dark Mage", 5, Elements.Shadow, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Scythe_Slash) },
             { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 5, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AC.PlagueKnight_GrabHealingPotion) }, // healer
 
