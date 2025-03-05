@@ -12,7 +12,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         private FRM_Game _mainForm;
-        private List<ZoneControl> _zones;
+        //private List<ZoneControl> _zones;
 
         // UI - Initialize
         public event Action UI_InitializeZones;
@@ -37,7 +37,7 @@ namespace BrawlTCG_alpha.Logic
         public UIManager(FRM_Game mainForm)
         {
             _mainForm = mainForm;
-            _zones = new List<ZoneControl>();
+            //_zones = new List<ZoneControl>();
         }
 
 
