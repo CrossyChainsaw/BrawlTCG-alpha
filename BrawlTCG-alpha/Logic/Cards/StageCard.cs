@@ -11,7 +11,7 @@ namespace BrawlTCG_alpha.Logic.Cards
     {
         public Action<object, Card, Game>? WhileInPlayEffect { get; internal set; }
 
-        public StageCard(int id, string name, int cost, string description, Elements element, Image image, Action<object, Card, Game>? startTurnEffect = null, Action<object>? endTurnEffect = null, Action<object, Card, Game>? whenPlayedEffect = null, Action<object, Card, Game>? whenDiscardedEffect = null, Action<object, Card, Game>? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
+        public StageCard(int id, string name, int cost, string description, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Action<object, Card, Game>? whenDiscardedEffect = null, Action<object, Card, Game>? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
         {
             Description = description;
             WhileInPlayEffect = whileInPlayEffect;

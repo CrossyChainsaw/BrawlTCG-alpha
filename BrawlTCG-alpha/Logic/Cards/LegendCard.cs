@@ -55,9 +55,9 @@ namespace BrawlTCG_alpha.Logic.Cards
             Weapons primaryWeapon,
             Weapons secondaryWeapon,
             // Card Opt.
-            Action<object, Card, Game>? startTurnEffect = null,
+            Effect? startTurnEffect = null,
             Action<object>? endTurnEffect = null,
-            Action<object, Card, Game>? whenPlayedEffect = null,
+            Effect? whenPlayedEffect = null,
             // LegendCard Opt.
             Action<object>? ability = null,
             Attack attack1 = null,

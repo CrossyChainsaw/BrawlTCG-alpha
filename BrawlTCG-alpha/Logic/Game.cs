@@ -8,6 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace BrawlTCG_alpha.Logic
 {
@@ -23,6 +24,7 @@ namespace BrawlTCG_alpha.Logic
         // Fields
         const int STARTING_ESSENCE = 1; // 1
         const int STARTING_HAND_CARDS = 7; // 7
+        const int MAX_CARDS_IN_HAND = 15;
         StageCardManager _stageCardManager;
         PlayerManager _playerManager;
         AttackManager _attackManager;
@@ -95,7 +97,10 @@ namespace BrawlTCG_alpha.Logic
         public Task StartTurn()
         {
             // Start Turn
-            DrawCardFromDeck(ActivePlayer); // draw card
+            if (ActivePlayer.Hand.Count < MAX_CARDS_IN_HAND)
+            {
+                DrawCardFromDeck(ActivePlayer); // draw card
+            }
             _stageCardManager.StartTurnEffect(ActivePlayer);
             BurnDamage();
             _uiManager.UpdateCardControlsInPlayingFieldInformation();
