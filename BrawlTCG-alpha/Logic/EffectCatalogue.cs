@@ -9,114 +9,108 @@ namespace BrawlTCG_alpha.Logic.Cards
     public class EffectCatalogue
     {
         // Start Turn Effect
-        public static void MustafarEffect(object target, Card card, Game game)
-        {
-            if (target is List<LegendCard> legends)
-            {
-                foreach (LegendCard legend in legends)
-                {
-                    if (legend.Element != Elements.Fire)
-                    {
-                        legend.LoseHealth(1);
-                    }
-                }
-            }
-        }
+        static int mustafarDamage = 1;
+        public static Effect Mustafar = new Effect(
+            description: $"All non-Fire Legends lose {mustafarDamage} health.",
+            effectAction: (target, card, game) => StartTurnDamage(target, mustafarDamage, Elements.Fire)
+        );
 
-        public static void FangwildEffect(object target, Card card, Game game)
-        {
-            if (target is List<LegendCard> legends)
-            {
-                foreach (LegendCard legend in legends)
-                {
-                    if (legend.Element == Elements.Magic || legend.Element == Elements.Nature)
-                    {
-                        legend.GainHealth(2);
-                    }
-                }
-            }
-        }
+        static int fangwildHeal = 2;
+        public static Effect Fangwild = new Effect(
+            description: $"All Magic and Nature Legends will gain {fangwildHeal} health.",
+            effectAction: (target, card, game) => StartTurnHeal(target, fangwildHeal, Elements.Nature, Elements.Magic)
+        );
+
+        public static Effect Workshop = new Effect(
+            description: $"Obtain a random card",
+            effectAction: (target, card, game) => GenerateRandomCard(game)
+        );
+
+        static int spaceTimeExtraDrawnCards = 2;
+        public static Effect SpaceTime = new Effect(
+            description: $"Draw {spaceTimeExtraDrawnCards} extra cards",
+            effectAction: (target, card, game) => DrawCards(game, spaceTimeExtraDrawnCards)
+        );
+
+        public static Effect Essence = new Effect(
+            description: $"Gain 1 Essence",
+            effectAction: (target, card, game) => GivePlayerEssence(target)
+        );
 
         // When Played Effect
-        public static void DirectDamage(object target, Card card, Game game)
+        static int mustafarID = 100;
+        public static Effect GenerateAndPlayMustafar = new Effect(
+            description: $"Change stage to Mustafar",
+            effectAction: (target, card, game) => GenerateAndPlayStage(card, game, mustafarID)
+        );
+
+        static int matrixID = 102;
+        public static Effect GenerateAndPlayMatrix = new Effect(
+            description: $"Change stage to Matrix",
+            effectAction: (target, card, game) => GenerateAndPlayStage(card, game, matrixID)
+        );
+
+        static int workshopID = 103;
+        public static Effect GenerateAndPlayWorkshop = new Effect(
+            description: $"Change stage to Workshop",
+            effectAction: (target, card, game) => GenerateAndPlayStage(card, game, workshopID)
+        );
+
+        public static Effect EvilHideoutWhenPlayed = new Effect(
+            description: "While in play: Fire, Wild, and Shadow legends get +3 Power",
+            effectAction: (target, card, game) => ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
+        );
+
+        public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
+            description: "Deals direct damage to opposing Legend",
+            effectAction: (target, card, game) => DirectDamage(target, card)
+        );
+
+        public static Effect BattleCardHealWhenPlayed = new Effect(
+            description: "Heals your Legend",
+            effectAction: (target, card, game) => Heal(target, card)
+        );
+
+        public static Effect BoostHealthAndPower = new Effect(
+            description: "Modifies Health and Power",
+            effectAction: (target, card, game) => ModifyHealthAndPower(target, card)
+        );
+
+        static int nCards = 3
+;        public static Effect CardChest = new Effect(
+            description: $"Draw {nCards} cards",
+            effectAction: (target, card, game) => DrawCards(game, nCards)
+        );
+
+
+        // Generic Methods
+        static void StartTurnHeal(object target, int heal, params Elements[] targetElements)
         {
-            if (card is BattleCard battleCard)
+            if (target is List<LegendCard> legends)
             {
-                if (target is LegendCard legend)
+                foreach (LegendCard legend in legends)
                 {
-                    legend.LoseHealth(battleCard.Damage);
+                    if (targetElements.Contains(legend.Element))
+                    {
+                        legend.GainHealth(heal);
+                    }
                 }
             }
         }
-        public static void BoostHealthAndPower(object target, Card card, Game game)
+        static void StartTurnDamage(object target, int damage, params Elements[] immuneElements)
         {
-            if (card is BattleCard battleCard)
+            if (target is List<LegendCard> legends)
             {
-                if (target is LegendCard legend)
+                foreach (LegendCard legend in legends)
                 {
-                    legend.ModifyStat(Stats.Health, battleCard.HealthModifier);
-                    legend.ModifyStat(Stats.Power, battleCard.PowerModifier);
-                }
-                else
-                {
-                    throw new Exception();
+                    if (!immuneElements.Contains(legend.Element))
+                    {
+                        legend.LoseHealth(damage);
+                    }
                 }
             }
         }
-        public static void Heal(object target, Card card, Game game)
-        {
-            if (card is BattleCard battleCard)
-            {
-                if (target is LegendCard legend)
-                {
-                    legend.GainHealth(battleCard.HealthModifier);
-                }
-                else
-                {
-                    throw new Exception();
-                }
-            }
-        }
-        public static void GenerateAndPlayMatrix(object target, Card card, Game game)
-        {
-            // first give the player essence before playing it!
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(102); // #102: Matrix
-            StageCard card2 = generatedCard;
-            game.ActivePlayer.GainEssence(card2.Cost);
-            game.AddCardToHandZone(game.ActivePlayer, card2);
-            game.PlayStageCard(card2);
-
-            //// add to hand
-            //game.AddCardToHandZone(game.ActivePlayer, card2);
-            //// flip to show
-            //game.ShowCards();
-        }
-        public static void GenerateAndPlayMustafar(object target, Card card, Game game)
-        {
-            // first give the player essence before playing it!
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(100); // #100: Mustafar
-            StageCard card2 = generatedCard;
-            game.ActivePlayer.GainEssence(card2.Cost);
-            game.AddCardToHandZone(game.ActivePlayer, card2);
-            game.PlayStageCard(card2);
-
-            //// add to hand
-            //game.AddCardToHandZone(game.ActivePlayer, card2);
-            //// flip to show
-            //game.ShowCards();
-        }
-
-        public static void GenerateAndPlayWorkshop(object target, Card card, Game game)
-        {
-            // first give the player essence before playing it!
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(103); // #103: Workshop
-            StageCard card2 = generatedCard;
-            game.ActivePlayer.GainEssence(card2.Cost);
-            game.AddCardToHandZone(game.ActivePlayer, card2);
-            game.PlayStageCard(card2);
-        }
-
-        public static void GenerateRandomCard(object target, Card card, Game game)
+        static void GenerateRandomCard(Game game)
         {
             // target must be the form here if possible
 
@@ -146,101 +140,92 @@ namespace BrawlTCG_alpha.Logic.Cards
                 game.RandomCardID = -1;
             }
         }
-
-        public static void GenerateRandomFireCard(object target, Card card, Game game)
+        static void GivePlayerEssence(object target)
         {
-            // target must be the form here if possible
-
-            if (game.ActivePlayer == game.Me)
+            if (target is Player player)
             {
-                // generate random card
-                Card generatedCard = CardCatalogue.GetRandomFireCard();
-                // send random card id
-                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
-                // add card to deck
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-            }
-            else
-            {
-                // get the random card the peer got
-                if (game.RandomCardID == -1)
-                {
-                    while (game.RandomCardID == -1)
-                    {
-                        // wait till its not -1
-                    }
-                }
-                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
-                // add to his hand
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                // reset the property
-                game.RandomCardID = -1;
+                player.GainEssence(1);
             }
         }
-
-
-        public static void DrawCard(object target, Card card, Game game)
+        static void DrawCards(Game game, int n)
         {
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.ShowCards();
-        }
-
-        public static void DrawTwoCards(object target, Card card, Game game)
-        {
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.ShowCards();
-        }
-
-        public static void DrawThreeCards(object target, Card card, Game game)
-        {
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.DrawCardFromDeck(game.ActivePlayer);
-            game.ShowCards();
-        }
-
-        public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)
-        {
-            Card card = generatedCard;
-            // add to hand
-            game.AddCardToHandZone(activePlayer, card);
-            // flip to show
-            game.ShowCards();
-        }
-
-        // While in play effect
-        public static void EvilHideoutWhenPlayed(object target, Card card, Game game)
-        {
-            // target is everyone
-
-            // my cards
-            foreach (Card c in game.Me.PlayingField)
+            for (int i = 0; i < n; i++)
             {
-                if (c is LegendCard legend)
-                {
-                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
-
-                    if (evilHideoutElements.Contains(legend.Element))
-                    {
-                        legend.ModifyStat(Stats.Power, 3);
-                    }
-                }
+                game.DrawCardFromDeck(game.ActivePlayer);
             }
-            // enemy cards
-            foreach (Card c in game.Opponent.PlayingField)
-            {
-                if (c is LegendCard legend)
-                {
-                    List<Elements> evilHideoutElements = new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow };
+            game.ShowCards();
+        }
+        static void GenerateAndPlayStage(Card card, Game game, int cardID)
+        {
+            // first give the player essence before playing it!
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(cardID); // #100: Mustafar
+            StageCard card2 = generatedCard;
+            game.ActivePlayer.GainEssence(card2.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, card2);
+            game.PlayStageCard(card2);
+        }
+        static void ModifyStatsOfAllLegendsWhenPlayed(Game game, List<Elements> targetElements, Stats stat, int modifier)
+        {
+            // Apply to both your cards and opponent's cards
+            ApplyEffectToLegends(game.Me.PlayingField, targetElements, stat, modifier);
+            ApplyEffectToLegends(game.Opponent.PlayingField, targetElements, stat, modifier);
 
-                    if (evilHideoutElements.Contains(legend.Element))
+            static void ApplyEffectToLegends(List<Card> playingField, List<Elements> targetElements, Stats stat, int modifier)
+            {
+                foreach (Card c in playingField)
+                {
+                    if (c is LegendCard legend)
                     {
-                        legend.ModifyStat(Stats.Power, 3);
+                        if (targetElements.Contains(legend.Element))
+                        {
+                            legend.ModifyStat(stat, modifier);
+                        }
                     }
                 }
             }
         }
+        static void DirectDamage(object target, Card card)
+        {
+            if (card is BattleCard battleCard)
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.LoseHealth(battleCard.Damage);
+                }
+            }
+        }
+        static void Heal(object target, Card card)
+        {
+            if (card is BattleCard battleCard)
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.GainHealth(battleCard.HealthModifier);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+        }
+        static void ModifyHealthAndPower(object target, Card card)
+        {
+            if (card is BattleCard battleCard)
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.ModifyStat(Stats.Health, battleCard.HealthModifier);
+                    legend.ModifyStat(Stats.Power, battleCard.PowerModifier);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+        }
+
+        // To do
+
         public static void EvilHideoutWhilePlay(object target, Card card, Game game)
         {
             if (target is LegendCard legend)
@@ -282,6 +267,36 @@ namespace BrawlTCG_alpha.Logic.Cards
                         legend.ModifyStat(Stats.Power, -3);
                     }
                 }
+            }
+        }
+        public static void GenerateRandomFireCard(object target, Card card, Game game)
+        {
+            // target must be the form here if possible
+
+            if (game.ActivePlayer == game.Me)
+            {
+                // generate random card
+                Card generatedCard = CardCatalogue.GetRandomFireCard();
+                // send random card id
+                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
+                // add card to deck
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+            }
+            else
+            {
+                // get the random card the peer got
+                if (game.RandomCardID == -1)
+                {
+                    while (game.RandomCardID == -1)
+                    {
+                        // wait till its not -1
+                    }
+                }
+                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
+                // add to his hand
+                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                // reset the property
+                game.RandomCardID = -1;
             }
         }
     }

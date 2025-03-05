@@ -8,18 +8,10 @@ namespace BrawlTCG_alpha.Logic.Cards
 {
     public class EssenceCard : Card
     {
-        const int ESSENCE_GAIN = 1;
         public EssenceCard(int id, string name, int cost, Elements element, Image image) : base(id, name, cost, element, image)
         {
             Description = "Start Turn: Gives the player 1 Essence";
-            StartTurnEffect = (target, _, __) => GivePlayerEssence(target, _, __);
-        }
-        void GivePlayerEssence(object target, Card _, Game __)
-        {
-            if (target is Player player)
-            {
-                player.GainEssence(ESSENCE_GAIN);
-            }
+            StartTurnEffect = EffectCatalogue.Essence;
         }
         public override Card Clone()
         {

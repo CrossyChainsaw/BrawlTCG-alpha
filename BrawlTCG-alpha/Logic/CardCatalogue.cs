@@ -19,12 +19,12 @@ namespace BrawlTCG_alpha.Logic
             { 0, new EssenceCard(id: 0, "Essence", 0, Elements.Magic, Images.Essence) },
 
             // Stages
-            { 100, new StageCard(id:100, "Mustafar", 2, "Start Turn: Every non-Fire Legend will lose 1 HP", Elements.Fire, Images.Mustafar, startTurnEffect: EffectCatalogue.MustafarEffect) },
-            { 101, new StageCard(id:101, "Fangwild", 3, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Images.Fangwild, startTurnEffect: EffectCatalogue.FangwildEffect) },
+            { 100, new StageCard(id:100, "Mustafar", 2, "Start Turn: Every non-Fire Legend will lose 1 HP", Elements.Fire, Images.Mustafar, startTurnEffect: EffectCatalogue.Mustafar) },
+            { 101, new StageCard(id:101, "Fangwild", 3, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Images.Fangwild, startTurnEffect: EffectCatalogue.Fangwild) },
             { 102, new StageCard(id:102, "Matrix", 1, "Nothing", Elements.Cosmic, Images.Matrix) },
-            { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: EffectCatalogue.GenerateRandomCard) },
+            { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: EffectCatalogue.Workshop) },
             { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: EffectCatalogue.EvilHideoutWhenPlayed, whileInPlayEffect: EffectCatalogue.EvilHideoutWhilePlay, whenDiscardedEffect: EffectCatalogue.EvilHideoutWhenDiscard) }, // all fire, wild, shadow legends get+3 attack
-            { 105, new StageCard(id:105, "Space Time", 2, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: EffectCatalogue.DrawTwoCards) },
+            { 105, new StageCard(id:105, "Space Time", 2, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: EffectCatalogue.SpaceTime) },
             // only cosmic cards can attack cost: 5
 
             // Nature
@@ -118,13 +118,13 @@ namespace BrawlTCG_alpha.Logic
 
 
 
-            { 500, new BattleCard(id: 500, "Bouncy Bomb", 2, "When Played: Deals direct damage 7", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 8) },
-            { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Boosts Heals legend by 6", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.Heal, healthModifier: 5) },
-            { 502, new BattleCard(id: 502, "Snowball", 1, "When Played: Deals direct damage 4", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 4) },
+            { 500, new BattleCard(id: 500, "Bouncy Bomb", 2, "When Played: Deals direct damage 7", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 8) },
+            { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Boosts Heals legend by 6", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.BattleCardHealWhenPlayed, healthModifier: 5) },
+            { 502, new BattleCard(id: 502, "Snowball", 1, "When Played: Deals direct damage 4", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 4) },
             { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
-            { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.DirectDamage, damage: 1) },
+            { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 1) },
             { 505, new BattleCard(id: 505, "Xull's Fury", 3, "When Played: Boosts legend stats +5 Attack", Elements.Fire, Images.XullsFury, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 0) },
-            { 506, new BattleCard(id: 506, "Card Chest", 1, "When Played: Legend opens the chest, Draw three cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.DrawThreeCards) },
+            { 506, new BattleCard(id: 506, "Card Chest", 1, "When Played: Legend opens the chest, Draw three cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.CardChest) },
         };
 
 

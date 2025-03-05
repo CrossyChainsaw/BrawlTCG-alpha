@@ -136,15 +136,15 @@ namespace BrawlTCG_alpha.Visuals
                 listCardEffects.Items.Clear();
                 listCardEffects.Visible = false;
 
-                if (selectedCard.StartTurnEffect != null) listCardEffects.Items.Add("Start Turn Effect");
-                if (selectedCard.EndTurnEffect != null) listCardEffects.Items.Add("End Turn Effect");
-                if (selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add("When Played Effect");
-                if (selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add("When Discarded Effect");
+                if (selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {selectedCard.StartTurnEffect.Description}");
+                if (selectedCard.EndTurnEffect != null) listCardEffects.Items.Add("End Turn Effect: [WORK IN PROGRESS]");
+                if (selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {selectedCard.WhenPlayedEffect.Description}");
+                if (selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add("When Discarded Effect: [WORK IN PROGRESS]");
 
                 // Check for WhileInPlayEffect if it's a StageCard
                 if (selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
                 {
-                    listCardEffects.Items.Add("While In Play Effect");
+                    listCardEffects.Items.Add($"While In Play Effect: [WORK IN PROGRESS]");
                 }
 
                 if (listCardEffects.Items.Count > 0)
