@@ -30,14 +30,15 @@
         {
             SuspendLayout();
             // 
-            // FRM_PlayingField
+            // FRM_Game
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Name = "FRM_PlayingField";
+            Name = "FRM_Game";
             Text = "BrawlTCG-Alpha";
             WindowState = FormWindowState.Maximized;
+            FormClosed += FRM_Game_FormClosed;
             ResumeLayout(false);
         }
 

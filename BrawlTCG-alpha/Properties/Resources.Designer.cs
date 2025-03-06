@@ -63,6 +63,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _250px_Official_Artwork_Fait {
+            get {
+                object obj = ResourceManager.GetObject("250px-Official_Artwork_Fait", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Artemis {
             get {
                 object obj = ResourceManager.GetObject("Artemis", resourceCulture);
@@ -96,6 +106,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Axe_of_Regrowth {
             get {
                 object obj = ResourceManager.GetObject("Axe_of_Regrowth", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BebasFont {
+            get {
+                object obj = ResourceManager.GetObject("BebasFont", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -353,6 +373,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Hellshot_Hattori {
+            get {
+                object obj = ResourceManager.GetObject("Hellshot_Hattori", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap HolyCovenant {
             get {
                 object obj = ResourceManager.GetObject("HolyCovenant", resourceCulture);
@@ -561,6 +591,16 @@ namespace BrawlTCG_alpha.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Program_OT_Bold {
+            get {
+                object obj = ResourceManager.GetObject("Program_OT_Bold", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Rayman {
@@ -593,9 +633,29 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Revolvers {
+            get {
+                object obj = ResourceManager.GetObject("Revolvers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SacredRelic {
             get {
                 object obj = ResourceManager.GetObject("SacredRelic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Sakura_Strike {
+            get {
+                object obj = ResourceManager.GetObject("Sakura_Strike", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

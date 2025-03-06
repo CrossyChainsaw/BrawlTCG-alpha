@@ -136,7 +136,8 @@ namespace BrawlTCG_alpha.Visuals
                 // Start the game with two players
                 this.Invoke((Action)(() =>
                 {
-                    new FRM_Game(_host, _client, peerPlayer, hostPlayer).Show();
+                    new FRM_Game(this, _host, _client, peerPlayer, hostPlayer).Show();
+                    this.Hide();
                 }));
 
                 // Close the listener
@@ -174,7 +175,8 @@ namespace BrawlTCG_alpha.Visuals
                 // Start the game with two players
                 this.Invoke((Action)(() =>
                 {
-                    new FRM_Game(_client, hostPlayer, peerPlayer).Show();
+                    new FRM_Game(this, _client, hostPlayer, peerPlayer).Show();
+                    this.Hide();
                 }));
 
                 //_client.Close();
