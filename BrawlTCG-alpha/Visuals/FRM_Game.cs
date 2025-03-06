@@ -26,11 +26,14 @@ namespace BrawlTCG_alpha
         public Game game { get; private set; }
         public UIManager UI;
         Color _gameBackgroundColor = Color.MidnightBlue;
-        
+        private FRM_Menu _menuForm; // Store reference to the original form
+
 
         // Methods
-        internal FRM_Game(TcpListener host, TcpClient client, Player hostPlayer, Player peerPlayer)
+        internal FRM_Game(FRM_Menu menuForm, TcpListener host, TcpClient client, Player hostPlayer, Player peerPlayer)
         {
+            _menuForm = menuForm;
+
             // Setup
             InitializeComponent();
             BackColor = _gameBackgroundColor;
@@ -48,8 +51,10 @@ namespace BrawlTCG_alpha
             // Start listening for incoming messages
             Task.Run(() => Network.ListenForMessages());
         } // Host
-        internal FRM_Game(TcpClient client, Player hostPlayer, Player peerPlayer)
+        internal FRM_Game(FRM_Menu menuForm, TcpClient client, Player hostPlayer, Player peerPlayer)
         {
+            _menuForm = menuForm;
+
             // Setup Form
             InitializeComponent();
             BackColor = _gameBackgroundColor;
@@ -95,6 +100,12 @@ namespace BrawlTCG_alpha
             }
             return base.ProcessCmdKey(ref msg, keyData);
         } // COMMUNICATION !
+
+        private void FRM_Game_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _menuForm.Close();
+            // close connection
+        }
     }
 
 }
