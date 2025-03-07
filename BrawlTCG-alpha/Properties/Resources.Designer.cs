@@ -443,6 +443,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Hothead_Jiro {
+            get {
+                object obj = ResourceManager.GetObject("Hothead_Jiro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IceCrusher {
             get {
                 object obj = ResourceManager.GetObject("IceCrusher", resourceCulture);

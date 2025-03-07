@@ -42,6 +42,7 @@ namespace BrawlTCG_alpha.Logic
             { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: AC.Axe_Swing, attack2: AC.Lance_Flamethrower, attack3: AC.Any_CraftFireCard, whenPlayedEffect: EffectCatalogue.GenerateAndPlayWorkshop) }, // craft a fire card
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: AC.Sword_Slash, attack2: AC.Axe_Swing)},
+            { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.Sword_Slash, attack2: AC.Scythe_Slash) },
 
 
             // Cosmic
