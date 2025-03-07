@@ -183,7 +183,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
 
         // Tap Out
-        public static Attack Any_Seduce = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Any_BlowAKiss = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             TapEnemyCard(attacker, target, attack);
         });

@@ -28,13 +28,15 @@ namespace BrawlTCG_alpha.Logic
             // only cosmic cards can attack cost: 5
 
             // Nature
-            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_Seduce) }, // speed stance 
+            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_BlowAKiss) },
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: AC.Greatsword_Swing, attack2: AC.Greatsword_String) },
             { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 5, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AC.Spear_Stab, attack2: AC.Orb_Throw, attack3: AC.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 3, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AC.Axe_Swing, attack2: AC.Gauntlets_Punch, attack3: AC.Gauntlets_PowerPunch) },
             { 1004, new LegendCard(id: 1004, "Kor", 2, Elements.Nature, Images.Kor, 0, 0, 16, 0, Weapons.Gauntlets, Weapons.Hammer) },
             { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack2: AC.Hammer_Gimp, attack3:AC.Yumiko_GrabOrbs) },
-            { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: AC.ForestSpirit_Explode, attack2: AC.ForestSpirit_Heal) }, // bugged
+            { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: AC.ForestSpirit_Explode, attack2: AC.ForestSpirit_Heal) },
+            { 1007, new LegendCard(id: 1007, "Demon Bride", 3, Elements.Nature, Images.Demon_Bride, 4, 3, 9, 0, Weapons.Sword, Weapons.Spear, attack1: AC.Sword_Slash, attack2: AC.Any_BlowAKiss) },
+
 
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: AC.Scythe_Slash, attack2: AC.Scythe_Gimp, attack3: AC.Lance_Flamethrower, attack4: AC.Artemis_IronLady_MeltDown) },
@@ -66,11 +68,13 @@ namespace BrawlTCG_alpha.Logic
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: AC.Sword_Slash, attack2: AC.Blaster_Shot, attack3: AC.Blaster_DoubleShot) },
             { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.Sword_Slash, attack2: AC.Scythe_Slash, attack3: AC.Jiro_SpawnAndPlayNinjaSpirit) },
+            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 5, Elements.Shadow, Images.Kitsune, 15, 3, 10, 0, Weapons.Sword, Weapons.Spear, attack1: AC.Sword_Slash, attack2: AC.Spear_Stab) }, // hide in cloak
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: AC.Axe_Swing, attack2: AC.Hammer_Swing) },
             { 6001, new LegendCard(id: 6001, "Fox Spirit", 2, Elements.Wild, Images.Fox_Spirit, 1, 4, 6, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack3:AC.Yumiko_GrabOrbs) },
             { 6002, new LegendCard(id: 6002, "Dander", 1, Elements.Wild, Images.Dander, 6, 0, 2, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AC.Katar_Slash) },
+
 
             // Arctic
             { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 20, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: AC.Any_Freeze) },

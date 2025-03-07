@@ -283,6 +283,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Demon_Bride {
+            get {
+                object obj = ResourceManager.GetObject("Demon_Bride", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap DullahanJiro {
             get {
                 object obj = ResourceManager.GetObject("DullahanJiro", resourceCulture);
@@ -476,6 +486,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Jhala {
             get {
                 object obj = ResourceManager.GetObject("Jhala", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Kitsune {
+            get {
+                object obj = ResourceManager.GetObject("Kitsune", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
