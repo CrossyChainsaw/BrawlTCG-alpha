@@ -201,7 +201,7 @@ namespace BrawlTCG_alpha.Logic
         public void ShowCards()
         {
             UiManager.ShowCards(Me, true);
-            //_uiManager.ShowCards(Opponent, true); // show opponent cards for debugging
+            //UiManager.ShowCards(Opponent, true); // show opp cards nice for debugging
         }
 
         // NetworkManager

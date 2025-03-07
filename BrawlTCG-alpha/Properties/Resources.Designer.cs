@@ -103,6 +103,46 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Avatar_Fire {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_Fire", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Avatar_Heart {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_Heart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Avatar_Krabby_Patty {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_Krabby_Patty", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Avatar_Water {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_Water", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Axe_of_Regrowth {
             get {
                 object obj = ResourceManager.GetObject("Axe_of_Regrowth", resourceCulture);
@@ -236,6 +276,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap DeathCap {
             get {
                 object obj = ResourceManager.GetObject("DeathCap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap DullahanJiro {
+            get {
+                object obj = ResourceManager.GetObject("DullahanJiro", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

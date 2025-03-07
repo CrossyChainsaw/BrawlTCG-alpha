@@ -423,6 +423,24 @@ namespace BrawlTCG_alpha.Logic
 
 
 
+        // Mouse
+        bool IsMouseInZone(ZoneControl zone)
+        {
+            Point mousePos = _mainForm.PointToClient(Cursor.Position);
+            Rectangle zoneBounds = zone.Parent.RectangleToScreen(zone.Bounds);
+            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
+            return zoneBounds.Contains(mousePos);
+        }
+        bool IsMouseOnCardControl(CardControl cardControl)
+        {
+            Point mousePos = _mainForm.PointToClient(Cursor.Position);
+            Rectangle zoneBounds = cardControl.Parent.RectangleToScreen(cardControl.Bounds);
+            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
+            return zoneBounds.Contains(mousePos);
+        }
+
+
+
         // Cards
         public void AddCardToHandZone(Player player, Card card)
         {
@@ -527,24 +545,6 @@ namespace BrawlTCG_alpha.Logic
             CardControl cardControlNew = CreateCardControl(player, discardPileZone, cardControlOld.Card, true);
             cardControlNew.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 3));
             AddCardControl(cardControlNew, discardPileZone);
-        }
-
-
-
-        // Mouse
-        bool IsMouseInZone(ZoneControl zone)
-        {
-            Point mousePos = _mainForm.PointToClient(Cursor.Position);
-            Rectangle zoneBounds = zone.Parent.RectangleToScreen(zone.Bounds);
-            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
-            return zoneBounds.Contains(mousePos);
-        }
-        bool IsMouseOnCardControl(CardControl cardControl)
-        {
-            Point mousePos = _mainForm.PointToClient(Cursor.Position);
-            Rectangle zoneBounds = cardControl.Parent.RectangleToScreen(cardControl.Bounds);
-            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
-            return zoneBounds.Contains(mousePos);
         }
 
 
@@ -935,8 +935,24 @@ namespace BrawlTCG_alpha.Logic
             // Card Effect
             LegendCard targetLegend = (LegendCard)targetCardControl.Card;
             battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
-            targetCardControl.Invalidate();
-            targetCardControl.CheckIfDead();
+            // Update CardControl Info
+            if (battleCard.MultiTarget) // update all my legends
+            {
+                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
+                foreach (CardControl CC in playZone.CardsControls)
+                {
+                    if (CC.Card is LegendCard)
+                    {
+                        CC.Invalidate();
+                        CC.Update();
+                    }
+                }
+            }
+            else // only update target legend
+            {
+                targetCardControl.Invalidate();
+                targetCardControl.CheckIfDead();
+            }
 
             // remove card from hand (and in DP for some cards)
             player.PlayCard(battleCard);
