@@ -143,6 +143,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             EffectCatalogue.GenerateRandomFireCard(target, card, game);
         }
+        public static void SpawnAndPlayLegend(Game game, int cardID)
+        {
+            EffectCatalogue.GenerateAndPlayLegend(game, cardID);
+        }
 
         // Default Weapon Attacks
         public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -319,5 +323,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             int recoil = int.MaxValue;
             attacker.LoseHealth(recoil);
         }, friendlyFire: true);
+        public static Attack Jiro_SpawnAndPlayNinjaSpirit = new Attack("Spawn Ninja Spirit", -1000, Weapons.Sword, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int ninjaSpiritID = 5003;
+            SpawnAndPlayLegend(game, ninjaSpiritID);
+        }, instaEffect: true);
     }
 }

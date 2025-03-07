@@ -64,6 +64,7 @@ namespace BrawlTCG_alpha.Logic
             { 5002, new LegendCard(id: 5002, "Mastermind", 4, Elements.Shadow, Images.Loki, 5, 6, 10, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Scythe_Slash, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMatrix) },
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: AC.Sword_Slash, attack2: AC.Blaster_Shot, attack3: AC.Blaster_DoubleShot) },
+            { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.BrawlLogo, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.Sword_Slash, attack2: AC.Scythe_Slash, attack3: AC.Jiro_SpawnAndPlayNinjaSpirit) },
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: AC.Axe_Swing, attack2: AC.Hammer_Swing) },
@@ -128,6 +129,10 @@ namespace BrawlTCG_alpha.Logic
             { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 1) },
             { 505, new BattleCard(id: 505, "Xull's Fury", 3, "When Played: Boosts legend stats +5 Attack", Elements.Fire, Images.XullsFury, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 0) },
             { 506, new BattleCard(id: 506, "Card Chest", 1, "When Played: Legend opens the chest, Draw three cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.CardChest) },
+            { 507, new BattleCard(id: 507, "<3", 2, "When Played: Boosts legend stats +5 HP", Elements.Magic, Images.BrawlLogo, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 0, healthModifier: 5) },
+            // adrenaline image = heartbeat. legend can attack 2 times this turn
+            // fire chest
+            // more elemental chests
         };
 
 

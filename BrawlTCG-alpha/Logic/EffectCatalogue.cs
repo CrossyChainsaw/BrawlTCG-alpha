@@ -77,7 +77,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         );
 
         static int nCards = 3
-;        public static Effect CardChest = new Effect(
+; public static Effect CardChest = new Effect(
             description: $"Draw {nCards} cards",
             effectAction: (target, card, game) => DrawCards(game, nCards)
         );
@@ -158,11 +158,20 @@ namespace BrawlTCG_alpha.Logic.Cards
         static void GenerateAndPlayStage(Card card, Game game, int cardID)
         {
             // first give the player essence before playing it!
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(cardID); // #100: Mustafar
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(cardID);
             StageCard card2 = generatedCard;
             game.ActivePlayer.GainEssence(card2.Cost);
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
+        }
+        internal static void GenerateAndPlayLegend(Game game, int cardID)
+        {
+            // first give the player essence before playing it!
+            LegendCard generatedCard = (LegendCard)CardCatalogue.GetCardById(cardID);
+            LegendCard legend = generatedCard;
+            game.ActivePlayer.GainEssence(legend.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, legend);
+            game.UiManager.PlayLegendCard(game.ActivePlayer, legend);
         }
         static void ModifyStatsOfAllLegendsWhenPlayed(Game game, List<Elements> targetElements, Stats stat, int modifier)
         {
