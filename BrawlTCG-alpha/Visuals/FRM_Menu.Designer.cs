@@ -54,7 +54,7 @@
             // 
             // TB_Name
             // 
-            TB_Name.BackColor = Color.FromArgb(128, 128, 255);
+            TB_Name.BackColor = Color.White;
             TB_Name.Location = new Point(5, 26);
             TB_Name.Name = "TB_Name";
             TB_Name.PlaceholderText = "Name";
@@ -73,7 +73,7 @@
             // 
             // TB_Deck
             // 
-            TB_Deck.BackColor = Color.FromArgb(255, 128, 255);
+            TB_Deck.BackColor = Color.White;
             TB_Deck.Location = new Point(5, 59);
             TB_Deck.Name = "TB_Deck";
             TB_Deck.Size = new Size(180, 27);
@@ -135,7 +135,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FRM_Menu";
             Text = "Menu";
-            TransparencyKey = Color.Transparent;
+            TransparencyKey = Color.RosyBrown;
             WindowState = FormWindowState.Maximized;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();

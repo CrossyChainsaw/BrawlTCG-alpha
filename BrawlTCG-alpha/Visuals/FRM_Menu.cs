@@ -1,6 +1,5 @@
 ﻿using BrawlTCG_alpha.Logic;
 using BrawlTCG_alpha.Visuals;
-using Newtonsoft.Json; // For JSON serialization
 using System;
 using System.Collections.Generic;
 using System.IO;
