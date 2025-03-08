@@ -76,8 +76,13 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => ModifyHealthAndPower(target, card)
         );
 
-        static int nCards = 3
-;        public static Effect CardChest = new Effect(
+        public static Effect BoostHealthAndPowerAllYourLegends = new Effect(
+            description: "Modifies Health and Power",
+            effectAction: (target, card, game) => ModifyHealthAndPowerAllYourLegends(card, game)
+        );
+
+        static int nCards = 3;
+        public static Effect CardChest = new Effect(
             description: $"Draw {nCards} cards",
             effectAction: (target, card, game) => DrawCards(game, nCards)
         );
@@ -140,6 +145,13 @@ namespace BrawlTCG_alpha.Logic.Cards
                 game.RandomCardID = -1;
             }
         }
+        static void GenerateRandomCards(Game game, int nCards)
+        {
+            for (int i = 0; i < nCards; i++)
+            {
+                GenerateRandomCard(game);
+            }
+        } // more than 1 random card doesnt work now. because it sends a message this is the random card and then sends it again and overwrties it. find a way to send all random cards together
         static void GivePlayerEssence(object target)
         {
             if (target is Player player)
@@ -158,11 +170,20 @@ namespace BrawlTCG_alpha.Logic.Cards
         static void GenerateAndPlayStage(Card card, Game game, int cardID)
         {
             // first give the player essence before playing it!
-            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(cardID); // #100: Mustafar
+            StageCard generatedCard = (StageCard)CardCatalogue.GetCardById(cardID);
             StageCard card2 = generatedCard;
             game.ActivePlayer.GainEssence(card2.Cost);
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
+        }
+        internal static void GenerateAndPlayLegend(Game game, int cardID)
+        {
+            // first give the player essence before playing it!
+            LegendCard generatedCard = (LegendCard)CardCatalogue.GetCardById(cardID);
+            LegendCard legend = generatedCard;
+            game.ActivePlayer.GainEssence(legend.Cost);
+            game.AddCardToHandZone(game.ActivePlayer, legend);
+            game.UiManager.PlayLegendCard(game.ActivePlayer, legend);
         }
         static void ModifyStatsOfAllLegendsWhenPlayed(Game game, List<Elements> targetElements, Stats stat, int modifier)
         {
@@ -223,6 +244,21 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
+        static void ModifyHealthAndPowerAllYourLegends(Card card, Game game)
+        {
+            if (card is BattleCard battleCard)
+            {
+                List<LegendCard> myLegends = game.ActivePlayer.GetAllLegendInPlayingField();
+                foreach (LegendCard legend in myLegends)
+                {
+                    if (battleCard.TargetElements.Contains(legend.Element))
+                    {
+                        legend.ModifyStat(Stats.Health, battleCard.HealthModifier);
+                        legend.ModifyStat(Stats.Power, battleCard.PowerModifier);
+                    }
+                }
+            }
+        }
 
         // To do
 
@@ -271,8 +307,6 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public static void GenerateRandomFireCard(object target, Card card, Game game)
         {
-            // target must be the form here if possible
-
             if (game.ActivePlayer == game.Me)
             {
                 // generate random card

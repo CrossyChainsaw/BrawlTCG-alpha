@@ -139,5 +139,17 @@ namespace BrawlTCG_alpha.Logic
             }
             return cards;
         }
+        public List<LegendCard> GetAllLegendInPlayingField()
+        {
+            List<LegendCard> legends = new List<LegendCard>();
+            foreach (Card card in PlayingField)
+            {
+                if (card is LegendCard legend)
+                {
+                    legends.Add(legend);
+                }
+            }
+            return legends;
+        }
     }
 }

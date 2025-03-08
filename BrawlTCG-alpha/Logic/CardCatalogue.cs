@@ -28,13 +28,15 @@ namespace BrawlTCG_alpha.Logic
             // only cosmic cards can attack cost: 5
 
             // Nature
-            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_Seduce) }, // speed stance 
+            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: AC.Spear_Stab, attack2: AC.Any_BlowAKiss) },
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: AC.Greatsword_Swing, attack2: AC.Greatsword_String) },
             { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 5, 5, 0, Weapons.Spear, Weapons.Orb, attack1: AC.Spear_Stab, attack2: AC.Orb_Throw, attack3: AC.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 3, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: AC.Axe_Swing, attack2: AC.Gauntlets_Punch, attack3: AC.Gauntlets_PowerPunch) },
             { 1004, new LegendCard(id: 1004, "Kor", 2, Elements.Nature, Images.Kor, 0, 0, 16, 0, Weapons.Gauntlets, Weapons.Hammer) },
             { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack2: AC.Hammer_Gimp, attack3:AC.Yumiko_GrabOrbs) },
-            { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: AC.ForestSpirit_Explode, attack2: AC.ForestSpirit_Heal) }, // bugged
+            { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: AC.ForestSpirit_Explode, attack2: AC.ForestSpirit_Heal) },
+            { 1007, new LegendCard(id: 1007, "Demon Bride", 3, Elements.Nature, Images.Demon_Bride, 4, 3, 9, 0, Weapons.Sword, Weapons.Spear, attack1: AC.Sword_Slash, attack2: AC.Any_BlowAKiss) },
+
 
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: AC.Scythe_Slash, attack2: AC.Scythe_Gimp, attack3: AC.Lance_Flamethrower, attack4: AC.Artemis_IronLady_MeltDown) },
@@ -42,6 +44,7 @@ namespace BrawlTCG_alpha.Logic
             { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: AC.Axe_Swing, attack2: AC.Lance_Flamethrower, attack3: AC.Any_CraftFireCard, whenPlayedEffect: EffectCatalogue.GenerateAndPlayWorkshop) }, // craft a fire card
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: AC.Sword_Slash, attack2: AC.Axe_Swing)},
+            { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.Sword_Slash, attack2: AC.Scythe_Slash) },
 
 
             // Cosmic
@@ -64,11 +67,14 @@ namespace BrawlTCG_alpha.Logic
             { 5002, new LegendCard(id: 5002, "Mastermind", 4, Elements.Shadow, Images.Loki, 5, 6, 10, 0, Weapons.Scythe, Weapons.Orb, attack1: AC.Scythe_Slash, whenPlayedEffect: EffectCatalogue.GenerateAndPlayMatrix) },
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: AC.Sword_Slash, attack2: AC.Blaster_Shot, attack3: AC.Blaster_DoubleShot) },
+            { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: AC.Sword_Slash, attack2: AC.Scythe_Slash, attack3: AC.Jiro_SpawnAndPlayNinjaSpirit) },
+            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 5, Elements.Shadow, Images.Kitsune, 15, 3, 10, 0, Weapons.Sword, Weapons.Spear, attack1: AC.Sword_Slash, attack2: AC.Spear_Stab) }, // hide in cloak
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: AC.Axe_Swing, attack2: AC.Hammer_Swing) },
             { 6001, new LegendCard(id: 6001, "Fox Spirit", 2, Elements.Wild, Images.Fox_Spirit, 1, 4, 6, 0, Weapons.Bow, Weapons.Hammer, attack1: AC.Hammer_Swing, attack3:AC.Yumiko_GrabOrbs) },
             { 6002, new LegendCard(id: 6002, "Dander", 1, Elements.Wild, Images.Dander, 6, 0, 2, 0, Weapons.Gauntlets, Weapons.Katars, attack1: AC.Katar_Slash) },
+
 
             // Arctic
             { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 20, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: AC.Any_Freeze) },
@@ -122,12 +128,19 @@ namespace BrawlTCG_alpha.Logic
 
 
             { 500, new BattleCard(id: 500, "Bouncy Bomb", 2, "When Played: Deals direct damage 7", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 7) },
-            { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Boosts Heals legend by 6", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.BattleCardHealWhenPlayed, healthModifier: 6) },
+            { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Heals legend by 6", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: EffectCatalogue.BattleCardHealWhenPlayed, healthModifier: 6) },
             { 502, new BattleCard(id: 502, "Snowball", 1, "When Played: Deals direct damage 3", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 3) },
-            { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
+            { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5/+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
             { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 1) },
             { 505, new BattleCard(id: 505, "Xull's Fury", 3, "When Played: Boosts legend stats +5 Attack", Elements.Fire, Images.XullsFury, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 0) },
             { 506, new BattleCard(id: 506, "Card Chest", 1, "When Played: Legend opens the chest, Draw three cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.CardChest) },
+            { 507, new BattleCard(id: 507, "<3", 2, "When Played: Boosts legend stats +5 HP", Elements.Magic, Images.Avatar_Heart, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 0, healthModifier: 5) },
+            { 508, new BattleCard(id: 508, "Fire Nation", 2, "When Played: Boosts all your fire legend stats +2/+2", Elements.Fire, Images.Avatar_Fire, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPowerAllYourLegends, powerModifier: 2, healthModifier: 2, targetElements: [Elements.Fire], multiTarget: true) },
+            { 509, new BattleCard(id: 509, "Water Tribe", 2, "When Played: Boosts all your Arctic legend stats +2/+2", Elements.Arctic, Images.Avatar_Water, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPowerAllYourLegends, powerModifier: 2, healthModifier: 2, targetElements: [Elements.Arctic], multiTarget: true) },
+            { 510, new BattleCard(id: 510, "Krabby Patty", 2, "When Played: Fully heals legend", Elements.Arctic, Images.Avatar_Krabby_Patty, true, false, true, whenPlayedEffect: EffectCatalogue.BattleCardHealWhenPlayed, healthModifier: 1000) },
+            
+            // adrenaline image = heartbeat. legend can attack 2 times this turn
+            // more elemental chests
         };
 
 

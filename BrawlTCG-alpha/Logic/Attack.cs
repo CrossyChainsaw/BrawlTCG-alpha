@@ -21,7 +21,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public int WeaponTwoBurnAmount { get; private set; }
         public bool FriendlyFire { get; private set; }
         public bool MultiHit { get; private set; } // hits everyone
-        public bool InstaEffect { get; private set; }
+        public bool InstaEffect { get; private set; } // change this property to targetRequired default value true?
         public int Recoil {  get; private set; }
 
 

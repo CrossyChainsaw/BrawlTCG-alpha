@@ -95,11 +95,9 @@ namespace BrawlTCG_alpha.Logic
                         {
                             int handIndex = Convert.ToInt32(parts[2]);
                             LegendCard legendCard = (LegendCard)game.Opponent.Hand[handIndex];
-                            CardControl oldCC = ui.GetCardControl(game.Opponent, ZoneTypes.Hand, legendCard);
-                            ZoneControl zone = ui.GetMyZone(ZoneTypes.PlayingField, game.Opponent);
                             _frm.Invoke((Action)(() =>
                             {
-                                ui.PlayLegendCard(game.Opponent, legendCard, oldCC, zone);
+                                ui.PlayLegendCard(game.Opponent, legendCard);
                             }));
                         }
                         else if (parts[3] == "TARGET_LEGEND")

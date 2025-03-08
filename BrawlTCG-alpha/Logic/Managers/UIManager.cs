@@ -423,6 +423,24 @@ namespace BrawlTCG_alpha.Logic
 
 
 
+        // Mouse
+        bool IsMouseInZone(ZoneControl zone)
+        {
+            Point mousePos = _mainForm.PointToClient(Cursor.Position);
+            Rectangle zoneBounds = zone.Parent.RectangleToScreen(zone.Bounds);
+            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
+            return zoneBounds.Contains(mousePos);
+        }
+        bool IsMouseOnCardControl(CardControl cardControl)
+        {
+            Point mousePos = _mainForm.PointToClient(Cursor.Position);
+            Rectangle zoneBounds = cardControl.Parent.RectangleToScreen(cardControl.Bounds);
+            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
+            return zoneBounds.Contains(mousePos);
+        }
+
+
+
         // Cards
         public void AddCardToHandZone(Player player, Card card)
         {
@@ -531,24 +549,6 @@ namespace BrawlTCG_alpha.Logic
 
 
 
-        // Mouse
-        bool IsMouseInZone(ZoneControl zone)
-        {
-            Point mousePos = _mainForm.PointToClient(Cursor.Position);
-            Rectangle zoneBounds = zone.Parent.RectangleToScreen(zone.Bounds);
-            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
-            return zoneBounds.Contains(mousePos);
-        }
-        bool IsMouseOnCardControl(CardControl cardControl)
-        {
-            Point mousePos = _mainForm.PointToClient(Cursor.Position);
-            Rectangle zoneBounds = cardControl.Parent.RectangleToScreen(cardControl.Bounds);
-            zoneBounds = _mainForm.RectangleToClient(zoneBounds);
-            return zoneBounds.Contains(mousePos);
-        }
-
-
-
         // Play Card
         internal async Task<bool> TryToSnapCard(CardControl cardControl, Card card, Player player)
         {
@@ -564,7 +564,7 @@ namespace BrawlTCG_alpha.Logic
             }
             else if (card is LegendCard legendCard)
             {
-                bool result = TryPlayLegendCard(player, legendCard, cardControl);
+                bool result = TryPlayLegendCard(player, legendCard);
                 return result;
             }
             else if (card is WeaponCard weaponCard)
@@ -635,7 +635,7 @@ namespace BrawlTCG_alpha.Logic
             }
             return false;
         }
-        bool TryPlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld)
+        bool TryPlayLegendCard(Player player, LegendCard legendCard)
         {
             ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
             if (IsMouseInZone(playZone))
@@ -649,7 +649,7 @@ namespace BrawlTCG_alpha.Logic
                         int handIndex = player.Hand.IndexOf(legendCard);
 
                         // Play the Card
-                        PlayLegendCard(player, legendCard, cardControlOld, playZone);
+                        PlayLegendCard(player, legendCard);
 
                         // communicate to opponent
                         string msg = $"PLAY_CARD:HAND_INDEX:{handIndex}:TARGET_ZONE:{ZoneTypes.PlayingField}";
@@ -879,13 +879,15 @@ namespace BrawlTCG_alpha.Logic
                 AddCardControl(stageCardCardControl, discardPileZone);
             }
         }
-        public void PlayLegendCard(Player player, LegendCard legendCard, CardControl cardControlOld, ZoneControl playZone)
+        public void PlayLegendCard(Player player, LegendCard legendCard)
         {
+            CardControl cardControl = GetCardControl(player, ZoneTypes.Hand, legendCard);
+            ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
             Game game = _mainForm.game;
             // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
             legendCard.UI_BurnWeaponCard += BurnWeaponCard;
             // Play Card
-            CardControl legendCardControl = PlayCardInZone(player, legendCard, cardControlOld, playZone);
+            CardControl legendCC = PlayCardInZone(player, legendCard, cardControl, playZone);
             // when played effect
             legendCard.OnPlayedEffect(null, null, game);
             // the active stage effect
@@ -895,7 +897,7 @@ namespace BrawlTCG_alpha.Logic
                 {
                     StageCard stage = game.GetActiveStageCard();
                     stage.WhileInPlayEffect(legendCard, stage, game);
-                    legendCardControl.Invalidate();
+                    legendCC.Invalidate();
                 }
             }
             // Arrange Cards
@@ -933,8 +935,24 @@ namespace BrawlTCG_alpha.Logic
             // Card Effect
             LegendCard targetLegend = (LegendCard)targetCardControl.Card;
             battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
-            targetCardControl.Invalidate();
-            targetCardControl.CheckIfDead();
+            // Update CardControl Info
+            if (battleCard.MultiTarget) // update all my legends
+            {
+                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
+                foreach (CardControl CC in playZone.CardsControls)
+                {
+                    if (CC.Card is LegendCard)
+                    {
+                        CC.Invalidate();
+                        CC.Update();
+                    }
+                }
+            }
+            else // only update target legend
+            {
+                targetCardControl.Invalidate();
+                targetCardControl.CheckIfDead();
+            }
 
             // remove card from hand (and in DP for some cards)
             player.PlayCard(battleCard);
