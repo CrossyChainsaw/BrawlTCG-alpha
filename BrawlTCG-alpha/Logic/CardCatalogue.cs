@@ -133,11 +133,17 @@ namespace BrawlTCG_alpha.Logic
             { 503, new BattleCard(id: 503, "Super Saiyan", 5, "When Played: Boosts legend stats +5/+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
             { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: EffectCatalogue.BattleCardDirectDamageWhenPlayed, damage: 1) },
             { 505, new BattleCard(id: 505, "Xull's Fury", 3, "When Played: Boosts legend stats +5 Attack", Elements.Fire, Images.XullsFury, false, true, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 5, healthModifier: 0) },
-            { 506, new BattleCard(id: 506, "Card Chest", 1, "When Played: Legend opens the chest, Draw three cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.CardChest) },
+            { 506, new BattleCard(id: 506, "Chest", 1, "When Played: Legend opens the chest, obtain 3 random cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: EffectCatalogue.CardChest) },
             { 507, new BattleCard(id: 507, "<3", 2, "When Played: Boosts legend stats +5 HP", Elements.Magic, Images.Avatar_Heart, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPower, powerModifier: 0, healthModifier: 5) },
             { 508, new BattleCard(id: 508, "Fire Nation", 2, "When Played: Boosts all your fire legend stats +2/+2", Elements.Fire, Images.Avatar_Fire, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPowerAllYourLegends, powerModifier: 2, healthModifier: 2, targetElements: [Elements.Fire], multiTarget: true) },
             { 509, new BattleCard(id: 509, "Water Tribe", 2, "When Played: Boosts all your Arctic legend stats +2/+2", Elements.Arctic, Images.Avatar_Water, true, false, true, whenPlayedEffect: EffectCatalogue.BoostHealthAndPowerAllYourLegends, powerModifier: 2, healthModifier: 2, targetElements: [Elements.Arctic], multiTarget: true) },
             { 510, new BattleCard(id: 510, "Krabby Patty", 2, "When Played: Fully heals legend", Elements.Arctic, Images.Avatar_Krabby_Patty, true, false, true, whenPlayedEffect: EffectCatalogue.BattleCardHealWhenPlayed, healthModifier: 1000) },
+            { 511, new BattleCard(id: 511, "Bubble", 1, "When Played: Tap a card", Elements.Arctic, Images.Bubble, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: EffectCatalogue.Bubble) },
+            { 512, new BattleCard(id: 512, "Cosmic Chest", 3, "When Played: Legend opens the chest, obtain three random Cosmic cards", Elements.Cosmic, Images.Cosmic_Chest, true, false, true, whenPlayedEffect: EffectCatalogue.CosmicChest) },
+            { 513, new BattleCard(id: 513, "Wild Chest", 3, "When Played: Legend opens the chest, obtain three random Wild cards", Elements.Wild, Images.Wild_Chest, true, false, true, whenPlayedEffect: EffectCatalogue.WildChest) },
+            { 514, new BattleCard(id: 514, "Dragon's Chest", 3, "When Played: Legend opens the chest, obtain three random Fire cards", Elements.Fire, Images.Dragon_Chest, true, false, true, whenPlayedEffect: EffectCatalogue.DragonChest) },
+            { 515, new BattleCard(id: 515, "Sunken Chest", 3, "When Played: Legend opens the chest, obtain three random Arctic cards", Elements.Arctic, Images.Sunken_Chest, true, false, true, whenPlayedEffect: EffectCatalogue.SunkenChest) },
+            { 516, new BattleCard(id: 516, "Forgeborne Chest", 3, "When Played: Legend opens the chest, obtain three random Shadow cards", Elements.Shadow, Images.Shadow_Chest, true, false, true, whenPlayedEffect: EffectCatalogue.ShadowChest) },
             
             // adrenaline image = heartbeat. legend can attack 2 times this turn
             // more elemental chests
@@ -255,21 +261,15 @@ namespace BrawlTCG_alpha.Logic
 
             return CardDictionary[randomKey].Clone(); // Clone to avoid modifying the original
         }
-        public static Card GetRandomFireCard()
+        public static Card GetRandomElementalCard(Elements element)
         {
             var random = new Random();
 
             // Filter fire cards from the dictionary
-            var fireCards = CardDictionary.Values.Where(card => card.Element == Elements.Fire).ToList();
-
-            // Ensure there are fire cards available
-            if (fireCards.Count == 0)
-            {
-                throw new Exception("No fire cards available.");
-            }
+            var elementalCards = CardDictionary.Values.Where(card => card.Element == element).ToList();
 
             // Select a random fire card
-            return fireCards[random.Next(fireCards.Count)].Clone(); // Clone to avoid modifying the original
+            return elementalCards[random.Next(elementalCards.Count)].Clone(); // Clone to avoid modifying the original
         }
 
 

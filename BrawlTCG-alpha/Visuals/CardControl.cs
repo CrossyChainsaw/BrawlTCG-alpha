@@ -393,7 +393,7 @@ namespace BrawlTCG_alpha.Visuals
                     // Remove card logically
                     Card card = legend.StackedCards[0];
                     legend.StackedCards.Remove(card);
-                    this.Owner.DiscardPile.Add(card);
+                    _game.AddCardToDiscardPile(Owner, card);
 
                     // Delete card visually
                     CardControl cardControl = this.CardsControls[0];
@@ -406,8 +406,7 @@ namespace BrawlTCG_alpha.Visuals
 
                 // move legend card to discard pile logically
                 this.Owner.PlayingField.Remove(Card);
-                this.Owner.DiscardPile.Add(Card);
-                this.Card.IsDiscarded = true;
+                _game.AddCardToDiscardPile(Owner, Card);
                 // visually
                 UI_AddCardToDiscardPile(Owner, this);
 
