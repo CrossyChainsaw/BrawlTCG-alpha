@@ -237,8 +237,15 @@ namespace BrawlTCG_alpha.Logic
                     }
                     else if (parts[0] == "RANDOM_CARD_ID")
                     {
-                        game.RandomCardID = Convert.ToInt32(parts[1]);
+                        foreach (var part in parts.Skip(1))
+                        {
+                            if (int.TryParse(part, out int cardID))
+                            {
+                                game.RandomCardIDs.Add(cardID);
+                            }
+                        }
                     }
+
                 }
             }
         }

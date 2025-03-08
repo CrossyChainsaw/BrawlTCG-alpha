@@ -108,5 +108,10 @@ namespace BrawlTCG_alpha.Logic
             }
             throw new Exception("This element has no text color");
         }
+        public void Discard()
+        {
+            IsDiscarded = true;
+            IsOpen = true;
+        }
     }
 }

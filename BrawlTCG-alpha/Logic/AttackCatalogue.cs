@@ -141,7 +141,9 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public static void GenerateRandomFireCard(object target, Card card, Game game)
         {
-            EffectCatalogue.GenerateRandomFireCard(target, card, game);
+            int nCards = 1;
+            EffectCatalogue.GenerateRandomElementalCards(game, nCards, Elements.Fire);
+            game.ShowCards();
         }
         public static void SpawnAndPlayLegend(Game game, int cardID)
         {

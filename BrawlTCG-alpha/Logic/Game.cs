@@ -19,7 +19,7 @@ namespace BrawlTCG_alpha.Logic
         public Player InactivePlayer => _playerManager.InactivePlayer;
         public Player Me => _playerManager.Me;
         public Player Opponent => _playerManager.Opponent;
-        public int RandomCardID { get; set; } = -1;
+        public List<int> RandomCardIDs { get; private set; } = new List<int>();
         public UIManager UiManager { get; private set; }
 
         // Fields
@@ -169,7 +169,7 @@ namespace BrawlTCG_alpha.Logic
         public void AddCardToDiscardPile(Player player, Card card)
         {
             player.DiscardPile.Add(card);
-
+            card.Discard();
             // add card to discard pile visually
         }
         public void AddCardToHandZone(Player player, Card card)

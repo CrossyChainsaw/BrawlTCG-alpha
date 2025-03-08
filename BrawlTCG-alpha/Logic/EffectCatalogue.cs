@@ -23,7 +23,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static Effect Workshop = new Effect(
             description: $"Obtain a random card",
-            effectAction: (target, card, game) => GenerateRandomCard(game)
+            effectAction: (target, card, game) => GenerateRandomCards(game, 1)
         );
 
         static int spaceTimeExtraDrawnCards = 2;
@@ -83,12 +83,53 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         static int nCards = 3;
         public static Effect CardChest = new Effect(
-            description: $"Draw {nCards} cards",
-            effectAction: (target, card, game) => DrawCards(game, nCards)
+            description: $"Obtain {nCards} random cards",
+            effectAction: (target, card, game) => GenerateRandomCards(game, nCards)
         );
 
+        public static Effect Bubble = new Effect(
+            description: "Tap legend Card",
+            effectAction: (target, card, game) => TapLegendCard(target)
+        );
+
+        static int nDragonChest = 3;
+        public static Effect DragonChest = new Effect(
+            description: $"Obtain {nCards} random Fire cards",
+            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nDragonChest, Elements.Fire)
+        );
+
+        static int nWildChest = 3;
+        public static Effect WildChest = new Effect(
+            description: $"Obtain {nCards} random Wild cards",
+            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nWildChest, Elements.Wild)
+        );
+
+        static int nSunkenChest = 3;
+        public static Effect SunkenChest = new Effect(
+            description: $"Obtain {nCards} random Arctic cards",
+            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nSunkenChest, Elements.Arctic)
+        );
+
+        static int nShadowChest = 3;
+        public static Effect ShadowChest = new Effect(
+            description: $"Obtain {nCards} random Shadow cards",
+            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nShadowChest, Elements.Shadow)
+        );
+
+        static int nCosmicChest = 3;
+        public static Effect CosmicChest = new Effect(
+            description: $"Obtain {nCards} random Cosmic cards",
+            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nShadowChest, Elements.Cosmic)
+        );
 
         // Generic Methods
+        static void TapLegendCard(object target)
+        {
+            if (target is LegendCard legend)
+            {
+                legend.TapOut();
+            }
+        }
         static void StartTurnHeal(object target, int heal, params Elements[] targetElements)
         {
             if (target is List<LegendCard> legends)
@@ -115,43 +156,116 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-        static void GenerateRandomCard(Game game)
+        static void GenerateRandomCards(Game game, int nCards)
         {
-            // target must be the form here if possible
+            // Ensure the form (GUI) is the target if required
+            // (This depends on how your application handles UI updates)
 
             if (game.ActivePlayer == game.Me)
             {
-                // generate random card
-                Card generatedCard = CardCatalogue.GetRandomCard();
-                // send random card id
-                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
-                // add card to deck
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                List<int> generatedCardIDs = new List<int>();
+
+                // Generate multiple random cards
+                for (int i = 0; i < nCards; i++)
+                {
+                    // Generate a random card
+                    Card generatedCard = CardCatalogue.GetRandomCard();
+
+                    // Store the generated card ID
+                    generatedCardIDs.Add(generatedCard.ID);
+
+                    // Add the generated card to the player's hand
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Form a single message containing all card IDs
+                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
+
+                // Send the message to the peer
+                game.SendMessageToPeer(message);
+
+                // show card
+                game.ShowCards();
             }
             else
             {
-                // get the random card the peer got
-                if (game.RandomCardID == -1)
+                // Wait until we receive all expected card IDs (Avoid infinite loop!)
+                while (game.RandomCardIDs.Count < nCards)
                 {
-                    while (game.RandomCardID == -1)
-                    {
-                        // wait till its not -1
-                    }
+                    Thread.Sleep(10); // Pause briefly to prevent CPU overuse
                 }
-                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
-                // add to his hand
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                // reset the property
-                game.RandomCardID = -1;
+
+                // Retrieve all generated cards based on the received random card IDs
+                List<Card> generatedCards = game.RandomCardIDs
+                    .Select(id => CardCatalogue.GetCardById(id)) // Fetch each card by its ID
+                    .Where(card => card != null) // Ensure we don’t add null cards
+                    .ToList();
+
+                // Add each generated card to the player's hand
+                foreach (Card generatedCard in generatedCards)
+                {
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Clear the list instead of setting it to null to avoid null reference issues
+                game.RandomCardIDs.Clear();
             }
         }
-        static void GenerateRandomCards(Game game, int nCards)
+        public static void GenerateRandomElementalCards(Game game, int nCards, Elements element)
         {
-            for (int i = 0; i < nCards; i++)
+            if (game.ActivePlayer == game.Me)
             {
-                GenerateRandomCard(game);
+                List<int> generatedCardIDs = new List<int>();
+
+                // Generate multiple fire cards
+                for (int i = 0; i < nCards; i++)
+                {
+                    // Generate a random fire card
+                    Card generatedCard = CardCatalogue.GetRandomElementalCard(element);
+
+                    // Store the generated card ID
+                    generatedCardIDs.Add(generatedCard.ID);
+
+                    // Add the generated card to the player's hand
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+
+                    // show
+                }
+
+                // Form a single message containing all fire card IDs
+                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
+
+                // Send the message to the peer
+                game.SendMessageToPeer(message);
+                
+                // show cards maybe implement this somwehre
+                game.ShowCards();
             }
-        } // more than 1 random card doesnt work now. because it sends a message this is the random card and then sends it again and overwrties it. find a way to send all random cards together
+            else
+            {
+                // Wait until we receive all expected card IDs (Avoid infinite loop!)
+                while (game.RandomCardIDs.Count < nCards)
+                {
+                    Thread.Sleep(10); // Pause briefly to prevent CPU overuse
+                }
+
+                // Retrieve all generated fire cards based on the received random card IDs
+                List<Card> generatedCards = game.RandomCardIDs
+                    .Select(id => CardCatalogue.GetCardById(id)) // Fetch each card by its ID
+                    .Where(card => card != null) // Ensure we don’t add null cards
+                    .ToList();
+
+                // Add each generated fire card to the player's hand
+                foreach (Card generatedCard in generatedCards)
+                {
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Clear the list instead of setting it to null to avoid null reference issues
+                game.RandomCardIDs.Clear();
+            }
+        }
+
         static void GivePlayerEssence(object target)
         {
             if (target is Player player)
@@ -303,34 +417,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                         legend.ModifyStat(Stats.Power, -3);
                     }
                 }
-            }
-        }
-        public static void GenerateRandomFireCard(object target, Card card, Game game)
-        {
-            if (game.ActivePlayer == game.Me)
-            {
-                // generate random card
-                Card generatedCard = CardCatalogue.GetRandomFireCard();
-                // send random card id
-                game.SendMessageToPeer($"RANDOM_CARD_ID:{generatedCard.ID}");
-                // add card to deck
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-            }
-            else
-            {
-                // get the random card the peer got
-                if (game.RandomCardID == -1)
-                {
-                    while (game.RandomCardID == -1)
-                    {
-                        // wait till its not -1
-                    }
-                }
-                Card generatedCard = CardCatalogue.GetCardById(game.RandomCardID);
-                // add to his hand
-                game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                // reset the property
-                game.RandomCardID = -1;
             }
         }
     }

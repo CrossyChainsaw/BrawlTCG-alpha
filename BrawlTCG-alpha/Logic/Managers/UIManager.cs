@@ -538,13 +538,15 @@ namespace BrawlTCG_alpha.Logic
                 }
             }
         }        /// <summary>deletes old card control and creates a new one</summary>
-        void AddCardToDiscardPile(Player player, CardControl cardControlOld)
+        void AddCardToDiscardPile(Player player, CardControl cardControl)
         {
+            cardControl.Card.Discard();
             // Add to UI and Zone
             ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, player);
-            CardControl cardControlNew = CreateCardControl(player, discardPileZone, cardControlOld.Card, true);
-            cardControlNew.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 3));
+            CardControl cardControlNew = CreateCardControl(player, discardPileZone, cardControl.Card, true);
+            cardControlNew.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 1));
             AddCardControl(cardControlNew, discardPileZone);
+            
         }
 
 
@@ -875,7 +877,7 @@ namespace BrawlTCG_alpha.Logic
 
                 // add to discard pile visually
                 ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
-                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 3);
+                stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 1);
                 AddCardControl(stageCardCardControl, discardPileZone);
             }
         }
