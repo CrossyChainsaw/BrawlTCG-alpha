@@ -93,6 +93,26 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Atlantean_Ada {
+            get {
+                object obj = ResourceManager.GetObject("Atlantean_Ada", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Atlantis {
+            get {
+                object obj = ResourceManager.GetObject("Atlantis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap AuroraBrynn {
             get {
                 object obj = ResourceManager.GetObject("AuroraBrynn", resourceCulture);

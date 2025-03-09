@@ -30,7 +30,7 @@ namespace BrawlTCG_alpha.Logic
         public Effect? StartTurnEffect { get; internal set; }
         public Action<object>? EndTurnEffect { get; internal set; }
         public Effect? WhenPlayedEffect { get; internal set; }
-        public Action<object, Card, Game>? WhenDiscardedEffect { get; internal set; }
+        public Effect? WhenDiscardedEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
         public Color TextColor { get; internal set; }
@@ -44,7 +44,7 @@ namespace BrawlTCG_alpha.Logic
         static Color ArcticColor = Color.LightCyan;
 
 
-        public Card(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Action<object, Card, Game>? whenDiscardedEffect = null)
+        public Card(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null)
         {
             ID = id;
             Name = name;

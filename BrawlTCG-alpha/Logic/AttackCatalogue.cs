@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using ec = BrawlTCG_alpha.Logic.Cards.EffectCatalogue;
 
 namespace BrawlTCG_alpha.Logic.Cards
 {
@@ -142,12 +143,16 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static void GenerateRandomFireCard(object target, Card card, Game game)
         {
             int nCards = 1;
-            EffectCatalogue.GenerateRandomElementalCards(game, nCards, Elements.Fire);
+            ec.GenerateRandomElementalCards(game, nCards, Elements.Fire);
             game.ShowCards();
         }
         public static void SpawnAndPlayLegend(Game game, int cardID)
         {
-            EffectCatalogue.GenerateAndPlayLegend(game, cardID);
+            ec.GenerateAndPlayLegend(game, cardID);
+        }
+        public static void SpawnAndPlayStage(Game game, int cardID)
+        {
+            ec.GenerateAndPlayStage(game, cardID);
         }
 
         // Default Weapon Attacks
@@ -329,6 +334,11 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             int ninjaSpiritID = 5003;
             SpawnAndPlayLegend(game, ninjaSpiritID);
+        }, instaEffect: true);
+        public static Attack Ada_SpawnAndPlayAtlantis = new Attack("Spawn Atlantis", -1000, Weapons.Blasters, 1, weaponTwo: Weapons.Spear, weaponTwoAmount: 1,  execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int atlantisID = 106;
+            SpawnAndPlayStage(game, atlantisID);
         }, instaEffect: true);
     }
 }

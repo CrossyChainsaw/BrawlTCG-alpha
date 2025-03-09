@@ -10,6 +10,7 @@ namespace BrawlTCG_alpha.Visuals
 {
     public enum CardElementFilter
     {
+        Element,
         All,
         Fire,
         Magic,
@@ -25,7 +26,7 @@ namespace BrawlTCG_alpha.Visuals
     {
         private ListView listAvailableCards, listDeck;
         private Button btnAddCard, btnRemoveCard, btnSaveDeck, btnSwitchPlayer, btnStartGame;
-        private ComboBox cmbFilterType, cmbFilterElement;
+        private ComboBox cmbFilterType, cmbFilterElement, cmbFilterWeapon;
         private PictureBox picCardPreview;
         private List<Card> player1Deck = new List<Card>();
         private List<Card> player2Deck = new List<Card>();
@@ -79,18 +80,52 @@ namespace BrawlTCG_alpha.Visuals
             btnSwitchPlayer.Click += BtnSwitchPlayer_Click;
             Controls.Add(btnSwitchPlayer);
 
-            cmbFilterType = new ComboBox { Location = new Point(20, 20), Width = 150 };
+            // Create the ComboBox for Card Type with a placeholder
+            cmbFilterType = new ComboBox { Location = new Point(20, 20), Width = 150, DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbFilterType.Items.Add("Card"); // Placeholder
             cmbFilterType.Items.AddRange(new string[] { "All", "Legend", "Stage", "Weapon", "Essence", "Battle" });
-            cmbFilterType.SelectedIndex = 0;
+            cmbFilterType.SelectedIndex = 0; // Set default selection to "Card"
+            cmbFilterType.DropDown += (s, e) => RemovePlaceholder(cmbFilterType, "Card");
+            cmbFilterType.DropDownClosed += (s, e) => RestorePlaceholder(cmbFilterType, "Card");
             cmbFilterType.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
             Controls.Add(cmbFilterType);
 
-            cmbFilterElement = new ComboBox { Location = new Point(180, 20), Width = 140 };
-            cmbFilterElement.Items.Add("All");
-            cmbFilterElement.Items.AddRange(Enum.GetNames(typeof(Elements)));
-            cmbFilterElement.SelectedIndex = 0;
+            // Create the ComboBox for Element Type with a placeholder
+            cmbFilterElement = new ComboBox { Location = new Point(180, 20), Width = 150, DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbFilterElement.Items.Add("Element"); // Placeholder
+            cmbFilterElement.Items.AddRange(Enum.GetNames(typeof(CardElementFilter)));
+            cmbFilterElement.SelectedIndex = 0; // Set default selection to "Element"
+            cmbFilterElement.DropDown += (s, e) => RemovePlaceholder(cmbFilterElement, "Element");
+            cmbFilterElement.DropDownClosed += (s, e) => RestorePlaceholder(cmbFilterElement, "Element");
             cmbFilterElement.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
             Controls.Add(cmbFilterElement);
+
+            // Create the ComboBox for Weapon Type with a placeholder
+            cmbFilterWeapon = new ComboBox { Location = new Point(340, 20), Width = 150, DropDownStyle = ComboBoxStyle.DropDownList };
+            cmbFilterWeapon.Items.Add("All");
+            cmbFilterWeapon.Items.AddRange(Enum.GetNames(typeof(Weapons)));
+            cmbFilterWeapon.SelectedIndex = 0;
+            cmbFilterWeapon.SelectedIndexChanged += (s, e) => PopulateAvailableCards();
+            Controls.Add(cmbFilterWeapon);
+
+            void RemovePlaceholder(ComboBox comboBox, string placeholder)
+            {
+                if (comboBox.SelectedIndex == 0 && comboBox.Items[0].ToString() == placeholder)
+                {
+                    comboBox.Items.RemoveAt(0); // Remove placeholder
+                    comboBox.SelectedIndex = -1; // Reset selection
+                }
+            }
+            void RestorePlaceholder(ComboBox comboBox, string placeholder)
+            {
+                if (comboBox.SelectedIndex == -1)
+                {
+                    comboBox.Items.Insert(0, placeholder); // Restore placeholder
+                    comboBox.SelectedIndex = 0; // Select placeholder
+                }
+            }
+
+
 
             picCardPreview = new PictureBox { Location = new Point(640, 460), Size = new Size(180, 240), BorderStyle = BorderStyle.FixedSingle };
             Controls.Add(picCardPreview);
@@ -186,26 +221,44 @@ namespace BrawlTCG_alpha.Visuals
             listAvailableCards.Items.Clear();
 
             string filterType = cmbFilterType.SelectedItem.ToString();
-            CardElementFilter filterElement = cmbFilterElement.SelectedItem.ToString() == "All" ? CardElementFilter.All : (CardElementFilter)Enum.Parse(typeof(CardElementFilter), cmbFilterElement.SelectedItem.ToString());
+            CardElementFilter filterElement = cmbFilterElement.SelectedItem.ToString() == "All" || cmbFilterElement.SelectedItem.ToString() == "Element" ?
+                CardElementFilter.All : (CardElementFilter)Enum.Parse(typeof(CardElementFilter), cmbFilterElement.SelectedItem.ToString());
+
+            string filterWeapon = cmbFilterWeapon.SelectedItem.ToString(); // Get selected weapon
 
             foreach (var card in availableCards)
             {
                 bool matchesType = filterType == "All" || card.GetType().Name.Contains(filterType);
                 bool matchesElement = filterElement == CardElementFilter.All || card.Element.ToString() == filterElement.ToString();
+                bool matchesWeapon = filterWeapon == "All" || CardHasWeapon(card, filterWeapon);
 
-                if (matchesType && matchesElement)
+                if (matchesType && matchesElement && matchesWeapon)
                 {
                     ListViewItem item = new ListViewItem(new string[]
                     {
-                        card.Name,
-                        card.Cost.ToString(),
-                        card.Element.ToString(),
-                        card.Description,
+                card.Name,
+                card.Cost.ToString(),
+                card.Element.ToString(),
+                card.Description,
                     });
                     item.Tag = card;
                     listAvailableCards.Items.Add(item);
                 }
             }
+        }
+
+        private bool CardHasWeapon(Card card, string weaponName)
+        {
+            if (card is LegendCard legend)
+            {
+                return legend.PrimaryWeapon.ToString() == weaponName ||
+                       (legend.SecondaryWeapon != null && legend.SecondaryWeapon.ToString() == weaponName);
+            }
+            if (card is WeaponCard weaponCard)
+            {
+                return weaponCard.Weapon.ToString() == weaponName;
+            }
+            return false;
         }
 
         private void BtnAddCard_Click(object sender, EventArgs e)
