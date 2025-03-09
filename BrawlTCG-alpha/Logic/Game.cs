@@ -261,9 +261,9 @@ namespace BrawlTCG_alpha.Logic
         {
             _stageCardManager.WhenDiscardedEffect();
         }
-        public void StageWhileInPlayEffect(LegendCard legend)
+        public StageCard StageWhileInPlayEffect(LegendCard legend)
         {
-            _stageCardManager.WhileInPlayEffect(legend);
+            return _stageCardManager.WhileInPlayEffect(legend);
         }
     }
 }

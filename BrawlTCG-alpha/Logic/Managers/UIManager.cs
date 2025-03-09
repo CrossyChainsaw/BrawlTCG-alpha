@@ -546,7 +546,7 @@ namespace BrawlTCG_alpha.Logic
             CardControl cardControlNew = CreateCardControl(player, discardPileZone, cardControl.Card, true);
             cardControlNew.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + (player.DiscardPile.Count * 1));
             AddCardControl(cardControlNew, discardPileZone);
-            
+
         }
 
 
@@ -877,13 +877,16 @@ namespace BrawlTCG_alpha.Logic
             // Play Card
             CardControl legendCC = PlayCardInZone(player, legendCard, cardControl, playZone);
             // the active stage effect
-            game.StageWhileInPlayEffect(legendCard);
+            StageCard activeStage = game.StageWhileInPlayEffect(legendCard);
             legendCC.Invalidate();
             // when played effect
             legendCard.OnPlayedEffect(null, null, game);
             // the active stage effect
-            game.StageWhileInPlayEffect(legendCard);
-            legendCC.Invalidate();
+            if (activeStage != game.GetActiveStageCard())
+            {
+                game.StageWhileInPlayEffect(legendCard);
+                legendCC.Invalidate();
+            }
             // Arrange Cards
             ArrangeCardsInPlayingField(player);
             // Arrange Cards in hand

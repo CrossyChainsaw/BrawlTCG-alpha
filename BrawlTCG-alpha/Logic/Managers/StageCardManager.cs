@@ -64,7 +64,7 @@ namespace BrawlTCG_alpha.Logic
             }
         }
 
-        public void WhileInPlayEffect(LegendCard legend)
+        public StageCard WhileInPlayEffect(LegendCard legend)
         {
             if (ActiveStageCard != null)
             {
@@ -73,6 +73,7 @@ namespace BrawlTCG_alpha.Logic
                     ActiveStageCard.WhileInPlayEffect.Invoke(legend, ActiveStageCard, _game);
                 }
             }
+            return ActiveStageCard;
         }
     }
 }

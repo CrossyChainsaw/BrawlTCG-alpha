@@ -35,7 +35,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int spaceTimeExtraDrawnCards = 2;
         public static Effect SpaceTime = new Effect(
             description: $"Draw {spaceTimeExtraDrawnCards} extra cards",
-            effectAction: (target, card, game) => _DrawCards(game, spaceTimeExtraDrawnCards)
+            effectAction: (target, card, game) => _DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
         );
 
         public static Effect Essence = new Effect(
@@ -192,7 +192,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
                 // Send the message to the peer
                 game.SendMessageToPeer(message);
-                
+
                 // show cards maybe implement this somwehre
                 game.ShowCards();
             }
@@ -333,13 +333,20 @@ namespace BrawlTCG_alpha.Logic.Cards
                 player.GainEssence(1);
             }
         }
-        static void _DrawCards(Game game, int n)
+        static void _DrawCards(Game game, int n, bool startTurn = false)
         {
-            for (int i = 0; i < n; i++)
+            if (startTurn && game.ActivePlayer.Hand.Count > 15)
             {
-                game.DrawCardFromDeck(game.ActivePlayer);
+
             }
-            game.ShowCards();
+            else
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    game.DrawCardFromDeck(game.ActivePlayer);
+                }
+                game.ShowCards();
+            }
         }
         static void _ModifyStatsOfAllLegendsWhenPlayed(Game game, List<Elements> targetElements, Stats stat, int modifier)
         {
@@ -420,7 +427,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             if (target is LegendCard legend)
             {
-                List<Elements> atlantisTargetElements = new List<Elements> { Elements.Arctic};
+                List<Elements> atlantisTargetElements = new List<Elements> { Elements.Arctic };
 
                 if (!atlantisTargetElements.Contains(legend.Element))
                 {

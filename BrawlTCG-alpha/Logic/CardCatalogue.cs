@@ -25,7 +25,7 @@ namespace BrawlTCG_alpha.Logic
             { 102, new StageCard(id:102, "Matrix", 1, "Nothing", Elements.Cosmic, Images.Matrix) },
             { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop) },
             { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) }, // all fire, wild, shadow legends get+3 attack
-            { 105, new StageCard(id:105, "Space Time", 2, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
+            { 105, new StageCard(id:105, "Space Time", 1, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // fixed
             { 106, new StageCard(id:106, "Atlantis", 3, "Start Turn: Every non-Arctic Legend will lose 1 hp. \nWhile in play: Every non-Arctic legend does 2 damage less.", Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             
             // only cosmic cards can attack cost: 5
@@ -71,7 +71,7 @@ namespace BrawlTCG_alpha.Logic
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: ac.Sword_Slash, attack2: ac.Blaster_Shot, attack3: ac.Blaster_DoubleShot) },
             { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash, attack3: ac.Jiro_SpawnAndPlayNinjaSpirit) },
-            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 5, Elements.Shadow, Images.Kitsune, 15, 3, 10, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) }, // hide in cloak
+            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) }, // buffed/nerfed // make hide in cloak
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: ac.Axe_Swing, attack2: ac.Hammer_Swing) },
@@ -80,7 +80,7 @@ namespace BrawlTCG_alpha.Logic
 
 
             // Arctic
-            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 20, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) },
+            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) }, // nerfed hp
             { 7001, new LegendCard(id: 7001, "Atlantean Ada", 2, Elements.Arctic, Images.Atlantean_Ada, 2, 3, 5, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot, attack2: ac.Spear_Stab, attack3: ac.Ada_SpawnAndPlayAtlantis) },
 
 

@@ -196,6 +196,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack Any_Freeze = new Attack("Freeze", 0, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
+            DefaultAttack(attacker, target, attack);
             TapEnemyCard(attacker, target, attack);
         });
 
