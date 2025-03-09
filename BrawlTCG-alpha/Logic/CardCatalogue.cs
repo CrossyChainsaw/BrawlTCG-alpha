@@ -20,12 +20,12 @@ namespace BrawlTCG_alpha.Logic
             { 0, new EssenceCard(id: 0, "Essence", 0, Elements.Magic, Images.Essence) },
 
             // Stages
-            { 100, new StageCard(id:100, "Mustafar", 2, "Start Turn: Every non-Fire Legend will lose 2 HP", Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) }, // buffed dmg 1>2
+            { 100, new StageCard(id:100, "Mustafar", 2, "Start Turn: Every non-Fire Legend will lose 2 HP", Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) },
             { 101, new StageCard(id:101, "Fangwild", 3, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Images.Fangwild, startTurnEffect: ec.Fangwild) },
             { 102, new StageCard(id:102, "Matrix", 1, "Nothing", Elements.Cosmic, Images.Matrix) },
             { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop) },
-            { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) }, // all fire, wild, shadow legends get+3 attack
-            { 105, new StageCard(id:105, "Space Time", 1, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // fixed
+            { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) },
+            { 105, new StageCard(id:105, "Space Time", 1, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
             { 106, new StageCard(id:106, "Atlantis", 3, "Start Turn: Every non-Arctic Legend will lose 1 hp. \nWhile in play: Every non-Arctic legend does 2 damage less.", Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             
             // only cosmic cards can attack cost: 5
@@ -44,7 +44,7 @@ namespace BrawlTCG_alpha.Logic
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower, attack4: ac.Artemis_IronLady_MeltDown) },
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Heatblast_Burn) },
-            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: ac.Axe_Swing, attack2: ac.Lance_Flamethrower, attack3: ac.Any_CraftFireCard, whenPlayedEffect: ec.GenerateAndPlayWorkshop) }, // craft a fire card
+            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: ac.Axe_Swing, attack2: ac.Lance_Flamethrower, attack3: ac.Any_CraftFireCard, whenPlayedEffect: ec.GenerateAndPlayWorkshop) },
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: ec.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)},
             { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash) },
@@ -55,11 +55,11 @@ namespace BrawlTCG_alpha.Logic
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Lance_Flamethrower) },
             { 3002, new LegendCard(id: 3002, "Wu Shang", 4, Elements.Cosmic, Images.Spyrox_WuShang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.WuShang_DownSig) },
             { 3003, new LegendCard(id: 3003, "Aurora Brynn", 5, Elements.Cosmic, Images.AuroraBrynn, 10, 2, 16, 0, Weapons.Axe, Weapons.Spear, attack1: ac.Axe_Swing, attack2: ac.Spear_Stab) },
-            { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) }, // nerfed hp 4>3
+            { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) },
 
 
             // Magic
-            { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) }, // base stance
+            { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) },
             { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Enchantress_EnchantHealth, attack2: ac.Enchantress_EnchantPower, attack3: ac.Enchantress_CurseHealth, attack4: ac.Enchantress_CursePower) }, // bugged
             { 4002, new LegendCard(id: 4002, "Dark Mage", 5, Elements.Shadow, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash) },
             { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 2, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.PlagueKnight_GrabHealingPotion) }, // give this guy more attacks
@@ -71,7 +71,7 @@ namespace BrawlTCG_alpha.Logic
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: ac.Sword_Slash, attack2: ac.Blaster_Shot, attack3: ac.Blaster_DoubleShot) },
             { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash, attack3: ac.Jiro_SpawnAndPlayNinjaSpirit) },
-            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) }, // buffed/nerfed // make hide in cloak
+            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) }, // make hide in cloak
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: ac.Axe_Swing, attack2: ac.Hammer_Swing) },
@@ -80,7 +80,7 @@ namespace BrawlTCG_alpha.Logic
 
 
             // Arctic
-            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) }, // nerfed hp
+            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) },
             { 7001, new LegendCard(id: 7001, "Atlantean Ada", 2, Elements.Arctic, Images.Atlantean_Ada, 2, 3, 5, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot, attack2: ac.Spear_Stab, attack3: ac.Ada_SpawnAndPlayAtlantis) },
 
 
