@@ -1,9 +1,11 @@
 ﻿using BrawlTCG_alpha.Logic;
 using BrawlTCG_alpha.Visuals;
+using Open.Nat;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +23,14 @@ namespace BrawlTCG_alpha.Visuals
         StreamReader _streamReader;
         StreamWriter _streamWriter;
 
-        // Methods
+        // UPnP variables
+        private NatDevice _upnpDevice;
+        private int _port = 5000; // Port for TCP connection
+
         public FRM_Menu()
         {
             InitializeComponent();
+            DiscoverUPnP(); // Discover UPnP support on startup
         }
 
         private void BTN_EditDeck_OnClick(object sender, EventArgs e)
@@ -49,9 +55,9 @@ namespace BrawlTCG_alpha.Visuals
             }
             return deck;
         }
+
         private async void BTN_P2P_Click(object sender, EventArgs e)
         {
-            // Get player name
             string playerName = TB_Name.Text;
             if (string.IsNullOrWhiteSpace(playerName))
             {
@@ -59,7 +65,6 @@ namespace BrawlTCG_alpha.Visuals
                 return;
             }
 
-            // Get player deck
             List<Card> playerDeck = Deck.LoadDeckFromFile(TB_Deck.Text + ".txt");
             playerDeck = ShuffleDeck(playerDeck);
             if (playerDeck == null || playerDeck.Count == 0)
@@ -68,22 +73,16 @@ namespace BrawlTCG_alpha.Visuals
                 return;
             }
 
-            // Convert deck to a string of card IDs
             string deckString = string.Join(",", playerDeck.Select(card => card.ID));
-
-            // Prepare player data string
             string playerData = $"PLAYER_NAME:{playerName}:PLAYER_DECK:{deckString}";
 
-            // Prompt to choose to host or join a game
             DialogResult dialogResult = MessageBox.Show("Do you want to host a game?", "Host or Join", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
-                // Host: Set up the listener and wait for connection from peer
                 await HostGame(playerData, playerDeck);
             }
             else
             {
-                // Join: Ask for the host's IP and connect to it
                 string hostIp = Microsoft.VisualBasic.Interaction.InputBox("Enter the host's IP address:", "Host IP", "127.0.0.1");
                 if (string.IsNullOrWhiteSpace(hostIp))
                 {
@@ -105,42 +104,34 @@ namespace BrawlTCG_alpha.Visuals
         {
             try
             {
-                // Create a TcpListener to wait for incoming connections
-                _host = new TcpListener(System.Net.IPAddress.Any, 5000);
+                if (_upnpDevice != null)
+                {
+                    await _upnpDevice.CreatePortMapAsync(new Mapping(Protocol.Tcp, _port, _port, "BrawlTCG Host"));
+                    SetStatus("UPnP port forwarded!");
+                }
+
+                _host = new TcpListener(IPAddress.Any, _port);
                 _host.Start();
                 SetStatus("Waiting for second player...");
 
-                // Wait for a peer to connect
                 _client = await _host.AcceptTcpClientAsync();
-                SetStatus("Someone is joining...");
+                SetStatus("Someone joined!");
 
-                // Setup reader and writer for communication
                 _stream = _client.GetStream();
                 _streamReader = new StreamReader(_stream);
                 _streamWriter = new StreamWriter(_stream) { AutoFlush = true };
-                SetStatus("Someone joined!");
 
-
-                // Send player data to peer
                 _streamWriter.WriteLine(playerData);
-
-
-                // Wait for player data from the peer
                 string peerData = await _streamReader.ReadLineAsync();
 
-                // Create player objects
-                Player hostPlayer = new Player(playerData.Split(':')[1], playerDeck, isHost: true, isMe: true); // Host
-                Player peerPlayer = ProcesPeerData(peerData, isHost: false, isMe: false);
+                Player hostPlayer = new Player(playerData.Split(':')[1], playerDeck, isHost: true, isMe: true);
+                Player peerPlayer = ProcessPeerData(peerData, isHost: false, isMe: false);
 
-                // Start the game with two players
                 this.Invoke((Action)(() =>
                 {
                     new FRM_Game(this, _host, _client, peerPlayer, hostPlayer).Show();
                     this.Hide();
                 }));
-
-                // Close the listener
-                //_host.Stop();
             }
             catch (Exception ex)
             {
@@ -152,33 +143,24 @@ namespace BrawlTCG_alpha.Visuals
         {
             try
             {
-                // Connect to the host
                 SetStatus("Joining host...");
-                _client = new TcpClient(hostIp, 5000);
+                _client = new TcpClient(hostIp, _port);
                 _stream = _client.GetStream();
                 _streamReader = new StreamReader(_stream);
                 _streamWriter = new StreamWriter(_stream) { AutoFlush = true };
                 SetStatus("Connected to host!");
 
-
-                // Send player data to the host
                 _streamWriter.WriteLine(playerData);
-
-                // Wait for player data from the host
                 string hostData = await _streamReader.ReadLineAsync();
 
-                // Create player objects
-                Player hostPlayer = ProcesPeerData(hostData, isHost: true, isMe: false);
-                Player peerPlayer = new Player(playerData.Split(':')[1], playerDeck, isHost: false, isMe: true); // Player joining
+                Player hostPlayer = ProcessPeerData(hostData, isHost: true, isMe: false);
+                Player peerPlayer = new Player(playerData.Split(':')[1], playerDeck, isHost: false, isMe: true);
 
-                // Start the game with two players
                 this.Invoke((Action)(() =>
                 {
                     new FRM_Game(this, _client, hostPlayer, peerPlayer).Show();
                     this.Hide();
                 }));
-
-                //_client.Close();
             }
             catch (Exception ex)
             {
@@ -186,16 +168,14 @@ namespace BrawlTCG_alpha.Visuals
             }
         }
 
-        Player ProcesPeerData(string peerData, bool isHost, bool isMe)
+        Player ProcessPeerData(string peerData, bool isHost, bool isMe)
         {
-            // check if data is null
             if (string.IsNullOrEmpty(peerData))
             {
                 MessageBox.Show("No data received from peer.");
                 throw new Exception();
             }
 
-            // Parse the peer data
             string[] peerDataParts = peerData.Split(':');
             if (peerDataParts.Length != 4 || peerDataParts[0] != "PLAYER_NAME")
             {
@@ -203,26 +183,38 @@ namespace BrawlTCG_alpha.Visuals
                 throw new Exception();
             }
 
-            // Parse player name and deck from peer data
             string peerName = peerDataParts[1];
             string peerDeckString = peerDataParts[3];
             List<int> peerCardIds = peerDeckString.Split(',').Select(id => int.Parse(id)).ToList();
 
-            // Get peer's cards by their IDs from CardCatalogue
             List<Card> peerDeck = peerCardIds.Select(id => CardCatalogue.GetCardById(id)).ToList();
 
-            Player player2 = new Player(peerName, peerDeck, isHost, isMe); // Peer
-            return player2;
+            return new Player(peerName, peerDeck, isHost, isMe);
         }
 
-        private void TB_Deck_TextChanged(object sender, EventArgs e)
+        private async void DiscoverUPnP()
         {
-
+            try
+            {
+                var discoverer = new NatDiscoverer();
+                var cts = new System.Threading.CancellationTokenSource(5000); // Timeout after 5 seconds
+                _upnpDevice = await discoverer.DiscoverDeviceAsync(PortMapper.Upnp, cts);
+                SetStatus("UPnP Device Found!");
+            }
+            catch
+            {
+                SetStatus("UPnP not available.");
+                _upnpDevice = null;
+            }
         }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
+        private async void FRM_Menu_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            if (_upnpDevice != null)
+            {
+                await _upnpDevice.DeletePortMapAsync(new Mapping(Protocol.Tcp, _port, _port));
+                SetStatus("UPnP port removed.");
+            }
         }
     }
 }

@@ -79,7 +79,6 @@
             TB_Deck.Size = new Size(180, 27);
             TB_Deck.TabIndex = 1;
             TB_Deck.Text = "deckPlayer1";
-            TB_Deck.TextChanged += TB_Deck_TextChanged;
             // 
             // LBL_Status
             // 
