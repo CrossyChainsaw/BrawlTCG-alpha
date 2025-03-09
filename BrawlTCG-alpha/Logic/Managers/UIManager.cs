@@ -842,16 +842,8 @@ namespace BrawlTCG_alpha.Logic
             _game.SetStageCardFromForm(player, stageCard);
             // Disable Drag
             stageCardControl.SetCanDrag(false);
-
-            // when played effect - (first get all cards on screen then do)
-            if (stageCard.WhenPlayedEffect != null)
-            {
-                List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
-                List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
-                List<Card> allCards = l1.Concat(l2).ToList();
-                stageCard.WhenPlayedEffect.Invoke(allCards, stageCard, _game);
-            }
-
+            // when played effect
+            _game.StageWhenPlayedEffect();
             // update all cards
             UpdateCardControlsInPlayingFieldInformation();
 
@@ -867,14 +859,8 @@ namespace BrawlTCG_alpha.Logic
                 StageCard oldStageCard = (StageCard)stageCardCardControl.Card; // = _game.ActiveStageCard;
                 Player oldOwner = stageCardCardControl.Owner; //                  = _game.ActiveStageCardOwner;
                 _game.AddCardToDiscardPile(oldOwner, oldStageCard);
-                if (_game.GetActiveStageCard().WhenDiscardedEffect != null)
-                {
-                    List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
-                    List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
-                    List<Card> allCards = l1.Concat(l2).ToList();
-                    _game.GetActiveStageCard().WhenDiscardedEffect.Invoke(null, stageCard, _game);
-                }
-
+                // when discarded effect
+                _game.StageWhenDiscardedEffect();
                 // add to discard pile visually
                 ZoneControl discardPileZone = GetMyZone(ZoneTypes.DiscardPile, oldOwner);
                 stageCardCardControl.Location = new Point(discardPileZone.Location.X + 10, discardPileZone.Location.Y + 10 + oldOwner.DiscardPile.Count * 1);
@@ -890,18 +876,14 @@ namespace BrawlTCG_alpha.Logic
             legendCard.UI_BurnWeaponCard += BurnWeaponCard;
             // Play Card
             CardControl legendCC = PlayCardInZone(player, legendCard, cardControl, playZone);
+            // the active stage effect
+            game.StageWhileInPlayEffect(legendCard);
+            legendCC.Invalidate();
             // when played effect
             legendCard.OnPlayedEffect(null, null, game);
             // the active stage effect
-            if (game.GetActiveStageCard() != null)
-            {
-                if (game.GetActiveStageCard().WhileInPlayEffect != null)
-                {
-                    StageCard stage = game.GetActiveStageCard();
-                    stage.WhileInPlayEffect(legendCard, stage, game);
-                    legendCC.Invalidate();
-                }
-            }
+            game.StageWhileInPlayEffect(legendCard);
+            legendCC.Invalidate();
             // Arrange Cards
             ArrangeCardsInPlayingField(player);
             // Arrange Cards in hand

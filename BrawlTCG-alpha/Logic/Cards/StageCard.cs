@@ -9,9 +9,9 @@ namespace BrawlTCG_alpha.Logic.Cards
     // ideas: start turn both players get a x sword
     public class StageCard : Card
     {
-        public Action<object, Card, Game>? WhileInPlayEffect { get; internal set; }
+        public Effect? WhileInPlayEffect { get; internal set; }
 
-        public StageCard(int id, string name, int cost, string description, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Action<object, Card, Game>? whenDiscardedEffect = null, Action<object, Card, Game>? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
+        public StageCard(int id, string name, int cost, string description, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
         {
             Description = description;
             WhileInPlayEffect = whileInPlayEffect;

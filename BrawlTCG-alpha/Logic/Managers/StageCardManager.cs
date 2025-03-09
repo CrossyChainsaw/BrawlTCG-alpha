@@ -1,13 +1,15 @@
 ﻿using BrawlTCG_alpha.Logic.Cards;
+using BrawlTCG_alpha.Visuals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BrawlTCG_alpha.Logic
 {
-    internal class StageCardManager
+    public class StageCardManager
     {
         // Properties
         public StageCard ActiveStageCard { get; private set; }
@@ -33,6 +35,43 @@ namespace BrawlTCG_alpha.Logic
             {
                 var legends = player.PlayingField.OfType<LegendCard>().ToList();
                 ActiveStageCard.StartTurnEffect.Invoke(legends, ActiveStageCard, _game); // i want to reference the game instance i am in if possbile
+            }
+        }
+
+        public void WhenPlayedEffect()
+        {
+            if (ActiveStageCard.WhenPlayedEffect != null)
+            {
+                // get all cards
+                List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
+                List<Card> allCards = l1.Concat(l2).ToList();
+                // effect
+                ActiveStageCard.WhenPlayedEffect.Invoke(allCards, ActiveStageCard, _game);
+            }
+        }
+
+        public void WhenDiscardedEffect()
+        {
+            if (ActiveStageCard.WhenDiscardedEffect != null)
+            {
+                // get all cards
+                List<Card> l1 = _game.Me.GetAllCardsInPlayingField();
+                List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
+                List<Card> allCards = l1.Concat(l2).ToList();
+                // effect
+                ActiveStageCard.WhenDiscardedEffect.Invoke(allCards, ActiveStageCard, _game);
+            }
+        }
+
+        public void WhileInPlayEffect(LegendCard legend)
+        {
+            if (ActiveStageCard != null)
+            {
+                if (ActiveStageCard.WhileInPlayEffect != null)
+                {
+                    ActiveStageCard.WhileInPlayEffect.Invoke(legend, ActiveStageCard, _game);
+                }
             }
         }
     }

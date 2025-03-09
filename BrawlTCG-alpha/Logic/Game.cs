@@ -96,11 +96,12 @@ namespace BrawlTCG_alpha.Logic
         }
         public Task StartTurn()
         {
-            // Start Turn
+            // Draw card start turn (only if you have <16 cards)
             if (ActivePlayer.Hand.Count < MAX_CARDS_IN_HAND)
             {
-                DrawCardFromDeck(ActivePlayer); // draw card
+                DrawCardFromDeck(ActivePlayer);
             }
+
             _stageCardManager.StartTurnEffect(ActivePlayer);
             BurnDamage();
             UiManager.UpdateCardControlsInPlayingFieldInformation();
@@ -251,6 +252,18 @@ namespace BrawlTCG_alpha.Logic
         public StageCard? GetActiveStageCard()
         {
             return _stageCardManager.ActiveStageCard;
+        }
+        public void StageWhenPlayedEffect()
+        {
+            _stageCardManager.WhenPlayedEffect();
+        }
+        public void StageWhenDiscardedEffect()
+        {
+            _stageCardManager.WhenDiscardedEffect();
+        }
+        public void StageWhileInPlayEffect(LegendCard legend)
+        {
+            _stageCardManager.WhileInPlayEffect(legend);
         }
     }
 }
