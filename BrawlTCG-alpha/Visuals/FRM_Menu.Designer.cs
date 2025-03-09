@@ -82,9 +82,10 @@
             // 
             // LBL_Status
             // 
+            LBL_Status.AutoSize = true;
             LBL_Status.Location = new Point(5, 124);
             LBL_Status.Name = "LBL_Status";
-            LBL_Status.Size = new Size(180, 23);
+            LBL_Status.Size = new Size(156, 20);
             LBL_Status.TabIndex = 7;
             LBL_Status.Text = "Status: Not Connected";
             // 
