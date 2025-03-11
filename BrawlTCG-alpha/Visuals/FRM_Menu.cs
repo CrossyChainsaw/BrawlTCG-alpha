@@ -71,7 +71,7 @@ namespace BrawlTCG_alpha.Visuals
             }
             if (playerDeck == null || playerDeck.Count < 40 )
             {
-                MessageBox.Show("Your deck does not contain at least 40 cards. Please edit your deck.");
+                MessageBox.Show($"Your deck does not contain at least 40 cards. Your deck: {playerDeck.Count}");
                 return;
             }
 
