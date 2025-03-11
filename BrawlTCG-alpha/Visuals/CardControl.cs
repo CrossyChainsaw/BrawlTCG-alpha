@@ -64,7 +64,7 @@ namespace BrawlTCG_alpha.Visuals
             // Dragging
             this.MouseDown += (sender, e) =>
             {
-                if (_canDrag && !Card.IsDiscarded && Owner == _game.ActivePlayer) // i.e. can drag && card is not in discard pile && it is your own card
+                if (_canDrag && !Card.IsDiscarded && Owner == _game.ActivePlayer && Card.IsOpen) // i.e. can drag && card is not in discard pile && it is your own card
                 {
                     StartDragging(e);
                 }
@@ -290,7 +290,7 @@ namespace BrawlTCG_alpha.Visuals
         // Render When Clicked
         void OnCardClicked()
         {
-            if (!_game.GetSomeoneIsAttacking())
+            if (!_game.GetSomeoneIsAttacking() && Card.IsOpen)
             {
                 _isDragging = false;
                 if (!_mouseMoved)

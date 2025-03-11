@@ -54,9 +54,6 @@ namespace BrawlTCG_alpha.Logic
             UiManager.InitializeDeckPile(ActivePlayer);
             UiManager.InitializeDeckPile(InactivePlayer);
 
-            UiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Deck, false);
-            UiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Deck, false);
-
             // Draw Starting Hands and Display Visually
             DrawStartingHand(ActivePlayer, STARTING_HAND_CARDS);
             DrawStartingHand(InactivePlayer, STARTING_HAND_CARDS);
@@ -73,12 +70,6 @@ namespace BrawlTCG_alpha.Logic
             // update cards in essence fields
             UiManager.UpdateEssenceCardsInEssenceField(ActivePlayer);
             UiManager.UpdateEssenceCardsInEssenceField(InactivePlayer);
-            // Disable cards in essence zones
-            UiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.EssenceField, false);
-            UiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.EssenceField, false);
-            // enable/disable cards in hand
-            UiManager.EnableCardsInZone(Me, ZoneTypes.Hand, true);
-            UiManager.EnableCardsInZone(Opponent, ZoneTypes.Hand, false);
 
             // only show your own cards
             ShowCards();
@@ -132,10 +123,6 @@ namespace BrawlTCG_alpha.Logic
 
             // Reset Variables
             ActivePlayer.PlayedEssenceCardThisTurn(false);
-            // Hide Enemy Hand and Disable it
-            UiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.Hand, false);
-            // Show Player Hand and Enable it
-            UiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.Hand, true);
             // Enable all the cards on the field
             UiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.PlayingField, true);
             UiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.PlayingField, true);
@@ -204,7 +191,7 @@ namespace BrawlTCG_alpha.Logic
         }
         public void ShowCards()
         {
-            UiManager.ShowCards(Me, true);
+            UiManager.ShowCardsInHand(Me, true);
             //UiManager.ShowCards(Opponent, true); // show opp cards nice for debugging
         }
 
