@@ -294,19 +294,19 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             Card card = CardCatalogue.GetCardById(500); // #500: Bouncy Bomb
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
         }, instaEffect: true);
         public static Attack PlagueKnight_GrabHealingPotion = new Attack("Grab Healing Potion", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             Card card = CardCatalogue.GetCardById(501); // #501: Vial of Crows 
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
         }, instaEffect: true);
         public static Attack Yumiko_GrabOrbs = new Attack("Spawn Orbs", -1000, Weapons.Any, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             Card card = CardCatalogue.GetCardById(504); // #504: Orb
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card);
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
+            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
         }, instaEffect: true);
         public static Attack WuShang_DownSig = new Attack("Gauntlet Dsig", -2, Weapons.Gauntlets, 2, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
