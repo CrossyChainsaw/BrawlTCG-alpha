@@ -504,23 +504,23 @@ namespace BrawlTCG_alpha.Logic
             AddCardToDiscardPile(player, cardControl);
             cardControl.Enabled = false;
         }
-        public void ShowCards(Player player, bool show = true)
+        public void ShowCardsInHand(Player player, bool show = true)
         {
             ZoneControl playerHand = GetMyZone(ZoneTypes.Hand, player);
-            foreach (CardControl cardControl in playerHand.CardsControls)
+            foreach (CardControl cc in playerHand.CardsControls)
             {
                 if (show)
                 {
-                    if (!cardControl.Card.IsOpen)
+                    if (!cc.Card.IsOpen)
                     {
-                        cardControl.FlipCard();
+                        cc.FlipCard();
                     }
                 }
                 else
                 {
-                    if (cardControl.Card.IsOpen)
+                    if (cc.Card.IsOpen)
                     {
-                        cardControl.FlipCard();
+                        cc.FlipCard();
                     }
                 }
             }
