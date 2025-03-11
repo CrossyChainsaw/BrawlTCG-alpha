@@ -13,6 +13,8 @@ namespace BrawlTCG_alpha.Visuals
 {
     public partial class FRM_Menu : Form
     {
+        // Deck
+        const int MINIMUM_CARDS_IN_DECK = 40;
         // Host variables
         TcpListener _host;
         // Client Variables
@@ -69,9 +71,9 @@ namespace BrawlTCG_alpha.Visuals
                 MessageBox.Show("Your deck is empty! Please select or build a deck before playing.");
                 return;
             }
-            if (playerDeck == null || playerDeck.Count < 40 )
+            if (playerDeck == null || playerDeck.Count < MINIMUM_CARDS_IN_DECK)
             {
-                MessageBox.Show($"Your deck does not contain at least 40 cards. Your deck: {playerDeck.Count}");
+                MessageBox.Show($"Your deck does not contain at least {MINIMUM_CARDS_IN_DECK} cards. Your deck: {playerDeck.Count}");
                 return;
             }
 
