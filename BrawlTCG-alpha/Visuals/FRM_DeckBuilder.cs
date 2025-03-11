@@ -35,6 +35,7 @@ namespace BrawlTCG_alpha.Visuals
         private bool isPlayer1DeckSaved = false;
         private bool isPlayer2DeckSaved = false;
         private ListBox listLegendAttacks, listCardEffects;
+        private Card _selectedCard;
 
         public FRM_DeckBuilder()
         {
@@ -61,6 +62,7 @@ namespace BrawlTCG_alpha.Visuals
             listDeck = new ListView { Location = new Point(840, 50), Size = new Size(300, 400), View = View.Details, FullRowSelect = true };
             listDeck.Columns.Add("Card Name", 200);
             listDeck.Columns.Add("Copies", 80);
+            listDeck.SelectedIndexChanged += ListDeck_SelectedIndexChanged;
             Controls.Add(listDeck);
 
             btnAddCard = new Button { Text = "➕ Add", Location = new Point(840, 460), Size = new Size(100, 30) };
@@ -134,18 +136,20 @@ namespace BrawlTCG_alpha.Visuals
 
             listCardEffects = new ListBox { Location = new Point(20, 570), Size = new Size(600, 100), Visible = false };
             Controls.Add(listCardEffects);
+
+            Size = new Size(1200, 800);
         }
 
         private void ListAvailableCards_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listAvailableCards.SelectedItems.Count > 0)
             {
-                var selectedCard = (Card)listAvailableCards.SelectedItems[0].Tag;
+                _selectedCard = (Card)listAvailableCards.SelectedItems[0].Tag;
                 picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
-                picCardPreview.Image = selectedCard.Image ?? null;
+                picCardPreview.Image = _selectedCard.Image ?? null;
 
                 // Check if the selected card is a Legend
-                if (selectedCard is LegendCard legend)
+                if (_selectedCard is LegendCard legend)
                 {
                     listLegendAttacks.Items.Clear();
                     listLegendAttacks.Visible = true;
@@ -170,13 +174,13 @@ namespace BrawlTCG_alpha.Visuals
                 listCardEffects.Items.Clear();
                 listCardEffects.Visible = false;
 
-                if (selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {selectedCard.StartTurnEffect.Description}");
-                if (selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn Effect: [WORK IN PROGRESS]");
-                if (selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {selectedCard.WhenPlayedEffect.Description}");
-                if (selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded Effect: {selectedCard.WhenDiscardedEffect.Description}");
+                if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {_selectedCard.StartTurnEffect.Description}");
+                if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn Effect: [WORK IN PROGRESS]");
+                if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {_selectedCard.WhenPlayedEffect.Description}");
+                if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded Effect: {_selectedCard.WhenDiscardedEffect.Description}");
 
                 // Check for WhileInPlayEffect if it's a StageCard
-                if (selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
+                if (_selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
                 {
                     listCardEffects.Items.Add($"While In Play Effect: {stage.WhileInPlayEffect.Description}");
                 }
@@ -192,6 +196,71 @@ namespace BrawlTCG_alpha.Visuals
                 listCardEffects.Visible = false;
             }
         }
+
+        private void ListDeck_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listDeck.SelectedItems.Count > 0)
+            {
+                string selectedCardName = listDeck.SelectedItems[0].Text;
+                var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
+
+                // Find the first instance of the card in the deck
+                _selectedCard = currentDeck.FirstOrDefault(c => c.Name == selectedCardName);
+
+                if (_selectedCard != null)
+                {
+                    picCardPreview.SizeMode = PictureBoxSizeMode.Zoom;
+                    picCardPreview.Image = _selectedCard.Image ?? null;
+
+                    // Display attacks if the card is a Legend
+                    if (_selectedCard is LegendCard legend)
+                    {
+                        listLegendAttacks.Items.Clear();
+                        listLegendAttacks.Visible = true;
+
+                        foreach (var attack in legend.GetAttacks())
+                        {
+                            string weaponDescription = attack.WeaponTwo != null
+                                ? $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)} + {attack.WeaponTwoAmount}x {attack.WeaponTwo} {GetBurnWeaponEmojis(attack.WeaponTwoBurnAmount)}"
+                                : $"{attack.WeaponOneAmount}x {attack.WeaponOne} {GetBurnWeaponEmojis(attack.WeaponOneBurnAmount)}";
+                            weaponDescription += attack.MultiHit ? " - Hits All" : "";
+
+                            int dmg = AttackCatalogue.CalculateDamage(legend, attack);
+                            listLegendAttacks.Items.Add($"{weaponDescription} - {dmg} Damage - {attack.Name}");
+                        }
+                    }
+                    else
+                    {
+                        listLegendAttacks.Visible = false;
+                    }
+
+                    // Display card effects
+                    listCardEffects.Items.Clear();
+                    listCardEffects.Visible = false;
+
+                    if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {_selectedCard.StartTurnEffect.Description}");
+                    if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn Effect: [WORK IN PROGRESS]");
+                    if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {_selectedCard.WhenPlayedEffect.Description}");
+                    if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded Effect: {_selectedCard.WhenDiscardedEffect.Description}");
+
+                    if (_selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
+                    {
+                        listCardEffects.Items.Add($"While In Play Effect: {stage.WhileInPlayEffect.Description}");
+                    }
+
+                    if (listCardEffects.Items.Count > 0)
+                    {
+                        listCardEffects.Visible = true;
+                    }
+                }
+            }
+            else
+            {
+                listLegendAttacks.Visible = false;
+                listCardEffects.Visible = false;
+            }
+        }
+
         string GetBurnWeaponEmojis(int nBurn)
         {
             string emojis = "";
@@ -262,9 +331,7 @@ namespace BrawlTCG_alpha.Visuals
 
         private void BtnAddCard_Click(object sender, EventArgs e)
         {
-            if (listAvailableCards.SelectedItems.Count == 0) return;
-
-            var selectedCard = (Card)listAvailableCards.SelectedItems[0].Tag;
+            var selectedCard = _selectedCard;
             string cardName = selectedCard.Name;
 
             var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
@@ -296,30 +363,30 @@ namespace BrawlTCG_alpha.Visuals
 
         private void BtnRemoveCard_Click(object sender, EventArgs e)
         {
-            if (listDeck.SelectedItems.Count == 0) return;
-
-            string cardName = listDeck.SelectedItems[0].Text;
-            int selectedIndex = listDeck.SelectedItems[0].Index;
-
             var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
 
             // Find the card to remove from the deck
-            var cardToRemove = currentDeck.FirstOrDefault(c => c.Name == cardName);
+            var cardToRemove = _selectedCard;
 
             if (cardToRemove != null)
             {
+                // Get the index before removing
+                int selectedIndex = currentDeck.IndexOf(cardToRemove);
+
                 currentDeck.Remove(cardToRemove);
-            }
 
-            PopulateDeck();
+                PopulateDeck();
 
-            if (listDeck.Items.Count > 0)
-            {
-                int newIndex = Math.Min(selectedIndex, listDeck.Items.Count - 1);
-                listDeck.Items[newIndex].Selected = true;
-                listDeck.Select();
+                if (listDeck.Items.Count > 0)
+                {
+                    // Adjust the selected index
+                    int newIndex = Math.Max(0, Math.Min(selectedIndex, listDeck.Items.Count - 1));
+                    listDeck.Items[newIndex].Selected = true;
+                    listDeck.Select();
+                }
             }
         }
+
 
         private void PopulateDeck()
         {
