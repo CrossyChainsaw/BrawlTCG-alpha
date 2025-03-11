@@ -82,7 +82,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                     Stats.Power, -2)
         );
 
-
         public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
             description: "Deals direct damage to opposing Legend",
             effectAction: (target, card, game) => _DirectDamage(target, card)
