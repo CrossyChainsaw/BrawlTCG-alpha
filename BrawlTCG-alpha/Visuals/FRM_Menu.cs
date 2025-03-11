@@ -49,6 +49,7 @@ namespace BrawlTCG_alpha.Visuals
             }
             return deck;
         }
+
         private async void BTN_P2P_Click(object sender, EventArgs e)
         {
             // Get player name
@@ -62,9 +63,15 @@ namespace BrawlTCG_alpha.Visuals
             // Get player deck
             List<Card> playerDeck = Deck.LoadDeckFromFile(TB_Deck.Text + ".txt");
             playerDeck = ShuffleDeck(playerDeck);
+            // validate deck (put this in method)
             if (playerDeck == null || playerDeck.Count == 0)
             {
                 MessageBox.Show("Your deck is empty! Please select or build a deck before playing.");
+                return;
+            }
+            if (playerDeck == null || playerDeck.Count < 40 )
+            {
+                MessageBox.Show("Your deck does not contain at least 40 cards. Please edit your deck.");
                 return;
             }
 
