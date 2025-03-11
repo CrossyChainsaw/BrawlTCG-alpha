@@ -76,6 +76,9 @@ namespace BrawlTCG_alpha.Logic
             // Disable cards in essence zones
             UiManager.EnableCardsInZone(ActivePlayer, ZoneTypes.EssenceField, false);
             UiManager.EnableCardsInZone(InactivePlayer, ZoneTypes.EssenceField, false);
+            // enable/disable cards in hand
+            UiManager.EnableCardsInZone(Me, ZoneTypes.Hand, true);
+            UiManager.EnableCardsInZone(Opponent, ZoneTypes.Hand, false);
 
             // only show your own cards
             ShowCards();
