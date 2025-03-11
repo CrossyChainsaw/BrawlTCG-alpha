@@ -363,29 +363,35 @@ namespace BrawlTCG_alpha.Visuals
 
         private void BtnRemoveCard_Click(object sender, EventArgs e)
         {
+            if (listDeck.SelectedItems.Count == 0) return;
+
+            string cardName = listDeck.SelectedItems[0].Text;
+            int selectedIndex = listDeck.SelectedItems[0].Index;
+
             var currentDeck = isPlayer1Turn ? player1Deck : player2Deck;
 
             // Find the card to remove from the deck
-            var cardToRemove = _selectedCard;
+            var cardToRemove = currentDeck.FirstOrDefault(c => c.Name == cardName);
 
             if (cardToRemove != null)
             {
-                // Get the index before removing
-                int selectedIndex = currentDeck.IndexOf(cardToRemove);
+
+
 
                 currentDeck.Remove(cardToRemove);
+            }
 
-                PopulateDeck();
+            PopulateDeck();
 
-                if (listDeck.Items.Count > 0)
-                {
-                    // Adjust the selected index
-                    int newIndex = Math.Max(0, Math.Min(selectedIndex, listDeck.Items.Count - 1));
-                    listDeck.Items[newIndex].Selected = true;
-                    listDeck.Select();
-                }
+            if (listDeck.Items.Count > 0)
+            {
+                int newIndex = Math.Min(selectedIndex, listDeck.Items.Count - 1);
+
+                listDeck.Items[newIndex].Selected = true;
+                listDeck.Select();
             }
         }
+
 
 
         private void PopulateDeck()
