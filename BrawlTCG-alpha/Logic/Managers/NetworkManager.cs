@@ -192,6 +192,9 @@ namespace BrawlTCG_alpha.Logic
                         {
                             chosenAttack.Effect.Invoke(legend, null, chosenAttack, game.ActivePlayer, game);
                         }));
+
+                        // disable his new card
+                        game.EnableCardsInZone(game.ActivePlayer, ZoneTypes.Hand, false);
                     }
                     else if (parts[0] == "ATTACK_LEGEND") // NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}");
                     {
