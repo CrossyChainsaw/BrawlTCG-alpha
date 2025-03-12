@@ -139,9 +139,6 @@
   <data name="ShadowEdge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ShadowEdge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="BouncyBomb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BouncyBomb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Artemis" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Artemis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -408,5 +405,8 @@
   </data>
   <data name="Atlantis" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Atlantis.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BouncyBomb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BouncyBomb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
