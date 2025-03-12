@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using ec = BrawlTCG_alpha.Logic.Cards.EffectCatalogue;
@@ -25,10 +26,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                 player.LoseHealth(damage);
             else
                 throw new Exception("Invalid target.");
-
-            // Burn Cards
-            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
         public static int CalculateDamage(LegendCard attackingLegend, Attack attack)
         {
@@ -91,25 +88,8 @@ namespace BrawlTCG_alpha.Logic.Cards
                 MessageBox.Show("You cannot attack the player with this attack");
             else
                 throw new Exception("Invalid target.");
-
-            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
         }
-
-        // These sound like effects?
-        public static void TapEnemyCard(LegendCard attacker, object target, Attack attack)
-        {
-            if (target is LegendCard legendCard)
-                legendCard.TapOut();
-            else if (target is Player player)
-                MessageBox.Show("You cannot attack the player with this attack");
-            else
-                throw new Exception("Invalid target.");
-
-            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
-        }
-        public static void ModifyStat(LegendCard attacker, object target, Attack attack, Stats stat, int modifyAmount)
+        public static void ModifyStat(object target, Stats stat, int modifyAmount)
         {
             if (target is LegendCard legendCard)
                 legendCard.ModifyStat(stat, modifyAmount);
@@ -117,31 +97,8 @@ namespace BrawlTCG_alpha.Logic.Cards
                 MessageBox.Show("You cannot attack the player with this attack");
             else
                 throw new Exception("Invalid target.");
+        }
 
-            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
-        }
-        public static void DrawCards(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, int nCards)
-        {
-            // Draw the Cards
-            for (int i = 0; i < nCards; i++)
-            {
-                game.DrawCardFromDeck(activePlayer);
-            }
-            // Show the Cards
-            game.ShowCards();
-            // Burn Weapons
-            attacker.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            attacker.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
-        }
-        public static void GenerateCard(LegendCard attacker, object target, Attack attack, Player activePlayer, Game game, Card generatedCard)
-        {
-            Card card = generatedCard;
-            // add to hand
-            game.AddCardToHandZone(activePlayer, card);
-            // flip to show
-            game.ShowCards();
-        }
 
         // Default Weapon Attacks
         public static Attack Spear_Stab = new Attack("Spear Stab", 0, Weapons.Spear, 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -180,17 +137,17 @@ namespace BrawlTCG_alpha.Logic.Cards
         // Tap Out
         public static Attack Any_BlowAKiss = new Attack("Blow a Kiss", -1000, Weapons.Any, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            TapEnemyCard(attacker, target, attack);
+            ec.TapLegendCard(target);
         });
         public static Attack Any_Freeze = new Attack("Freeze", 0, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
-            TapEnemyCard(attacker, target, attack);
+            ec.TapLegendCard(target);
         });
 
         public static Attack Any_BurnForThreeCard = new Attack("Draw Three Cards", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            DrawCards(attacker, target, attack, activePlayer, game, nCards: 3);
+            ec.DrawCards(game, 3);
         }, instaEffect: true);
 
         public static Attack Hammer_Swing = new Attack("Hammer Swing", 1, Weapons.Hammer, 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -255,22 +212,22 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static Attack Enchantress_CursePower = new Attack("Curse Att by 3", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = -3;
-            ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
+            ModifyStat(target, Stats.Power, modifyAmount);
         });
         public static Attack Enchantress_CurseHealth = new Attack("Curse HP by 4", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = -4;
-            ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
+            ModifyStat(target, Stats.Health, modifyAmount);
         });
         public static Attack Enchantress_EnchantPower = new Attack("Enchant Att by 3", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = 3;
-            ModifyStat(attacker, target, attack, Stats.Power, modifyAmount);
+            ModifyStat(target, Stats.Power, modifyAmount);
         }, friendlyFire: true);
         public static Attack Enchantress_EnchantHealth = new Attack("Enchant HP by 4", -1000, Weapons.Any, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int modifyAmount = 4;
-            ModifyStat(attacker, target, attack, Stats.Health, modifyAmount);
+            ModifyStat(target, Stats.Health, modifyAmount);
         }, friendlyFire: true);
         public static Attack DeathCap_Storm = new Attack("Storm", 0, Weapons.Orb, 3, weaponOneBurnAmount: 3, execute: (attacker, target, attack, activePlayer, game) =>
         {
@@ -282,20 +239,20 @@ namespace BrawlTCG_alpha.Logic.Cards
         });
         public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            Card card = CardCatalogue.GetCardById(500); // #500: Bouncy Bomb
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
+            int BouncyBombID = 500;
+            ec.GenerateCard(activePlayer, game, BouncyBombID);
         }, instaEffect: true);
         public static Attack PlagueKnight_GrabHealingPotion = new Attack("Grab Healing Potion", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            Card card = CardCatalogue.GetCardById(501); // #501: Vial of Crows 
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
+            int VialOfCrowsID = 501;
+            ec.GenerateCard(activePlayer, game, VialOfCrowsID);
         }, instaEffect: true);
         public static Attack Yumiko_GrabOrbs = new Attack("Spawn Orbs", -1000, Weapons.Any, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
-            Card card = CardCatalogue.GetCardById(504); // #504: Orb
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
-            GenerateCard(attacker, target, attack, activePlayer, game, generatedCard: card.Clone());
+            int orbID = 504;
+            ec.GenerateCard(activePlayer, game, orbID);
+            ec.GenerateCard(activePlayer, game, orbID);
+            ec.GenerateCard(activePlayer, game, orbID);
         }, instaEffect: true);
         public static Attack WuShang_DownSig = new Attack("Gauntlet Dsig", -2, Weapons.Gauntlets, 2, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {

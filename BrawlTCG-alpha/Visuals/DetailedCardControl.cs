@@ -281,6 +281,9 @@ namespace BrawlTCG_alpha.Visuals
 
                             // Attack
                             attack.Effect.Invoke(legendCard, null, attack, _game.ActivePlayer, _game); // send this as a msg
+                            // Burn Weapons
+                            legendCard.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+                            legendCard.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
 
                             // Stop Attacking
                             StopAttacking();
@@ -438,10 +441,14 @@ namespace BrawlTCG_alpha.Visuals
             }
             return emojis;
         }
-        public void AttackThePlayer(LegendCard legendCard, Player otherPlayer, Attack attack)
+        public void AttackThePlayer(LegendCard legend, Player otherPlayer, Attack attack)
         {
             // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            attack.Effect.Invoke(legend, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            // Burn Weapons
+            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
+            // update player health
             UI_UpdatePlayerInformation(otherPlayer);
             // Notify
             MessageBox.Show($"{otherPlayer.Name} just took damage");
@@ -477,17 +484,21 @@ namespace BrawlTCG_alpha.Visuals
 
 
         // Attack
-        void AttackLegendCard(LegendCard legendCard, CardControl enemyCardControl)
+        void AttackLegendCard(LegendCard legend, CardControl enemyCardControl)
         {
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
             // Apply the Damage
-            _game.GetSelectedAttack().Effect.Invoke(legendCard, targetLegend, _game.GetSelectedAttack(), _game.ActivePlayer, _game);
-            enemyCardControl.Invalidate();
-            enemyCardControl.Update();
+            Attack attack = _game.GetSelectedAttack();
+            attack.Effect.Invoke(legend, targetLegend, _game.GetSelectedAttack(), _game.ActivePlayer, _game);
+            // Burn Weapons
+            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
 
             // CHECK IF DEAD
             enemyCardControl.CheckIfDead();
+            enemyCardControl.Invalidate();
+            enemyCardControl.Update();
 
             // Stop Attacking
             StopAttacking();

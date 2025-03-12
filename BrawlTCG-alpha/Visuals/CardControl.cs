@@ -429,11 +429,15 @@ namespace BrawlTCG_alpha.Visuals
         // THESE FUNCTIONS ARE FROM DCC AND AREN'T SUPOSED TO BE USED, EXCEPT FOR THE PLAYER THAT LISTENED TO A MESSAGE, THEY CAN TRIGGER THESE.
         public void AttackThePlayer(CardControl legendCC, Player otherPlayer, Attack attack)
         {
-            LegendCard legendCard = (LegendCard)legendCC.Card;
+            LegendCard legend = (LegendCard)legendCC.Card;
 
             // Attack
-            attack.Effect.Invoke(legendCard, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            attack.Effect.Invoke(legend, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
             UI_UpdatePlayerInformation(otherPlayer);
+            // Burn Weapons
+            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
+
 
             // Notify
             MessageBox.Show($"{otherPlayer.Name} just took damage");
@@ -445,12 +449,16 @@ namespace BrawlTCG_alpha.Visuals
         }
         public void AttackLegendCard(CardControl legendCC, CardControl enemyCC)
         {
-            LegendCard legendCard = (LegendCard)legendCC.Card;
+            LegendCard legend = (LegendCard)legendCC.Card;
             LegendCard targetLegend = (LegendCard)enemyCC.Card;
 
             // Apply the Damage
-            _game.GetSelectedAttack().Effect.Invoke(legendCard, targetLegend, _game.GetSelectedAttack(), _game.ActivePlayer, _game);
-            
+            Attack attack = _game.GetSelectedAttack();
+            attack.Effect.Invoke(legend, targetLegend, _game.GetSelectedAttack(), _game.ActivePlayer, _game);
+            // Burn Weapons
+            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
+
             // Update cc
             enemyCC.Invalidate();
             legendCC.Invalidate();
