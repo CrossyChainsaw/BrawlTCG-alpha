@@ -84,6 +84,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack4 = attack4;
             // Other
             StackedCards = new List<Card>();
+            Description = GenerateEffectDescription();
         }
 
         public override Card Clone()

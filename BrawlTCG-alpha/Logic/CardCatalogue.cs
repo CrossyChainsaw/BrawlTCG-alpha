@@ -17,16 +17,16 @@ namespace BrawlTCG_alpha.Logic
         public static Dictionary<int, Card> CardDictionary = new Dictionary<int, Card>()
         {
             // Essence
-            { 0, new EssenceCard(id: 0, "Essence", 0, Elements.Magic, Images.Essence) },
+            { 0, new EssenceCard(id: 0, "Essence", 0, Elements.Magic, Images.Essence, startTurnEffect: ec.Essence) },
 
             // Stages
-            { 100, new StageCard(id:100, "Mustafar", 2, "Start Turn: Every non-Fire Legend will lose 2 HP", Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) }, // buffed dmg 1>2
-            { 101, new StageCard(id:101, "Fangwild", 3, "Start Turn: Magic and Nature Legends will be healed by 2", Elements.Nature, Images.Fangwild, startTurnEffect: ec.Fangwild) },
-            { 102, new StageCard(id:102, "Matrix", 1, "Nothing", Elements.Cosmic, Images.Matrix) },
-            { 103, new StageCard(id:103, "The Workshop", 2, "Start Turn: You obtain a random card", Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop) },
-            { 104, new StageCard(id:104, "Evil Hideout", 3, "While in play: Fire, Wild and Shadow legends will do +3 damage", Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) }, // all fire, wild, shadow legends get+3 attack
-            { 105, new StageCard(id:105, "Space Time", 1, "Start Turn: Draw 2 extra cards", Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // fixed
-            { 106, new StageCard(id:106, "Atlantis", 3, "Start Turn: Every non-Arctic Legend will lose 1 hp. \nWhile in play: Every non-Arctic legend does 2 damage less.", Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
+            { 100, new StageCard(id:100, "Mustafar", 2, Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) }, // buffed dmg 1>2
+            { 101, new StageCard(id:101, "Fangwild", 3, Elements.Nature, Images.Fangwild, startTurnEffect: ec.Fangwild) },
+            { 102, new StageCard(id:102, "Matrix", 1, Elements.Cosmic, Images.Matrix) },
+            { 103, new StageCard(id:103, "The Workshop", 2, Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop) },
+            { 104, new StageCard(id:104, "Evil Hideout", 3, Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) }, // all fire, wild, shadow legends get+3 attack
+            { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // fixed
+            { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             
             // only cosmic cards can attack cost: 5
 
