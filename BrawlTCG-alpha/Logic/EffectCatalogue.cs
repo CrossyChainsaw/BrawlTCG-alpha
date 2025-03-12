@@ -16,9 +16,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         );
 
         static int atlantisDamage = 1;
+        static Elements immuneType = Elements.Arctic;
         public static Effect Atlantis = new Effect(
-            description: $"All non-Fire Legends lose {atlantisDamage} health.",
-            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, Elements.Arctic)
+            description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
+            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
         );
 
         static int fangwildHeal = 2;
@@ -70,12 +71,12 @@ namespace BrawlTCG_alpha.Logic.Cards
         );
 
         public static Effect EvilHideout_WhenPlayed = new Effect(
-            description: "While in play: Fire, Wild, and Shadow legends get +3 Power",
+            description: "Fire, Wild, and Shadow legends get +3 Power",
             effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
         );
 
         public static Effect Atlantis_WhenPlayed = new Effect(
-            description: "While in play: Non-Arctic legends get -2 Power",
+            description: "Non-Arctic legends get -2 Power",
             effectAction: (target, card, game) =>
                 _ModifyStatsOfAllLegendsWhenPlayed(game,
                     Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
