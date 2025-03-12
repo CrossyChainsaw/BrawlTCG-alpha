@@ -31,7 +31,7 @@ namespace BrawlTCG_alpha.Logic
             // only cosmic cards can attack cost: 5
 
             // Nature
-            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 5, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) },
+            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 4, 2, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) }, // att 6>4
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: ac.Greatsword_Swing, attack2: ac.Greatsword_String) },
             { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 5, 5, 0, Weapons.Spear, Weapons.Orb, attack1: ac.Spear_Stab, attack2: ac.Orb_Throw, attack3: ac.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 3, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: ac.Axe_Swing, attack2: ac.Gauntlets_Punch, attack3: ac.Gauntlets_PowerPunch) },
@@ -92,6 +92,9 @@ namespace BrawlTCG_alpha.Logic
             // Blasters
             { 15000, new WeaponCard(id: 15000, "Blazing Fire", 1, Elements.Fire, Images.BlazingFire, Weapons.Blasters) },
             { 15001, new WeaponCard(id: 15001, "Revolvers", 1, Elements.Shadow, Images.Revolvers, Weapons.Blasters) },
+            { 15002, new WeaponCard(id: 15002, "Aqua Blasters", 1, Elements.Arctic, Images.Aqua_Blasters, Weapons.Blasters) },
+            { 15003, new WeaponCard(id: 15003, "Splish Splash", 1, Elements.Arctic, Images.Splish_Splash, Weapons.Blasters) },
+
             // Bow (no cards yet, keeping the comment)
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
             // Gauntlets

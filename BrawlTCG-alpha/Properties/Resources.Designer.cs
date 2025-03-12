@@ -73,6 +73,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Aqua_Blasters {
+            get {
+                object obj = ResourceManager.GetObject("Aqua_Blasters", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Artemis {
             get {
                 object obj = ResourceManager.GetObject("Artemis", resourceCulture);
@@ -906,6 +916,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap SpearSkyforged {
             get {
                 object obj = ResourceManager.GetObject("SpearSkyforged", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Splish_Splash {
+            get {
+                object obj = ResourceManager.GetObject("Splish_Splash", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
