@@ -35,7 +35,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int spaceTimeExtraDrawnCards = 2;
         public static Effect SpaceTime = new Effect(
             description: $"Draw {spaceTimeExtraDrawnCards} extra cards",
-            effectAction: (target, card, game) => _DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
+            effectAction: (target, card, game) => DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
         );
 
         public static Effect Essence = new Effect(
@@ -82,7 +82,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                     Stats.Power, -2)
         );
 
-
         public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
             description: "Deals direct damage to opposing Legend",
             effectAction: (target, card, game) => _DirectDamage(target, card)
@@ -111,7 +110,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static Effect Bubble = new Effect(
             description: "Tap legend Card",
-            effectAction: (target, card, game) => _TapLegendCard(target)
+            effectAction: (target, card, game) => TapLegendCard(target)
         );
 
         static int nDragonChest = 3;
@@ -238,7 +237,30 @@ namespace BrawlTCG_alpha.Logic.Cards
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
         }
-        static void _TapLegendCard(object target)
+        public static void GenerateCard(Player activePlayer, Game game, int cardID)
+        {
+            Card card = CardCatalogue.GetCardById(cardID);
+            // add to hand
+            game.AddCardToHandZone(activePlayer, card);
+            // flip to show
+            game.ShowCards();
+        }
+        public static void DrawCards(Game game, int n, bool startTurn = false)
+        {
+            if (startTurn && game.ActivePlayer.Hand.Count > 15)
+            {
+
+            }
+            else
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    game.DrawCardFromDeck(game.ActivePlayer);
+                }
+                game.ShowCards();
+            }
+        }
+        public static void TapLegendCard(object target)
         {
             if (target is LegendCard legend)
             {
@@ -331,21 +353,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             if (target is Player player)
             {
                 player.GainEssence(1);
-            }
-        }
-        static void _DrawCards(Game game, int n, bool startTurn = false)
-        {
-            if (startTurn && game.ActivePlayer.Hand.Count > 15)
-            {
-
-            }
-            else
-            {
-                for (int i = 0; i < n; i++)
-                {
-                    game.DrawCardFromDeck(game.ActivePlayer);
-                }
-                game.ShowCards();
             }
         }
         static void _ModifyStatsOfAllLegendsWhenPlayed(Game game, List<Elements> targetElements, Stats stat, int modifier)
@@ -510,8 +517,5 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             }
         }
-
-        // To do
-
     }
 }

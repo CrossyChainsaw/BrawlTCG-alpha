@@ -11,15 +11,15 @@ namespace BrawlTCG_alpha.Logic.Cards
     {
         public Effect? WhileInPlayEffect { get; internal set; }
 
-        public StageCard(int id, string name, int cost, string description, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
+        public StageCard(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
         {
-            Description = description;
             WhileInPlayEffect = whileInPlayEffect;
+            Description = GenerateEffectDescription();
         }
 
         public override Card Clone()
         {
-            return new StageCard(ID, Name, Cost, Description, Element, Image, StartTurnEffect, EndTurnEffect, WhenPlayedEffect, WhenDiscardedEffect, WhileInPlayEffect);
+            return new StageCard(ID, Name, Cost, Element, Image, StartTurnEffect, EndTurnEffect, WhenPlayedEffect, WhenDiscardedEffect, WhileInPlayEffect);
         }
     }
 }

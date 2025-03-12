@@ -44,5 +44,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             InstaEffect = instaEffect;
             Recoil = recoilDamage;
         }
+
+        public void Invoke(LegendCard legend, object target, Attack attack, Player player, Game game)
+        {
+            Effect?.Invoke(legend, target, attack, player, game); // maybe check if the attack succeeded  
+        }
     }
 }

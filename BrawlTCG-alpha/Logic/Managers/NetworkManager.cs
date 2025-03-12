@@ -191,6 +191,9 @@ namespace BrawlTCG_alpha.Logic
                         _frm.Invoke((Action)(() =>
                         {
                             chosenAttack.Effect.Invoke(legend, null, chosenAttack, game.ActivePlayer, game);
+                            // Burn Weapons
+                            legend.BurnWeapon(chosenAttack.WeaponOne, chosenAttack.WeaponOneBurnAmount);
+                            legend.BurnWeapon(chosenAttack.WeaponTwo, chosenAttack.WeaponTwoBurnAmount);
                         }));
 
                         // disable his new card

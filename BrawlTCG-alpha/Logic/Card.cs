@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrawlTCG_alpha.Logic.Cards;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,6 +59,24 @@ namespace BrawlTCG_alpha.Logic
             EndTurnEffect = endTurnEffect;
             WhenPlayedEffect = whenPlayedEffect;
             WhenDiscardedEffect = whenDiscardedEffect;
+        }
+        public string GenerateEffectDescription()
+        {
+            string description = "";
+
+            // Effects
+            if (StartTurnEffect != null)
+                description += $"Start Turn Effect: {StartTurnEffect.Description}\n";
+            if (EndTurnEffect != null)
+                description += $"End Turn Effect: [WORK IN PROGRESS]\n";
+            if (WhenPlayedEffect != null)
+                description += $"When Played Effect: {WhenPlayedEffect.Description}\n";
+            if (WhenDiscardedEffect != null)
+                description += $"When Discarded Effect: {WhenDiscardedEffect.Description} \n";
+            if (this is StageCard stage && stage.WhileInPlayEffect != null)
+                description += $"While In Play Effect: {stage.WhileInPlayEffect.Description}\n";
+
+            return description;
         }
 
         public void OnStartTurn(object target, Card card, Game game) => StartTurnEffect?.Invoke(target, card, game);
