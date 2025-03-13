@@ -29,8 +29,6 @@ namespace BrawlTCG_alpha.Logic
             { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
             { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis_StartTurn, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             { 107, new StageCard(id:107, "Silent Galaxy", 5, Elements.Cosmic, Images.SilentGalaxy, startTurnEffect: ec.SilentGalaxy_StartTurn, whenPlayedEffect: ec.SilentGalaxy_WhenPlayed, whileInPlayEffect: ec.SilentGalaxy_WhilePlay, whenDiscardedEffect: ec.SilentGalaxy_WhenDiscarded) }, // New Card
-            
-            // only cosmic cards can attack cost: 5
 
             // Nature
             { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 2, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) },
