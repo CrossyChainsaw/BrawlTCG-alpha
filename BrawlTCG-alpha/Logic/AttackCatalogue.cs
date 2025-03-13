@@ -109,6 +109,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         }, weaponOneBurnAmount: 1);
+        public static Attack Orb_Swing = new Attack("Orb Swing", 0, Weapons.Orb, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
         public static Attack Greatsword_Swing = new Attack("Great Swing", 0, Weapons.Greatsword, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
@@ -129,6 +133,10 @@ namespace BrawlTCG_alpha.Logic.Cards
             OneHitKO(attacker, target, attack);
         }, weaponOneBurnAmount: 2);
 
+        public static Attack Lance_Poke = new Attack("Lance Poke", 0, Weapons.RocketLance, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
         public static Attack Lance_Flamethrower = new Attack("Flamethrower", 4, Weapons.RocketLance, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
@@ -195,10 +203,29 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static Attack Any_CraftFireCard = new Attack("Craft Fire Card", -1000, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int nCards = 1;
-            ec.GenerateRandomElementalCards(game, nCards, Elements.Fire);
+            ec.GenerateRandomCards(game, nCards, Elements.Fire);
             game.ShowCards();
         }, instaEffect: true);
 
+        public static Attack Any_CraftCosmicCard = new Attack("Craft Cosmic Card", -1000, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int nCards = 1;
+            ec.GenerateRandomCards(game, nCards, Elements.Cosmic);
+            game.ShowCards();
+        }, instaEffect: true);
+
+        public static Attack Any_CraftBattleCard = new Attack("Craft Battle Card", -1000, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int nCards = 1;
+            ec.GenerateRandomCards(game, nCards, cardType: typeof(BattleCard));
+            game.ShowCards();
+        }, instaEffect: true);
+
+        public static Attack Any_GenerateAndPlayMatrix = new Attack("Set stage to Matrix", -1000, Weapons.Any, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            int matrixID = 102;
+            ec.GenerateAndPlayStage(game, matrixID);
+        }, instaEffect: true);
 
         // Signature Attacks
         public static Attack Arcadia_PinkRoses = new Attack("Pink Roses", 4, Weapons.Spear, 1, weaponTwo: Weapons.Greatsword, weaponTwoAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
@@ -240,19 +267,19 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static Attack MasterThief_GrabBomb = new Attack("Grab Bomb", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int BouncyBombID = 500;
-            ec.GenerateCard(activePlayer, game, BouncyBombID);
+            ec.GenerateCard(game, BouncyBombID);
         }, instaEffect: true);
         public static Attack PlagueKnight_GrabHealingPotion = new Attack("Grab Healing Potion", -1000, Weapons.Gauntlets, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int VialOfCrowsID = 501;
-            ec.GenerateCard(activePlayer, game, VialOfCrowsID);
+            ec.GenerateCard(game, VialOfCrowsID);
         }, instaEffect: true);
         public static Attack Yumiko_GrabOrbs = new Attack("Spawn Orbs", -1000, Weapons.Any, 1, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {
             int orbID = 504;
-            ec.GenerateCard(activePlayer, game, orbID);
-            ec.GenerateCard(activePlayer, game, orbID);
-            ec.GenerateCard(activePlayer, game, orbID);
+            ec.GenerateCard(game, orbID);
+            ec.GenerateCard(game, orbID);
+            ec.GenerateCard(game, orbID);
         }, instaEffect: true);
         public static Attack WuShang_DownSig = new Attack("Gauntlet Dsig", -2, Weapons.Gauntlets, 2, weaponOneBurnAmount: 0, execute: (attacker, target, attack, activePlayer, game) =>
         {

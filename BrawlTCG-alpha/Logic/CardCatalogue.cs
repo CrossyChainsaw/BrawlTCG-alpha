@@ -8,6 +8,7 @@ using BrawlTCG_alpha.Logic.Cards;
 using Images = BrawlTCG_alpha.Properties.Resources;
 using ac = BrawlTCG_alpha.Logic.Cards.AttackCatalogue;
 using ec = BrawlTCG_alpha.Logic.Cards.EffectCatalogue;
+using Microsoft.VisualBasic;
 
 
 namespace BrawlTCG_alpha.Logic
@@ -20,18 +21,18 @@ namespace BrawlTCG_alpha.Logic
             { 0, new EssenceCard(id: 0, "Essence", 0, Elements.Magic, Images.Essence, startTurnEffect: ec.Essence) },
 
             // Stages
-            { 100, new StageCard(id:100, "Mustafar", 2, Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) }, // buffed dmg 1>2
+            { 100, new StageCard(id:100, "Mustafar", 2, Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) },
             { 101, new StageCard(id:101, "Fangwild", 3, Elements.Nature, Images.Fangwild, startTurnEffect: ec.Fangwild) },
             { 102, new StageCard(id:102, "Matrix", 1, Elements.Cosmic, Images.Matrix) },
             { 103, new StageCard(id:103, "The Workshop", 2, Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop) },
-            { 104, new StageCard(id:104, "Evil Hideout", 3, Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) }, // all fire, wild, shadow legends get+3 attack
-            { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // fixed
+            { 104, new StageCard(id:104, "Evil Hideout", 3, Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) },
+            { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
             { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             
             // only cosmic cards can attack cost: 5
 
             // Nature
-            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 4, 2, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) }, // att 6>4
+            { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 2, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) },
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: ac.Greatsword_Swing, attack2: ac.Greatsword_String) },
             { 1002, new LegendCard(id: 1002, "Deathcap", 5, Elements.Nature, Images.DeathCap, 10, 5, 5, 0, Weapons.Spear, Weapons.Orb, attack1: ac.Spear_Stab, attack2: ac.Orb_Throw, attack3: ac.DeathCap_Storm) },
             { 1003, new LegendCard(id: 1003, "Rayman", 3, Elements.Nature, Images.Rayman, 7, 1, 7, 0, Weapons.Gauntlets, Weapons.Axe, attack1: ac.Axe_Swing, attack2: ac.Gauntlets_Punch, attack3: ac.Gauntlets_PowerPunch) },
@@ -44,7 +45,7 @@ namespace BrawlTCG_alpha.Logic
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower, attack4: ac.Artemis_IronLady_MeltDown) },
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Heatblast_Burn) },
-            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: ac.Axe_Swing, attack2: ac.Lance_Flamethrower, attack3: ac.Any_CraftFireCard, whenPlayedEffect: ec.GenerateAndPlayWorkshop) }, // craft a fire card
+            { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: ac.Axe_Swing, attack2: ac.Lance_Flamethrower, attack3: ac.Any_CraftFireCard, whenPlayedEffect: ec.GenerateAndPlayWorkshop) },
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: ec.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)},
             { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash) },
@@ -55,23 +56,26 @@ namespace BrawlTCG_alpha.Logic
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Lance_Flamethrower) },
             { 3002, new LegendCard(id: 3002, "Wu Shang", 4, Elements.Cosmic, Images.Spyrox_WuShang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.WuShang_DownSig) },
             { 3003, new LegendCard(id: 3003, "Aurora Brynn", 5, Elements.Cosmic, Images.AuroraBrynn, 10, 2, 16, 0, Weapons.Axe, Weapons.Spear, attack1: ac.Axe_Swing, attack2: ac.Spear_Stab) },
-            { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) }, // nerfed hp 4>3
+            { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) },
+            { 3005, new LegendCard(id: 3005, "Breaker Shang", 2, Elements.Cosmic, Images.Breaker_Shang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.Any_CraftCosmicCard) }, // New Card
+            { 3006, new LegendCard(id: 3006, "Witch Scarlet", 2, Elements.Cosmic, Images.WitchScarlet, 1, 3, 6, 0, Weapons.Hammer, Weapons.RocketLance, attack1: ac.Hammer_Swing, attack2: ac.Lance_Poke, attack3: ac.Any_GenerateAndPlayMatrix) }, // New Card
 
 
             // Magic
-            { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) }, // base stance
-            { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Enchantress_EnchantHealth, attack2: ac.Enchantress_EnchantPower, attack3: ac.Enchantress_CurseHealth, attack4: ac.Enchantress_CursePower) }, // bugged
-            { 4002, new LegendCard(id: 4002, "Dark Mage", 5, Elements.Shadow, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash) },
-            { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 2, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.PlagueKnight_GrabHealingPotion) }, // give this guy more attacks
+            { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) },
+            { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Enchantress_EnchantHealth, attack2: ac.Enchantress_EnchantPower, attack3: ac.Enchantress_CurseHealth, attack4: ac.Enchantress_CursePower) },
+            { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 2, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.PlagueKnight_GrabHealingPotion, attack2: ac.Any_CraftBattleCard) }, // New Attack
+            { 4004, new LegendCard(id: 4004, "Fait", 3, Elements.Magic, Images.Fait, 6, 3, 6, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash, attack2: ac.Orb_Swing, attack3: ac.Any_BurnForThreeCard) }, // New Card
 
             // Shadow
+            { 4002, new LegendCard(id: 4002, "Dark Mage", 5, Elements.Shadow, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash) },
             { 5000, new LegendCard(id: 5000, "Caspian", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.Any_BurnForThreeCard, attack2: ac.MasterThief_GrabBomb) },
             { 5001, new LegendCard(id: 5001, "Raymesis", 5, Elements.Shadow, Images.Raymesis, 9, 5, 16, 0, Weapons.Gauntlets, Weapons.Axe, attack1: ac.Axe_Swing) },
             { 5002, new LegendCard(id: 5002, "Mastermind", 4, Elements.Shadow, Images.Loki, 5, 6, 10, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash, whenPlayedEffect: ec.GenerateAndPlayMatrix) },
             { 5003, new LegendCard(id: 5003, "Ninja Spirit", 1, Elements.Shadow, Images.Ninja_Spirit, 3, 2, 1, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.NinjaSpirit_PhantomSlash) },
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: ac.Sword_Slash, attack2: ac.Blaster_Shot, attack3: ac.Blaster_DoubleShot) },
             { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash, attack3: ac.Jiro_SpawnAndPlayNinjaSpirit) },
-            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) }, // buffed/nerfed // make hide in cloak
+            { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) },
 
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: ac.Axe_Swing, attack2: ac.Hammer_Swing) },
@@ -80,7 +84,7 @@ namespace BrawlTCG_alpha.Logic
 
 
             // Arctic
-            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) }, // nerfed hp
+            { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) },
             { 7001, new LegendCard(id: 7001, "Atlantean Ada", 2, Elements.Arctic, Images.Atlantean_Ada, 2, 3, 5, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot, attack2: ac.Spear_Stab, attack3: ac.Ada_SpawnAndPlayAtlantis) },
 
 
@@ -94,7 +98,6 @@ namespace BrawlTCG_alpha.Logic
             { 15001, new WeaponCard(id: 15001, "Revolvers", 1, Elements.Shadow, Images.Revolvers, Weapons.Blasters) },
             { 15002, new WeaponCard(id: 15002, "Aqua Blasters", 1, Elements.Arctic, Images.Aqua_Blasters, Weapons.Blasters) },
             { 15003, new WeaponCard(id: 15003, "Splish Splash", 1, Elements.Arctic, Images.Splish_Splash, Weapons.Blasters) },
-
             // Bow (no cards yet, keeping the comment)
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
             // Gauntlets
@@ -106,9 +109,9 @@ namespace BrawlTCG_alpha.Logic
             { 19000, new WeaponCard(id: 19000, "Primrose Mallet", 1, Elements.Nature, Images.Primrose_Mallet, Weapons.Hammer) },
             { 19001, new WeaponCard(id: 19001, "Chikara", 1, Elements.Wild, Images.Chikara, Weapons.Hammer) },
             { 19002, new WeaponCard(id: 19002, "Ice Crusher", 1, Elements.Arctic, Images.IceCrusher, Weapons.Hammer) },
-
             // Katars
             { 20000, new WeaponCard(id: 20000, "Nightmare Claws", 1, Elements.Wild, Images.Nightmare_Claws, Weapons.Katars) },
+            { 20001, new WeaponCard(id: 20001, "Winter Daggers", 1, Elements.Arctic, Images.Winter_Daggers, Weapons.Katars) }, // New Card
             // Lance
             { 21000, new WeaponCard(id: 21000, "Galaxy Lance", 1, Elements.Cosmic, Images.GalaxyLance, Weapons.RocketLance) },
             // Orb
@@ -119,6 +122,8 @@ namespace BrawlTCG_alpha.Logic
             { 23000, new WeaponCard(id: 23000, "Searing Blade", 1, Elements.Fire, Images.SearingBlade, Weapons.Scythe) },
             { 23001, new WeaponCard(id: 23001, "Shooting Star", 1, Elements.Cosmic, Images.ShootingStar, Weapons.Scythe) },
             { 23002, new WeaponCard(id: 23002, "Starry Scythe", 1, Elements.Cosmic, Images.StarryScythe, Weapons.Scythe) },
+            { 23003, new WeaponCard(id: 23003, "Candlelit Scythe", 1, Elements.Fire, Images.Candlelit_Scythe, Weapons.Scythe) },
+            { 23004, new WeaponCard(id: 23004, "Amethyst Scythe", 1, Elements.Magic, Images.Constellation_Carver, Weapons.Scythe) }, // New Card
             // Spear
             { 24000, new WeaponCard(id: 24000, "Magma Spear", 1, Elements.Fire, Images.MagmaSpear, Weapons.Spear) },
             { 24001, new WeaponCard(id: 24001, "Piercing Regret", 1, Elements.Nature, Images.PiercingRegret, Weapons.Spear) },
@@ -130,6 +135,8 @@ namespace BrawlTCG_alpha.Logic
             // Sword
             { 25000, new WeaponCard(id: 25000, "Shadow Edge", 1, Elements.Shadow, Images.ShadowEdge, Weapons.Sword) },
             { 25001, new WeaponCard(id: 25001, "Mahou Shoujo", 1, Elements.Cosmic, Images.MahouShoujo, Weapons.Sword) },
+            { 25002, new WeaponCard(id: 25002, "Frozen Edge", 1, Elements.Arctic, Images.FrozenEdge, Weapons.Sword) }, // New Card
+            { 25003, new WeaponCard(id: 25003, "Ancestor's Flame", 1, Elements.Fire, Images.Ancestors_Flame, Weapons.Sword) }, // New Card
 
 
 
@@ -151,9 +158,10 @@ namespace BrawlTCG_alpha.Logic
             { 514, new BattleCard(id: 514, "Dragon's Chest", 3, "When Played: Legend opens the chest, obtain three random Fire cards", Elements.Fire, Images.Dragon_Chest, true, false, true, whenPlayedEffect: ec.DragonChest) },
             { 515, new BattleCard(id: 515, "Sunken Chest", 3, "When Played: Legend opens the chest, obtain three random Arctic cards", Elements.Arctic, Images.Sunken_Chest, true, false, true, whenPlayedEffect: ec.SunkenChest) },
             { 516, new BattleCard(id: 516, "Forgeborne Chest", 3, "When Played: Legend opens the chest, obtain three random Shadow cards", Elements.Shadow, Images.Shadow_Chest, true, false, true, whenPlayedEffect: ec.ShadowChest) },
+            { 517, new BattleCard(id: 517, "Dark Duo", 3, "When Played: Legend calls for friends, obtain 2 Shadow legends", Elements.Shadow, Images.DarkDuo, true, false, true, whenPlayedEffect: ec.DarkDuo) }, // New Card
+            { 518, new BattleCard(id: 518, "Witch Party", 4, "When Played: Legend calls for friends, obtain 2 Magic legends", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty) }, // New Card
             
             // adrenaline image = heartbeat. legend can attack 2 times this turn
-            // more elemental chests
         };
 
 
@@ -268,16 +276,28 @@ namespace BrawlTCG_alpha.Logic
 
             return CardDictionary[randomKey].Clone(); // Clone to avoid modifying the original
         }
-        public static Card GetRandomElementalCard(Elements element)
+        public static Card GetRandomCard(Elements? element = null, Type cardType = null)
         {
             var random = new Random();
 
-            // Filter fire cards from the dictionary
-            var elementalCards = CardDictionary.Values.Where(card => card.Element == element).ToList();
+            // Filter cards by element (if specified) and optionally by card type
+            var filteredCards = CardDictionary.Values
+                .Where(card => (!element.HasValue || card.Element == element.Value) &&
+                               (cardType == null || card.GetType() == cardType))
+                .ToList();
 
-            // Select a random fire card
-            return elementalCards[random.Next(elementalCards.Count)].Clone(); // Clone to avoid modifying the original
+            // Ensure there's at least one valid card
+            if (filteredCards.Count == 0)
+            {
+                throw new InvalidOperationException($"No matching cards found for element '{element?.ToString() ?? "Any"}' and type '{cardType?.Name ?? "Any"}'.");
+            }
+
+            // Select a random card and clone it to avoid modifying the original
+            return filteredCards[random.Next(filteredCards.Count)].Clone();
         }
+
+
+
 
 
 
