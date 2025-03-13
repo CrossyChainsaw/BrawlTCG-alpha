@@ -134,12 +134,22 @@ namespace BrawlTCG_alpha.Logic
                                 }
                                 targetZone = ui.GetMyZone(ZoneTypes.PlayingField, targetPlayer);
                                 CardControl oldCC = ui.GetCardControl(game.Opponent, ZoneTypes.Hand, card);
-                                CardControl targetCC = targetZone.CardsControls[indexCC];
 
-                                _frm.Invoke((Action)(() =>
+                                if (battleCard.TargetRequired)
                                 {
-                                    ui.PlayBattleCard(game.Opponent, battleCard, oldCC, targetCC);
-                                }));
+                                    CardControl targetCC = targetZone.CardsControls[indexCC];
+                                    _frm.Invoke((Action)(() =>
+                                    {
+                                        ui.PlayBattleCard(game.Opponent, battleCard, oldCC, targetCC);
+                                    }));
+                                }
+                                else // No target req.
+                                {
+                                    _frm.Invoke((Action)(() =>
+                                    {
+                                        ui.PlayBattleCard(game.Opponent, battleCard, oldCC, null);
+                                    }));
+                                }
                             }
                         }
                     }

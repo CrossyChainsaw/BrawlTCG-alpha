@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,13 +16,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => _StartTurnDamage(target, mustafarDamage, Elements.Fire)
         );
 
-        static int atlantisDamage = 1;
-        static Elements immuneType = Elements.Arctic;
-        public static Effect Atlantis = new Effect(
-            description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
-            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
-        );
-
         static int fangwildHeal = 2;
         public static Effect Fangwild = new Effect(
             description: $"All Magic and Nature Legends will gain {fangwildHeal} health.",
@@ -30,7 +24,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static Effect Workshop = new Effect(
             description: $"Obtain a random card",
-            effectAction: (target, card, game) => _GenerateRandomCards(game, 1)
+            effectAction: (target, card, game) => GenerateRandomCards(game, 1)
         );
 
         static int spaceTimeExtraDrawnCards = 2;
@@ -44,6 +38,68 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => _GivePlayerEssence(target)
         );
 
+        public static Effect PromotionI = new Effect(
+            description: $"Boost player max HP by 5",
+            effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(5); });
+
+        public static Effect PromotionII = new Effect(
+            description: $"Boost player max HP by 5",
+            effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(10); });
+
+        // Evil Hideout
+        public static Effect EvilHideout_WhenPlayed = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
+        );
+        public static Effect EvilHideout_WhileInPlay = new Effect(
+            description: "Shadow, Wild and Fire Legends get +3 Power",
+            effectAction: (target, card, game) => _EvilHideout_WhilePlay(target)
+        );
+        public static Effect EvilHideout_WhenDiscarded = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _EvilHideout_WhenDiscard(game)
+        );
+
+        // Silent Galaxy
+        public static Effect SilentGalaxy_WhenPlayed = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_WhenPlayed(game)
+        );
+        public static Effect SilentGalaxy_WhilePlay = new Effect(
+            description: $"Only Cosmic Legends can Attack",
+            effectAction: (target, card, game) => _SilentGalaxy_WhilePlay(target)
+        );
+        public static Effect SilentGalaxy_WhenDiscarded = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_WhenDiscard(game)
+        );
+        public static Effect SilentGalaxy_StartTurn = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_StartTurn(game)
+        );
+
+        // Atlantis
+        public static Effect Atlantis_WhenPlayed = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) =>
+                _ModifyStatsOfAllLegendsWhenPlayed(game,
+                    Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
+                    Stats.Power, -2)
+        );
+        public static Effect Atlantis_WhileInPlay = new Effect(
+            description: "Shadow, Wild and Fire Legends get +3 Power",
+            effectAction: (target, card, game) => _Atlantis_WhilePlay(target)
+        );
+        public static Effect Atlantis_WhenDiscarded = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _Atlantis_WhenDiscard(game)
+        );
+        static int atlantisDamage = 1;
+        static Elements immuneType = Elements.Arctic;
+        public static Effect Atlantis_StartTurn = new Effect(
+            description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
+            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
+        );
 
         // When Played Effect
         static int mustafarID = 100;
@@ -70,19 +126,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => GenerateAndPlayStage(game, atlantisID)
         );
 
-        public static Effect EvilHideout_WhenPlayed = new Effect(
-            description: "Fire, Wild, and Shadow legends get +3 Power",
-            effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
-        );
-
-        public static Effect Atlantis_WhenPlayed = new Effect(
-            description: "Non-Arctic legends get -2 Power",
-            effectAction: (target, card, game) =>
-                _ModifyStatsOfAllLegendsWhenPlayed(game,
-                    Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
-                    Stats.Power, -2)
-        );
-
         public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
             description: "Deals direct damage to opposing Legend",
             effectAction: (target, card, game) => _DirectDamage(target, card)
@@ -106,7 +149,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int nCards = 3;
         public static Effect CardChest = new Effect(
             description: $"Obtain {nCards} random cards",
-            effectAction: (target, card, game) => _GenerateRandomCards(game, nCards)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nCards)
         );
 
         public static Effect Bubble = new Effect(
@@ -117,83 +160,80 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int nDragonChest = 3;
         public static Effect DragonChest = new Effect(
             description: $"Obtain {nCards} random Fire cards",
-            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nDragonChest, Elements.Fire)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nDragonChest, Elements.Fire)
         );
 
         static int nWildChest = 3;
         public static Effect WildChest = new Effect(
             description: $"Obtain {nCards} random Wild cards",
-            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nWildChest, Elements.Wild)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nWildChest, Elements.Wild)
         );
 
         static int nSunkenChest = 3;
         public static Effect SunkenChest = new Effect(
             description: $"Obtain {nCards} random Arctic cards",
-            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nSunkenChest, Elements.Arctic)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nSunkenChest, Elements.Arctic)
         );
 
         static int nShadowChest = 3;
         public static Effect ShadowChest = new Effect(
             description: $"Obtain {nCards} random Shadow cards",
-            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nShadowChest, Elements.Shadow)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nShadowChest, Elements.Shadow)
         );
 
         static int nCosmicChest = 3;
         public static Effect CosmicChest = new Effect(
             description: $"Obtain {nCards} random Cosmic cards",
-            effectAction: (target, card, game) => GenerateRandomElementalCards(game, nCosmicChest, Elements.Cosmic)
+            effectAction: (target, card, game) => GenerateRandomCards(game, nCosmicChest, Elements.Cosmic)
         );
 
-        // While in Play
-        public static Effect EvilHideout_WhileInPlay = new Effect(
-            description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _EvilHideout_WhilePlay(target)
+        public static Effect DarkDuo = new Effect(
+            description: $"Obtain 2 random Shadow Legends",
+            effectAction: (target, card, game) => GenerateRandomCards(game, 2, Elements.Shadow, typeof(LegendCard))
         );
 
-        public static Effect Atlantis_WhileInPlay = new Effect(
-            description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _Atlantis_WhilePlay(target)
+        public static Effect WitchParty = new Effect(
+            description: $"Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance",
+            effectAction: (target, card, game) =>
+            {
+                int faitID = 4004;
+                GenerateCard(game, faitID);
+                int amethystScytheID = 23004;
+                GenerateCard(game, amethystScytheID);
+                int witchScarletID = 3006;
+                GenerateCard(game, witchScarletID);
+                int galaxyLanceID = 21000;
+                GenerateCard(game, galaxyLanceID);
+            }
         );
 
-        // When Discarded
-        public static Effect EvilHideout_WhenDiscarded = new Effect(
-            description: "Shadow, Wild and Fire Legends lose 3 Power",
-            effectAction: (target, card, game) => _EvilHideout_WhenDiscard(game)
-        );
 
-        public static Effect Atlantis_WhenDiscarded = new Effect(
-            description: "Non-Arctic legends get +2 Power",
-            effectAction: (target, card, game) => _Atlantis_WhenDiscard(game)
-        );
         // Generic Methods
-        public static void GenerateRandomElementalCards(Game game, int nCards, Elements element)
+        public static void GenerateRandomCards(Game game, int nCards, Elements? element = null, Type cardType = null)
         {
             if (game.ActivePlayer == game.Me)
             {
                 List<int> generatedCardIDs = new List<int>();
 
-                // Generate multiple fire cards
                 for (int i = 0; i < nCards; i++)
                 {
-                    // Generate a random fire card
-                    Card generatedCard = CardCatalogue.GetRandomElementalCard(element);
+                    // Generate a random elemental card (optionally filtered by element and type)
+                    Card generatedCard = CardCatalogue.GetRandomCard(element, cardType);
 
                     // Store the generated card ID
                     generatedCardIDs.Add(generatedCard.ID);
 
                     // Add the generated card to the player's hand
                     game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-
-                    // show
                 }
 
-                // Form a single message containing all fire card IDs
+                // Form a single message containing all card IDs
                 string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
 
                 // Send the message to the peer
                 game.SendMessageToPeer(message);
 
-                // show cards maybe implement this somwehre
+                // Show the generated cards
                 game.ShowCards();
             }
             else
@@ -201,22 +241,22 @@ namespace BrawlTCG_alpha.Logic.Cards
                 // Wait until we receive all expected card IDs (Avoid infinite loop!)
                 while (game.RandomCardIDs.Count < nCards)
                 {
-                    Thread.Sleep(10); // Pause briefly to prevent CPU overuse
+                    Thread.Sleep(10);
                 }
 
-                // Retrieve all generated fire cards based on the received random card IDs
+                // Retrieve all generated cards based on the received random card IDs
                 List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id)) // Fetch each card by its ID
-                    .Where(card => card != null) // Ensure we don’t add null cards
+                    .Select(id => CardCatalogue.GetCardById(id))
+                    .Where(card => card != null)
                     .ToList();
 
-                // Add each generated fire card to the player's hand
+                // Add each generated card to the player's hand
                 foreach (Card generatedCard in generatedCards)
                 {
                     game.AddCardToHandZone(game.ActivePlayer, generatedCard);
                 }
 
-                // Clear the list instead of setting it to null to avoid null reference issues
+                // Clear the list instead of setting it to null
                 game.RandomCardIDs.Clear();
             }
         }
@@ -238,11 +278,11 @@ namespace BrawlTCG_alpha.Logic.Cards
             game.AddCardToHandZone(game.ActivePlayer, card2);
             game.PlayStageCard(card2);
         }
-        public static void GenerateCard(Player activePlayer, Game game, int cardID)
+        public static void GenerateCard(Game game, int cardID)
         {
             Card card = CardCatalogue.GetCardById(cardID);
             // add to hand
-            game.AddCardToHandZone(activePlayer, card);
+            game.AddCardToHandZone(game.ActivePlayer, card);
             // flip to show
             game.ShowCards();
         }
@@ -292,61 +332,6 @@ namespace BrawlTCG_alpha.Logic.Cards
                         legend.LoseHealth(damage);
                     }
                 }
-            }
-        }
-        static void _GenerateRandomCards(Game game, int nCards)
-        {
-            // Ensure the form (GUI) is the target if required
-            // (This depends on how your application handles UI updates)
-
-            if (game.ActivePlayer == game.Me)
-            {
-                List<int> generatedCardIDs = new List<int>();
-
-                // Generate multiple random cards
-                for (int i = 0; i < nCards; i++)
-                {
-                    // Generate a random card
-                    Card generatedCard = CardCatalogue.GetRandomCard();
-
-                    // Store the generated card ID
-                    generatedCardIDs.Add(generatedCard.ID);
-
-                    // Add the generated card to the player's hand
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Form a single message containing all card IDs
-                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
-
-                // Send the message to the peer
-                game.SendMessageToPeer(message);
-
-                // show card
-                game.ShowCards();
-            }
-            else
-            {
-                // Wait until we receive all expected card IDs (Avoid infinite loop!)
-                while (game.RandomCardIDs.Count < nCards)
-                {
-                    Thread.Sleep(10); // Pause briefly to prevent CPU overuse
-                }
-
-                // Retrieve all generated cards based on the received random card IDs
-                List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id)) // Fetch each card by its ID
-                    .Where(card => card != null) // Ensure we don’t add null cards
-                    .ToList();
-
-                // Add each generated card to the player's hand
-                foreach (Card generatedCard in generatedCards)
-                {
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Clear the list instead of setting it to null to avoid null reference issues
-                game.RandomCardIDs.Clear();
             }
         }
         static void _GivePlayerEssence(object target)
@@ -515,6 +500,47 @@ namespace BrawlTCG_alpha.Logic.Cards
                     {
                         legend.ModifyStat(Stats.Power, -3);
                     }
+                }
+            }
+        }
+        // Silent Galaxy
+        static void _SilentGalaxy_StartTurn(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
+                }
+            }
+        }
+        static void _SilentGalaxy_WhilePlay(object target)
+        {
+            if (target is LegendCard legend)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
+                }
+            }
+        }
+        static void _SilentGalaxy_WhenDiscard(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                legend.CanAttack = true;
+            }
+        }
+        static void _SilentGalaxy_WhenPlayed(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
                 }
             }
         }
