@@ -13,7 +13,7 @@ namespace BrawlTCG_alpha.Logic
     {
         // Fields
         const int STARTING_HEALTH = 30;
-
+        int _maxHealth = 30;
 
         // Properties
         public string Name { get; private set; }
@@ -113,6 +113,19 @@ namespace BrawlTCG_alpha.Logic
         public void GainEssence(int gain)
         {
             Essence += gain;
+        }
+        public void BoostMaxHealth(int heal)
+        {
+            _maxHealth += heal;
+            Health += heal;
+        }
+        public void GainHealth(int heal)
+        {
+            Health += heal;
+            if (Health > _maxHealth)
+            {
+                Health = _maxHealth;
+            }
         }
         public void LoseHealth(int damage)
         {

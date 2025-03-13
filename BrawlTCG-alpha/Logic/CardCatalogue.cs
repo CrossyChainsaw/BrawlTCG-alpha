@@ -160,6 +160,8 @@ namespace BrawlTCG_alpha.Logic
             { 516, new BattleCard(id: 516, "Forgeborne Chest", 3, "When Played: Legend opens the chest, obtain three random Shadow cards", Elements.Shadow, Images.Shadow_Chest, true, false, true, whenPlayedEffect: ec.ShadowChest) },
             { 517, new BattleCard(id: 517, "Dark Duo", 3, "When Played: Legend calls for friends, obtain 2 Shadow legends", Elements.Shadow, Images.DarkDuo, true, false, true, whenPlayedEffect: ec.DarkDuo) }, // New Card
             { 518, new BattleCard(id: 518, "Witch Party", 4, "When Played: Legend calls for friends, obtain 2 Magic legends", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty) }, // New Card
+            { 519, new BattleCard(id: 519, "Promotion I", 5, "When Played: Player Max health goes up by 5", Elements.Magic, Images.Avatar_CollectorsPackI, true, false, true, whenPlayedEffect: ec.PromotionI) }, // New Card
+            { 520, new BattleCard(id: 520, "Promotion II", 10, "When Played: Player Max health goes up by 10", Elements.Magic, Images.Avatar_CollectorsPack, true, false, true, whenPlayedEffect: ec.PromotionII) }, // New Card
             
             // adrenaline image = heartbeat. legend can attack 2 times this turn
         };

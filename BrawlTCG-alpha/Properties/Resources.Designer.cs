@@ -143,6 +143,26 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Avatar_CollectorsPack {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_CollectorsPack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Avatar_CollectorsPackI {
+            get {
+                object obj = ResourceManager.GetObject("Avatar_CollectorsPackI", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Avatar_Fire {
             get {
                 object obj = ResourceManager.GetObject("Avatar_Fire", resourceCulture);
