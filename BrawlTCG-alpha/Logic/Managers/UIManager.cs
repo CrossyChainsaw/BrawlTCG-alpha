@@ -738,46 +738,50 @@ namespace BrawlTCG_alpha.Logic
             {
                 if (player.Essence >= battleCard.Cost)
                 {
+                    // Find the target
                     CardControl targetCardControl = null;
                     int fieldIndexCC = -1;
                     bool friendlyFire = false;
-                    if (battleCard.FriendlyFire)
+                    if (battleCard.TargetRequired)
                     {
-                        // Try to get your own CardControl you are hovering over
-                        foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
+                        if (battleCard.FriendlyFire)
                         {
-                            if (IsMouseOnCardControl(cardControl))
+                            // Try to get your own CardControl you are hovering over
+                            foreach (CardControl cardControl in myPlayingFieldZone.CardsControls)
                             {
-                                targetCardControl = cardControl;
-                                fieldIndexCC = myPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
-                                friendlyFire = true;
-                                break;
+                                if (IsMouseOnCardControl(cardControl))
+                                {
+                                    targetCardControl = cardControl;
+                                    fieldIndexCC = myPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
+                                    friendlyFire = true;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        // Try to get your CardControl you are hovering over
-                        foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
+                        else
                         {
-                            if (IsMouseOnCardControl(cardControl))
+                            // Try to get your CardControl you are hovering over
+                            foreach (CardControl cardControl in enemyPlayingFieldZone.CardsControls)
                             {
-                                targetCardControl = cardControl;
-                                fieldIndexCC = enemyPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
-                                friendlyFire = false;
-                                break;
+                                if (IsMouseOnCardControl(cardControl))
+                                {
+                                    targetCardControl = cardControl;
+                                    fieldIndexCC = enemyPlayingFieldZone.CardsControls.IndexOf(targetCardControl);
+                                    friendlyFire = false;
+                                    break;
+                                }
                             }
                         }
-                    }
-                    // Didn't find any CardControl
-                    if (targetCardControl == null || fieldIndexCC == -1)
-                    {
-                        return false;
+                        // Didn't find any CardControl
+                        if (targetCardControl == null || fieldIndexCC == -1)
+                        {
+                            return false;
+                        }
                     }
 
 
                     // Apply the effect
-                    if (targetCardControl.Card is LegendCard)
+                    if (!battleCard.TargetRequired || targetCardControl.Card is LegendCard) // if no target required OR if the target is a legend card
                     {
 
                         // get card index before removing it
@@ -920,55 +924,74 @@ namespace BrawlTCG_alpha.Logic
         public void PlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld, CardControl targetCardControl)
         {
             // Card Effect
-            LegendCard targetLegend = (LegendCard)targetCardControl.Card;
-            battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
-            // Update CardControl Info
-            if (battleCard.MultiTarget) // update all my legends
+            if (battleCard.TargetRequired)
             {
-                ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
-                foreach (CardControl CC in playZone.CardsControls)
+                LegendCard targetLegend = (LegendCard)targetCardControl.Card;
+                battleCard.OnPlayedEffect(targetLegend, battleCard, _game);
+                // Update CardControl Info
+                if (battleCard.MultiTarget) // update all my legends
                 {
-                    if (CC.Card is LegendCard)
+                    ZoneControl playZone = GetMyZone(ZoneTypes.PlayingField, player);
+                    foreach (CardControl CC in playZone.CardsControls)
                     {
-                        CC.Invalidate();
-                        CC.Update();
+                        if (CC.Card is LegendCard)
+                        {
+                            CC.Invalidate();
+                            CC.Update();
+                        }
                     }
                 }
-            }
-            else // only update target legend
-            {
-                targetCardControl.Invalidate();
-                targetCardControl.CheckIfDead();
-            }
+                else // only update target legend
+                {
+                    targetCardControl.Invalidate();
+                    targetCardControl.CheckIfDead();
+                }
 
-            // remove card from hand (and in DP for some cards)
-            player.PlayCard(battleCard);
+                // remove card from hand (and in DP for some cards)
+                player.PlayCard(battleCard);
 
-            // remove card from hand visually
-            ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
-            RemoveCardControl(cardControlOld, handZone);
+                // remove card from hand visually
+                ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+                RemoveCardControl(cardControlOld, handZone);
 
-            // Add to UI and Zone visually
-            if (battleCard.OneTimeUse)
-            {
-                AddCardToDiscardPile(player, cardControlOld);
+                // Add to UI and Zone visually
+                if (battleCard.OneTimeUse)
+                {
+                    AddCardToDiscardPile(player, cardControlOld);
+                }
+                else
+                {
+                    // stack the card
+                    targetLegend.StackCard(battleCard);
+                    // create the new CardControl
+                    CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
+
+                    // Add to UI
+                    _mainForm.Controls.Add(battleCardControl);
+                    targetCardControl.CardsControls.Add(battleCardControl);
+
+                    // Reorder Z-Layer Stacked Cards
+                    ReorderZLayer(targetCardControl);
+                }
+                cardControlOld.Enabled = false;
+
             }
+            // No Target Required
             else
             {
-                // stack the card
-                targetLegend.StackCard(battleCard);
-                // create the new CardControl
-                CardControl battleCardControl = CreateCardControl(player, targetCardControl, battleCard, targetLegend);
+                // Card Effect
+                battleCard.OnPlayedEffect(null, battleCard, _game);
 
-                // Add to UI
-                _mainForm.Controls.Add(battleCardControl);
-                targetCardControl.CardsControls.Add(battleCardControl);
+                // remove card from hand (and in DP for some cards)
+                player.PlayCard(battleCard);
 
-                // Reorder Z-Layer Stacked Cards
-                ReorderZLayer(targetCardControl);
+                // remove card from hand visually
+                ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
+                RemoveCardControl(cardControlOld, handZone);
+
+                // Discard
+                AddCardToDiscardPile(player, cardControlOld);
             }
-            cardControlOld.Enabled = false;
-
             // Arrange
             ArrangeCards(player, ZoneTypes.Hand, player.Hand);
 
