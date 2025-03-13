@@ -159,7 +159,7 @@ namespace BrawlTCG_alpha.Logic
             { 515, new BattleCard(id: 515, "Sunken Chest", 3, "When Played: Obtain three random Arctic cards", Elements.Arctic, Images.Sunken_Chest, true, false, true, whenPlayedEffect: ec.SunkenChest, targetRequired: false) },
             { 516, new BattleCard(id: 516, "Forgeborne Chest", 3, "When Played: Obtain three random Shadow cards", Elements.Shadow, Images.Shadow_Chest, true, false, true, whenPlayedEffect: ec.ShadowChest, targetRequired: false) },
             { 517, new BattleCard(id: 517, "Dark Duo", 3, "When Played: Legend Obtain 2 Shadow legends", Elements.Shadow, Images.DarkDuo, true, false, true, whenPlayedEffect: ec.DarkDuo, targetRequired: false) }, // New Card
-            { 518, new BattleCard(id: 518, "Witch Party", 4, "When Played: Obtain 2 Magic legends", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) }, // New Card
+            { 518, new BattleCard(id: 518, "Witch Party", 5, "When Played: Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) }, // New Card
             { 519, new BattleCard(id: 519, "Promotion I", 5, "When Played: Player Max health goes up by 5", Elements.Magic, Images.Avatar_CollectorsPackI, true, false, false, whenPlayedEffect: ec.PromotionI, targetRequired: false) }, // New Card
             { 520, new BattleCard(id: 520, "Promotion II", 10, "When Played: Player Max health goes up by 10", Elements.Magic, Images.Avatar_CollectorsPack, true, false, false, whenPlayedEffect: ec.PromotionII, targetRequired: false) }, // New Card
             

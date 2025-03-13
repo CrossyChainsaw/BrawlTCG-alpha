@@ -23,9 +23,9 @@ namespace BrawlTCG_alpha.Logic
         public UIManager UiManager { get; private set; }
 
         // Fields
-        const int STARTING_ESSENCE = 11; // 1
-        const int STARTING_HAND_CARDS = 17; // 7
-        const int MAX_CARDS_IN_HAND = 115;
+        const int STARTING_ESSENCE = 1; // 1
+        const int STARTING_HAND_CARDS = 7; // 7
+        const int MAX_CARDS_IN_HAND = 15;
         StageCardManager _stageCardManager;
         PlayerManager _playerManager;
         AttackManager _attackManager;

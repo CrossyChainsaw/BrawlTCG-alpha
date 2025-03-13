@@ -43,7 +43,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(5); });
 
         public static Effect PromotionII = new Effect(
-            description: $"Boost player max HP by 5",
+            description: $"Boost player max HP by 10",
             effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(10); });
 
         // Evil Hideout

@@ -76,7 +76,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             CurrentHP = BaseHealth;
             PrimaryWeapon = primaryWeapon;
             SecondaryWeapon = secondaryWeapon;
-            Description = $"{BaseHealth,4}hp {power,4}att {primaryWeapon,20} {secondaryWeapon,20}";
+            Description = $"{BaseHealth,4}hp {power,4}att {primaryWeapon,20} {secondaryWeapon,20}\n";
             // LegendCard Optional
             Ability = ability;
             Attack1 = attack1;
@@ -85,7 +85,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             Attack4 = attack4;
             // Other
             StackedCards = new List<Card>();
-            Description = GenerateEffectDescription();
+            Description += GenerateEffectDescription();
         }
 
         public override Card Clone()
