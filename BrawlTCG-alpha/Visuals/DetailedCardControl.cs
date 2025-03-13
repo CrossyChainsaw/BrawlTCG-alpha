@@ -267,6 +267,10 @@ namespace BrawlTCG_alpha.Visuals
                     {
                         MessageBox.Show("This legend already attacked this turn");
                     }
+                    else if (this.OriginalCardControl.Card is LegendCard legend2 && legend2.CanAttack == false)
+                    {
+                        MessageBox.Show("This legend cannot attack right now");
+                    }
                     else if (!_game.GetSomeoneIsAttacking())
                     {
                         _game.StartAttack(attack);
@@ -624,7 +628,7 @@ namespace BrawlTCG_alpha.Visuals
         void StopAttacking()
         {
             LegendCard legend = (LegendCard)this.OriginalCardControl.Card;
-            legend.AttackedThisTurn = true;
+            legend.Attack();
             _game.StopAttack();
         }
 

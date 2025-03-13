@@ -933,6 +933,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SilentGalaxy {
+            get {
+                object obj = ResourceManager.GetObject("SilentGalaxy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Sleight_of_Hand {
             get {
                 object obj = ResourceManager.GetObject("Sleight_of_Hand", resourceCulture);

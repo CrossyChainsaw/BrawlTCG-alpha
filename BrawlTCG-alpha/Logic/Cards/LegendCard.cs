@@ -34,7 +34,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Attack Attack4 { get; private set; }
         public bool IsTapped { get; private set; }
         public bool IsBurned { get; internal set; } = false;
-        public bool AttackedThisTurn { get; set; } = false;
+        public bool CanAttack { get; set; } = true;
+        public bool AttackedThisTurn { get; private set; } = false;
         public bool OnPlayingField { get; set; } = false;
 
         public event Action<LegendCard, WeaponCard> UI_BurnWeaponCard;
@@ -207,6 +208,15 @@ namespace BrawlTCG_alpha.Logic.Cards
         public bool HasWeapon(WeaponCard weaponCard)
         {
             return GetWeapons().Contains(weaponCard.Weapon);
+        }
+        public void SwitchTurn()
+        {
+            AttackedThisTurn = false;
+            CanAttack = true;
+        }
+        public void Attack()
+        {
+            AttackedThisTurn = true;
         }
     }
 }

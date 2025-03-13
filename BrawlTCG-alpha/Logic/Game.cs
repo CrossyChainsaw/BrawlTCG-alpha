@@ -115,7 +115,7 @@ namespace BrawlTCG_alpha.Logic
             // Legends can attack again
             foreach (LegendCard legend in GetAllMyLegendsOnThePlayingField(ActivePlayer))
             {
-                legend.AttackedThisTurn = false;
+                legend.SwitchTurn();
             }
 
             // Switch the Turn

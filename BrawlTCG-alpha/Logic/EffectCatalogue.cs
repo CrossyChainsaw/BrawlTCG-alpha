@@ -16,13 +16,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => _StartTurnDamage(target, mustafarDamage, Elements.Fire)
         );
 
-        static int atlantisDamage = 1;
-        static Elements immuneType = Elements.Arctic;
-        public static Effect Atlantis = new Effect(
-            description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
-            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
-        );
-
         static int fangwildHeal = 2;
         public static Effect Fangwild = new Effect(
             description: $"All Magic and Nature Legends will gain {fangwildHeal} health.",
@@ -45,6 +38,60 @@ namespace BrawlTCG_alpha.Logic.Cards
             effectAction: (target, card, game) => _GivePlayerEssence(target)
         );
 
+        // Evil Hideout
+        public static Effect EvilHideout_WhenPlayed = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
+        );
+        public static Effect EvilHideout_WhileInPlay = new Effect(
+            description: "Shadow, Wild and Fire Legends get +3 Power",
+            effectAction: (target, card, game) => _EvilHideout_WhilePlay(target)
+        );
+        public static Effect EvilHideout_WhenDiscarded = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _EvilHideout_WhenDiscard(game)
+        );
+
+        // Silent Galaxy
+        public static Effect SilentGalaxy_WhenPlayed = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_WhenPlayed(game)
+        );
+        public static Effect SilentGalaxy_WhilePlay = new Effect(
+            description: $"Only Cosmic Legends can Attack",
+            effectAction: (target, card, game) => _SilentGalaxy_WhilePlay(target)
+        );
+        public static Effect SilentGalaxy_WhenDiscarded = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_WhenDiscard(game)
+        );
+        public static Effect SilentGalaxy_StartTurn = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game) => _SilentGalaxy_StartTurn(game)
+        );
+
+        // Atlantis
+        public static Effect Atlantis_WhenPlayed = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) =>
+                _ModifyStatsOfAllLegendsWhenPlayed(game,
+                    Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
+                    Stats.Power, -2)
+        );
+        public static Effect Atlantis_WhileInPlay = new Effect(
+            description: "Shadow, Wild and Fire Legends get +3 Power",
+            effectAction: (target, card, game) => _Atlantis_WhilePlay(target)
+        );
+        public static Effect Atlantis_WhenDiscarded = new Effect(
+            description: "N/A",
+            effectAction: (target, card, game) => _Atlantis_WhenDiscard(game)
+        );
+        static int atlantisDamage = 1;
+        static Elements immuneType = Elements.Arctic;
+        public static Effect Atlantis_StartTurn = new Effect(
+            description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
+            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
+        );
 
         // When Played Effect
         static int mustafarID = 100;
@@ -69,19 +116,6 @@ namespace BrawlTCG_alpha.Logic.Cards
         public static Effect GenerateAndPlayAtlantis = new Effect(
             description: $"Change stage to Workshop",
             effectAction: (target, card, game) => GenerateAndPlayStage(game, atlantisID)
-        );
-
-        public static Effect EvilHideout_WhenPlayed = new Effect(
-            description: "Fire, Wild, and Shadow legends get +3 Power",
-            effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
-        );
-
-        public static Effect Atlantis_WhenPlayed = new Effect(
-            description: "Non-Arctic legends get -2 Power",
-            effectAction: (target, card, game) =>
-                _ModifyStatsOfAllLegendsWhenPlayed(game,
-                    Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
-                    Stats.Power, -2)
         );
 
         public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
@@ -165,27 +199,6 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         );
 
-        // While in Play
-        public static Effect EvilHideout_WhileInPlay = new Effect(
-            description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _EvilHideout_WhilePlay(target)
-        );
-
-        public static Effect Atlantis_WhileInPlay = new Effect(
-            description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _Atlantis_WhilePlay(target)
-        );
-
-        // When Discarded
-        public static Effect EvilHideout_WhenDiscarded = new Effect(
-            description: "Shadow, Wild and Fire Legends lose 3 Power",
-            effectAction: (target, card, game) => _EvilHideout_WhenDiscard(game)
-        );
-
-        public static Effect Atlantis_WhenDiscarded = new Effect(
-            description: "Non-Arctic legends get +2 Power",
-            effectAction: (target, card, game) => _Atlantis_WhenDiscard(game)
-        );
 
         // Generic Methods
         public static void GenerateRandomCards(Game game, int nCards, Elements? element = null, Type cardType = null)
@@ -479,6 +492,47 @@ namespace BrawlTCG_alpha.Logic.Cards
                     {
                         legend.ModifyStat(Stats.Power, -3);
                     }
+                }
+            }
+        }
+        // Silent Galaxy
+        static void _SilentGalaxy_StartTurn(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
+                }
+            }
+        }
+        static void _SilentGalaxy_WhilePlay(object target)
+        {
+            if (target is LegendCard legend)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
+                }
+            }
+        }
+        static void _SilentGalaxy_WhenDiscard(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                legend.CanAttack = true;
+            }
+        }
+        static void _SilentGalaxy_WhenPlayed(Game game)
+        {
+            List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+            foreach (LegendCard legend in legends)
+            {
+                if (legend.Element != Elements.Cosmic)
+                {
+                    legend.CanAttack = false;
                 }
             }
         }
