@@ -290,31 +290,45 @@ namespace BrawlTCG_alpha.Visuals
         // Render When Clicked
         void OnCardClicked()
         {
+            StopDragging();
             if (!_game.GetSomeoneIsAttacking() && Card.IsOpen)
             {
-                _isDragging = false;
                 if (!_mouseMoved)
                 {
-                    if (_game.UiManager.ActiveDCC != null)
-                    {
-                        _game.UiManager.ActiveDCC.OnDetailedCardClicked();
-                    }
+                    RemoveActiveDCC();
+
                     Form parentForm = this.FindForm();
                     if (Card is LegendCard legendCard)
                     {
+                        // Visually
                         DetailedCardControl dcc = RenderLegendCard(parentForm);
                         RenderWeaponCards(legendCard, parentForm, dcc);
-                        _game.UiManager.CardControlClicked(dcc);
+                        // Logically
+                        _game.UiManager.SetDCC(dcc);
                     }
                     else
                     {
+                        // Visually
                         DetailedCardControl dcc = RenderCard(parentForm);
-                        _game.UiManager.CardControlClicked(dcc);
+                        // Logically
+                        _game.UiManager.SetDCC(dcc);
                     }
                 }
             }
 
             // Local Methods
+            void StopDragging()
+            {
+                _isDragging = false;
+            }
+            void RemoveActiveDCC()
+            {
+                // if there is an active dcc, remove it
+                if (_game.UiManager.ActiveDCC != null)
+                {
+                    _game.UiManager.ActiveDCC.OnDetailedCardClicked();
+                }
+            }
             DetailedCardControl RenderCard(Form parentForm)
             {
                 FRM_Game frm = (FRM_Game)parentForm;
@@ -420,7 +434,7 @@ namespace BrawlTCG_alpha.Visuals
                 if (Owner.PlayingField.Count > 0)
                 {
                     UI_ArrangeCardsInPlayingField(Owner);
-                } 
+                }
 
                 this.Dispose();
             }

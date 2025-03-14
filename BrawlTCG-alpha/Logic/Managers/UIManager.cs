@@ -179,7 +179,7 @@ namespace BrawlTCG_alpha.Logic
 
 
         // CardControl
-        public void CardControlClicked(DetailedCardControl dcc)
+        public void SetDCC(DetailedCardControl dcc)
         {
             ActiveDCC = dcc;
         }
