@@ -295,15 +295,21 @@ namespace BrawlTCG_alpha.Visuals
                 _isDragging = false;
                 if (!_mouseMoved)
                 {
+                    if (_game.UiManager.ActiveDCC != null)
+                    {
+                        _game.UiManager.ActiveDCC.OnDetailedCardClicked();
+                    }
                     Form parentForm = this.FindForm();
                     if (Card is LegendCard legendCard)
                     {
                         DetailedCardControl dcc = RenderLegendCard(parentForm);
                         RenderWeaponCards(legendCard, parentForm, dcc);
+                        _game.UiManager.CardControlClicked(dcc);
                     }
                     else
                     {
-                        RenderCard(parentForm);
+                        DetailedCardControl dcc = RenderCard(parentForm);
+                        _game.UiManager.CardControlClicked(dcc);
                     }
                 }
             }
