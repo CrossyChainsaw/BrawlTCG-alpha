@@ -6,6 +6,8 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace BrawlTCG_alpha.Logic.Managers
 {
@@ -42,7 +44,7 @@ namespace BrawlTCG_alpha.Logic.Managers
             {
                 PaintCardBackSideCC(g);
             }
-            PaintCardBorderCC(g);
+            PaintCardBorder(g);
         }
 
         void PaintLegendCardCC(Graphics g, Card card)
@@ -163,10 +165,205 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawImage(BackSideImage, new Rectangle(10, 30, CARD_WIDTH - 20, CARD_HEIGHT - 60));
         }
 
-        void PaintCardBorderCC(Graphics g)
+        public void PaintCardBorder(Graphics g)
         {
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, CARD_WIDTH - 2, CARD_HEIGHT - 2);
         }
+
+
+
+        //protected override void OnPaintDCC(PaintEventArgs e, Card card)
+        //{
+        //    // base blabla
+        //    Graphics g = e.Graphics;
+
+        //    if (card is LegendCard legendCard)
+        //    {
+        //        int attackButtonY = PaintLegendCardDCC(g, legendCard);
+        //        int descriptionY = AddAttackButtons(legendCard, attackButtonY);
+        //        PaintDescription(g, legendCard, descriptionY);
+        //    }
+        //    else if (card is WeaponCard weaponCard)
+        //    {
+        //        PaintWeaponCardDCC(g, weaponCard);
+        //    }
+        //    else
+        //    {
+        //        PaintAnyOtherCardDCC(g, card);
+        //    }
+        //    PaintBorderDCC(g);
+        //}
+        public int PaintLegendCardDCC(Graphics g, Card card)
+        {
+            LegendCard legendCard = (LegendCard)card;
+
+            Brush brush = new SolidBrush(legendCard.CardColor);
+            g.FillRectangle(brush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+
+            float aspectRatio = 4f / 3f;
+            int maxWidth = CARD_WIDTH - 20;
+            int availableHeight = CARD_HEIGHT - 60;
+            int newWidth = maxWidth;
+            int newHeight = (int)(newWidth / aspectRatio);
+
+            if (newHeight > availableHeight)
+            {
+                newHeight = availableHeight;
+                newWidth = (int)(newHeight * aspectRatio);
+            }
+
+            int x = 10 + (maxWidth - newWidth) / 2;
+            int y = 30;
+
+            int cornerRadius = 15;
+            GraphicsPath roundedImagePath = new GraphicsPath();
+            roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90);
+            roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90);
+            roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90);
+            roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90);
+            roundedImagePath.CloseFigure();
+
+            g.SetClip(roundedImagePath);
+            g.DrawImage(legendCard.Image, new Rectangle(x, y, newWidth, newHeight));
+            g.ResetClip();
+
+
+            Brush textBrush = new SolidBrush(card.TextColor);
+
+            g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
+            g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
+            g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(CARD_WIDTH - 100, 5));
+            SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
+            g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((CARD_WIDTH - attSize.Width) / 2, 5));
+
+            int attackButtonY = y + newHeight + 10;
+            return attackButtonY;
+        }
+        public void PaintAnyOtherCardDCC(Graphics g, Card card)
+        {
+            Brush cardBrush = new SolidBrush(card.CardColor);
+            g.FillRectangle(cardBrush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+
+            // Keep the original proportions of the image
+            float aspectRatio = (float)card.Image.Width / card.Image.Height;
+
+            // Define the maximum size for the image
+            int maxWidth = CARD_WIDTH - 20;  // Padding of 10 on each side (left/right)
+            int maxHeight = CARD_HEIGHT - 60; // Padding of 30 (top/bottom)
+
+            // Calculate the width and height based on the aspect ratio and the available space
+            int imageWidth = maxWidth;
+            int imageHeight = (int)(imageWidth / aspectRatio);
+
+            // If the image height exceeds the available space, adjust it
+            if (imageHeight > maxHeight)
+            {
+                imageHeight = maxHeight;
+                imageWidth = (int)(imageHeight * aspectRatio);
+            }
+
+            // Center the image within the control
+            int x = (CARD_WIDTH - imageWidth) / 2;
+            int y = 30;
+
+            // Draw the image (scaled to fit within the available space)
+            g.DrawImage(card.Image, new Rectangle(x, y, imageWidth, imageHeight));
+
+            // Calculate space for the description text
+            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
+            int descriptionWidth = CARD_WIDTH - 20;         // Padding on the left/right
+
+            // Draw the card's description (aligned to the left)
+            Brush textBrush = new SolidBrush(card.TextColor);
+            StringFormat textFormat = new StringFormat();
+            textFormat.Alignment = StringAlignment.Near; // Align to the left
+
+            // You can adjust the font size or layout based on the description length
+            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, CARD_HEIGHT - descriptionTop - 10), textFormat);
+
+            // Draw the card's name and cost (as before)
+            g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
+            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
+        }
+        public void PaintWeaponCardDCC(Graphics g, WeaponCard card)
+        {
+            Brush cardBrush = new SolidBrush(card.CardColor);
+            g.FillRectangle(cardBrush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+
+            // Keep the original proportions of the image
+            float aspectRatio = (float)card.Image.Width / card.Image.Height;
+
+            // Define the maximum size for the image
+            int maxWidth = CARD_WIDTH - 60;  // Padding of 10 on each side (left/right) // make 60
+            int maxHeight = CARD_HEIGHT - 60; // Padding of 30 (top/bottom)
+
+            // Calculate the width and height based on the aspect ratio and the available space
+            int imageWidth = maxWidth;
+            int imageHeight = (int)(imageWidth / aspectRatio);
+
+            // If the image height exceeds the available space, adjust it
+            if (imageHeight > maxHeight)
+            {
+                imageHeight = maxHeight;
+                imageWidth = (int)(imageHeight * aspectRatio);
+            }
+
+            // Center the image within the control
+            int x = (CARD_WIDTH - imageWidth) / 2;
+            int y = (CARD_HEIGHT - imageHeight) / 2;
+
+            // Draw the image (scaled to fit within the available space)
+            g.DrawImage(card.Image, new Rectangle(x, y, imageWidth, imageHeight));
+
+            // Calculate space for the description text
+            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
+            int descriptionWidth = CARD_WIDTH - 30;         // Padding on the left/right
+
+            // Draw the card's description (aligned to the left)
+            Brush textBrush = new SolidBrush(card.TextColor);
+            StringFormat textFormat = new StringFormat();
+            textFormat.Alignment = StringAlignment.Near; // Align to the left
+
+            // You can adjust the font size or layout based on the description length
+            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, CARD_HEIGHT - descriptionTop - 10), textFormat);
+
+
+            // Draw the card's name and cost (as before)
+            g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
+            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
+        }
+        public void PaintLegendDescription(Graphics g, LegendCard legend, int y)
+        {
+            // Description
+            if (!string.IsNullOrEmpty(legend.Description))
+            {
+                Brush textBrush = new SolidBrush(legend.TextColor);
+
+                // Determine description position
+                int descriptionTop = y + 10;
+                int descriptionWidth = CARD_WIDTH - 20;       // 10px padding left/right
+                int descriptionHeight = CARD_HEIGHT - descriptionTop - 10; // Remaining height
+
+                // Draw Description
+                StringFormat textFormat = new StringFormat { Alignment = StringAlignment.Near };
+                g.DrawString(
+                    legend.Description,
+                    Font,
+                    textBrush,
+                    new Rectangle(10, descriptionTop, descriptionWidth, descriptionHeight),
+                    textFormat
+                );
+            }
+        }
+        //string GetBurnWeaponEmojis(int nBurn)
+        //{
+        //    string emojis = "";
+        //    for (int i = 0; i < nBurn; i++)
+        //    {
+        //        emojis += "🔥";
+        //    }
+        //    return emojis;
+        //}
     }
 }
