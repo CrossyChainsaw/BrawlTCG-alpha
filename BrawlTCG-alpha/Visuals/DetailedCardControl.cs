@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BrawlTCG_alpha.Visuals
 {
-    internal class DetailedCardControl : Control
+    public class DetailedCardControl : Control
     {
         // Fields
         public Player Owner;
@@ -633,6 +633,23 @@ namespace BrawlTCG_alpha.Visuals
         }
 
         // Events
+        public void OnDetailedCardClicked()
+        {
+            if (_isRemoved) return; // Already removed, skip
+            _isRemoved = true;
+
+            Form parentForm = this.FindForm();
+            if (parentForm != null)
+            {
+                RemoveThisFromScreen(parentForm);
+            }
+
+            if (_game.GetSomeoneIsAttacking())
+            {
+                OriginalCardControl.Enabled = true;
+                _game.StopAttack();
+            }
+        }
         void OnClickCardControlDuringAttack(CardControl clickedCard)
         {
             if (_game.GetSomeoneIsAttacking())
@@ -657,22 +674,5 @@ namespace BrawlTCG_alpha.Visuals
                 NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
             }
         } // COMMUNICATION FUNCTION
-        void OnDetailedCardClicked()
-        {
-            if (_isRemoved) return; // Already removed, skip
-            _isRemoved = true;
-
-            Form parentForm = this.FindForm();
-            if (parentForm != null)
-            {
-                RemoveThisFromScreen(parentForm);
-            }
-
-            if (_game.GetSomeoneIsAttacking())
-            {
-                OriginalCardControl.Enabled = true;
-                _game.StopAttack();
-            }
-        }
     }
 }

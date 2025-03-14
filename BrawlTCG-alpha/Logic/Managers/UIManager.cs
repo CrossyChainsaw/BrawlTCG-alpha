@@ -21,7 +21,8 @@ namespace BrawlTCG_alpha.Logic
         List<ZoneControl> _zones = new List<ZoneControl>();
         NetworkManager _networkManager;
         FRM_Game _mainForm;
-        private Game _game => _mainForm.game;
+        Game _game => _mainForm.game;
+        public DetailedCardControl ActiveDCC { get; private set; }
 
         // UI - Initialize
         public event Action UI_InitializeZones;
@@ -178,6 +179,10 @@ namespace BrawlTCG_alpha.Logic
 
 
         // CardControl
+        public void CardControlClicked(DetailedCardControl dcc)
+        {
+            ActiveDCC = dcc;
+        }
         public CardControl? GetCardControl(Player player, ZoneTypes zoneType, Card card)
         {
             ZoneControl zone = GetMyZone(zoneType, player);
@@ -231,7 +236,6 @@ namespace BrawlTCG_alpha.Logic
             cardControl.SetCanDrag(false);
             return cardControl;
         }
-
 
 
         // Zones
