@@ -1,6 +1,7 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
 using BrawlTCG_alpha.Logic;
 using BrawlTCG_alpha.Logic.Cards;
+using BrawlTCG_alpha.Logic.Managers;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
@@ -17,14 +18,16 @@ namespace BrawlTCG_alpha.Visuals
         const int CARD_WIDTH = 150;
         const int CARD_HEIGHT = 200;
 
+
         // Fields
-        private Image _backSideImage = Properties.Resources.BrawlLogo;
         private bool _isDragging = false;
         private bool _mouseMoved = false;
         private bool _canDrag = true;
         private Point _mouseOffset;
         private Point _locationBeforeDragging;
         private Game _game;
+        private PaintCardManager _paintCardManager;
+
 
         // Properties
         public Card Card { get; private set; }
@@ -50,6 +53,7 @@ namespace BrawlTCG_alpha.Visuals
             CardsControls = new List<CardControl>();
             Players = players;
             _game = game;
+            _paintCardManager = new PaintCardManager();
 
             // Card Appearence
             Size = new Size(CARD_WIDTH, CARD_HEIGHT);
@@ -97,152 +101,7 @@ namespace BrawlTCG_alpha.Visuals
         {
             // Vars for paint
             base.OnPaint(e);
-            Graphics g = e.Graphics;
-
-            if (Card.IsOpen)
-            {
-                if (Card is LegendCard legendCard)
-                {
-                    PaintLegendCard(g, legendCard);
-                }
-                else if (Card is StageCard stageCard)
-                {
-                    PaintStageCard(g, stageCard);
-                }
-                else
-                {
-                    PaintAnyOtherCard(g);
-                }
-            }
-            else
-            {
-                PaintCardBackSide(g);
-            }
-            PaintCardBorder(g);
-
-        }
-
-
-
-        // Paint
-        void PaintLegendCard(Graphics g, LegendCard legendCard)
-        {
-            Brush brush = new SolidBrush(legendCard.CardColor);
-            g.FillRectangle(brush, 0, 0, Width, Height);
-
-            // Define the aspect ratio (4:3 for LegendCard)
-            float aspectRatio = 4f / 3f;
-            int maxWidth = Width - 20;
-            int maxHeight = Height - 60;
-
-            int newWidth = maxWidth;
-            int newHeight = (int)(newWidth / aspectRatio);
-
-            // Adjust if the height exceeds the available space
-            if (newHeight > maxHeight)
-            {
-                newHeight = maxHeight;
-                newWidth = (int)(newHeight * aspectRatio);
-            }
-
-            // Center the image
-            int x = 10 + (maxWidth - newWidth) / 2;
-            int y = 10 + (maxHeight - newHeight) / 2;
-
-            // Rounded corners for the image
-            int cornerRadius = 15; // Adjust for more or less rounding
-            GraphicsPath roundedImagePath = new GraphicsPath();
-            roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90); // Top-left
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90); // Top-right
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90); // Bottom-right
-            roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90); // Bottom-left
-            roundedImagePath.CloseFigure();
-
-            // Clip the drawing area to the rounded rectangle
-            g.SetClip(roundedImagePath);
-
-            // Draw the image with rounded corners
-            g.DrawImage(legendCard.Image, new Rectangle(x, y, newWidth, newHeight));
-
-            // Reset the clipping region to its default state
-            g.ResetClip();
-
-            // Draw text elements
-            Brush textBrush = new SolidBrush(Card.TextColor);
-            g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-            g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(5, Height - 71));
-            g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF(5, Height - 48));
-        }
-
-        void PaintStageCard(Graphics g, StageCard stageCard)
-        {
-            Brush brush = new SolidBrush(stageCard.CardColor);
-            g.FillRectangle(brush, 0, 0, Width, Height);
-
-            // Define the aspect ratio (4:3 for LegendCard)
-            float aspectRatio = 4f / 3f;
-            int maxWidth = Width - 20;
-            int maxHeight = Height - 60;
-
-            int newWidth = maxWidth;
-            int newHeight = (int)(newWidth / aspectRatio);
-
-            // Adjust if the height exceeds the available space
-            if (newHeight > maxHeight)
-            {
-                newHeight = maxHeight;
-                newWidth = (int)(newHeight * aspectRatio);
-            }
-
-            // Center the image
-            int x = 10 + (maxWidth - newWidth) / 2;
-            int y = 10 + (maxHeight - newHeight) / 2;
-
-            // Rounded corners for the image
-            int cornerRadius = 15; // Adjust for more or less rounding
-            GraphicsPath roundedImagePath = new GraphicsPath();
-            roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90); // Top-left
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90); // Top-right
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90); // Bottom-right
-            roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90); // Bottom-left
-            roundedImagePath.CloseFigure();
-
-            // Clip the drawing area to the rounded rectangle
-            g.SetClip(roundedImagePath);
-
-            // Draw the image with rounded corners
-            g.DrawImage(stageCard.Image, new Rectangle(x, y, newWidth, newHeight));
-
-            // Reset the clipping region to its default state
-            g.ResetClip();
-
-            // Draw text elements
-            Brush textBrush = new SolidBrush(Card.TextColor);
-            g.DrawString(stageCard.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(stageCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-        }
-
-        void PaintAnyOtherCard(Graphics g)
-        {
-            Brush cardBrush = new SolidBrush(Card.CardColor);
-            g.FillRectangle(cardBrush, 0, 0, Width, Height);
-            g.DrawImage(Card.Image, new Rectangle(10, 30, Width - 20, Height - 60));
-            Brush textBrush = new SolidBrush(Card.TextColor);
-            g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-        }
-
-        void PaintCardBackSide(Graphics g)
-        {
-            g.FillRectangle(Brushes.LightBlue, 0, 0, Width, Height);
-            g.DrawImage(_backSideImage, new Rectangle(10, 30, Width - 20, Height - 60));
-        }
-
-        void PaintCardBorder(Graphics g)
-        {
-            int borderThickness = 3;
-            g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
+            _paintCardManager.PaintCard(e, Card);
         }
 
 
@@ -446,7 +305,9 @@ namespace BrawlTCG_alpha.Visuals
             Invalidate();
         }
 
-        // THESE FUNCTIONS ARE FROM DCC AND AREN'T SUPOSED TO BE USED, EXCEPT FOR THE PLAYER THAT LISTENED TO A MESSAGE, THEY CAN TRIGGER THESE.
+
+
+        // THESE FUNCTIONS ARE ONLY ALLOWED TO BE USED FROM NETWORK MANAGER
         public void AttackThePlayer(CardControl legendCC, Player otherPlayer, Attack attack)
         {
             LegendCard legend = (LegendCard)legendCC.Card;
@@ -467,6 +328,7 @@ namespace BrawlTCG_alpha.Visuals
                 MessageBox.Show($"{otherPlayer.Name} has been defeated");
             legendCC.CheckIfDead();
         }
+
         public void AttackLegendCard(CardControl legendCC, CardControl enemyCC)
         {
             LegendCard legend = (LegendCard)legendCC.Card;
