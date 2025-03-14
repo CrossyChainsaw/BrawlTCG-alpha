@@ -101,7 +101,7 @@ namespace BrawlTCG_alpha.Visuals
         {
             // Vars for paint
             base.OnPaint(e);
-            _paintCardManager.PaintCard(e, Card);
+            _paintCardManager.PaintCardCC(e, Card);
         }
 
 

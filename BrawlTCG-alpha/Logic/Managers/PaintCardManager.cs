@@ -18,8 +18,8 @@ namespace BrawlTCG_alpha.Logic.Managers
         public Font Font { get; } = new Font("Arial", 12, FontStyle.Bold);
 
 
-        // Paint
-        public void PaintCard(PaintEventArgs e, Card card)
+        // Paint (These were used in CardControl)
+        public void PaintCardCC(PaintEventArgs e, Card card)
         {
             Graphics g = e.Graphics;
 
@@ -27,25 +27,25 @@ namespace BrawlTCG_alpha.Logic.Managers
             {
                 if (card is LegendCard legendCard)
                 {
-                    PaintLegendCard(g, legendCard);
+                    PaintLegendCardCC(g, legendCard);
                 }
                 else if (card is StageCard stageCard)
                 {
-                    PaintStageCard(g, stageCard);
+                    PaintStageCardCC(g, stageCard);
                 }
                 else
                 {
-                    PaintAnyOtherCard(g, card);
+                    PaintAnyOtherCardCC(g, card);
                 }
             }
             else
             {
-                PaintCardBackSide(g);
+                PaintCardBackSideCC(g);
             }
-            PaintCardBorder(g);
+            PaintCardBorderCC(g);
         }
 
-        void PaintLegendCard(Graphics g, Card card)
+        void PaintLegendCardCC(Graphics g, Card card)
         {
             LegendCard legendCard = (LegendCard)card;
 
@@ -97,7 +97,7 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF(5, CARD_HEIGHT - 48));
         }
 
-        void PaintStageCard(Graphics g, Card card)
+        void PaintStageCardCC(Graphics g, Card card)
         {
             StageCard stageCard = (StageCard)card;
 
@@ -147,7 +147,7 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(stageCard.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
         }
 
-        void PaintAnyOtherCard(Graphics g, Card card)
+        void PaintAnyOtherCardCC(Graphics g, Card card)
         {
             Brush cardBrush = new SolidBrush(card.CardColor);
             g.FillRectangle(cardBrush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
@@ -157,13 +157,13 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
         }
 
-        void PaintCardBackSide(Graphics g)
+        void PaintCardBackSideCC(Graphics g)
         {
             g.FillRectangle(Brushes.LightBlue, 0, 0, CARD_WIDTH, CARD_HEIGHT);
             g.DrawImage(BackSideImage, new Rectangle(10, 30, CARD_WIDTH - 20, CARD_HEIGHT - 60));
         }
 
-        void PaintCardBorder(Graphics g)
+        void PaintCardBorderCC(Graphics g)
         {
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, CARD_WIDTH - 2, CARD_HEIGHT - 2);

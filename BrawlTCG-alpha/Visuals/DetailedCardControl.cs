@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using BrawlTCG_alpha.Logic.Managers;
 
 namespace BrawlTCG_alpha.Visuals
 {
@@ -18,6 +19,7 @@ namespace BrawlTCG_alpha.Visuals
         Game _game;
         List<Button> _attackButtons;
         bool _isRemoved = false;
+        PaintCardManager _paintCardManager;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
         public List<DetailedCardControl> WeaponCardControls { get; internal set; } // the big weapons when showing details
@@ -44,6 +46,7 @@ namespace BrawlTCG_alpha.Visuals
             OriginalCardControl = originalCardControl;
             UI_ArrangeCardsInPlayingField = arrangeCards;
             _game = game;
+            _paintCardManager = new PaintCardManager();
         }
 
 
@@ -211,6 +214,7 @@ namespace BrawlTCG_alpha.Visuals
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
         }
+
         // Attack Buttons (Initialized while painting)
         int AddAttackButtons(LegendCard legendCard, int attackButtonY)
         {
