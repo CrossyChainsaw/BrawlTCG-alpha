@@ -45,6 +45,55 @@ namespace BrawlTCG_alpha.Logic.Cards
             Recoil = recoilDamage;
         }
 
+        public static int CheckElementalDamageBoost(LegendCard attackingLegend, Attack attack)
+        {
+            int elementalDamageBoost = 0;
+            foreach (Card card in attackingLegend.StackedCards)
+            {
+                if (card is WeaponCard weaponCard)
+                {
+                    int requiredMatches = attack.WeaponOneAmount;
+                    int foundMatches = 0;
+                    if (weaponCard.Weapon == attack.WeaponOne)
+                    {
+                        if (weaponCard.Element == attackingLegend.Element)
+                        {
+                            foundMatches++;
+                            if (foundMatches == requiredMatches)
+                            {
+                                elementalDamageBoost += requiredMatches;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (attack.WeaponTwo != null)
+            {
+                foreach (Card card in attackingLegend.StackedCards)
+                {
+                    if (card is WeaponCard weaponCard)
+                    {
+                        int requiredMatches = (int)attack.WeaponTwoAmount;
+                        int foundMatches2 = 0;
+                        if (weaponCard.Weapon == attack.WeaponTwo)
+                        {
+                            if (weaponCard.Element == attackingLegend.Element)
+                            {
+                                foundMatches2++;
+                                if (foundMatches2 == requiredMatches)
+                                {
+                                    elementalDamageBoost += requiredMatches;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return elementalDamageBoost;
+        }
+
         public void Invoke(LegendCard legend, object target, Attack attack, Player player, Game game)
         {
             Effect?.Invoke(legend, target, attack, player, game); // maybe check if the attack succeeded  

@@ -29,7 +29,8 @@ namespace BrawlTCG_alpha.Logic
             { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
             { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis_StartTurn, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             { 107, new StageCard(id:107, "Silent Galaxy", 5, Elements.Cosmic, Images.SilentGalaxy, startTurnEffect: ec.SilentGalaxy_StartTurn, whenPlayedEffect: ec.SilentGalaxy_WhenPlayed, whileInPlayEffect: ec.SilentGalaxy_WhilePlay, whenDiscardedEffect: ec.SilentGalaxy_WhenDiscarded) }, // New Card
-
+            
+            
             // Nature
             { 1000, new LegendCard(id: 1000, "Briar Rose", 3, Elements.Nature, Images.BriarRose, 6, 2, 9, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss) },
             { 1001, new LegendCard(id: 1001, "Forest Guardian", 2, Elements.Nature, Images.ElvenhollowMagyar, 1, 4, 13, 0, Weapons.Hammer, Weapons.Greatsword, attack1: ac.Greatsword_Swing, attack2: ac.Greatsword_String) },
@@ -39,8 +40,6 @@ namespace BrawlTCG_alpha.Logic
             { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: ac.Hammer_Swing, attack2: ac.Hammer_Gimp, attack3:ac.Yumiko_GrabOrbs) },
             { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: ac.ForestSpirit_Explode, attack2: ac.ForestSpirit_Heal) },
             { 1007, new LegendCard(id: 1007, "Demon Bride", 3, Elements.Nature, Images.Demon_Bride, 4, 3, 9, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Any_BlowAKiss) },
-
-
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower, attack4: ac.Artemis_IronLady_MeltDown) },
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Heatblast_Burn) },
@@ -48,8 +47,6 @@ namespace BrawlTCG_alpha.Logic
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: ec.GenerateAndPlayMustafar)},
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 13, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)},
             { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash) },
-
-
             // Cosmic
             { 3000, new LegendCard(id: 3000, "Artemis", 3, Elements.Cosmic, Images.Artemis, 5, 5, 12, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower) },
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Lance_Flamethrower) },
@@ -58,15 +55,12 @@ namespace BrawlTCG_alpha.Logic
             { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) },
             { 3005, new LegendCard(id: 3005, "Breaker Shang", 2, Elements.Cosmic, Images.Breaker_Shang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.Any_CraftCosmicCard) }, // New Card
             { 3006, new LegendCard(id: 3006, "Witch Scarlet", 2, Elements.Cosmic, Images.WitchScarlet, 1, 3, 6, 0, Weapons.Hammer, Weapons.RocketLance, attack1: ac.Hammer_Swing, attack2: ac.Lance_Poke, attack3: ac.Any_GenerateAndPlayMatrix) }, // New Card
-
-
             // Magic
             { 4000, new LegendCard(id: 4000, "Faerie Queen", 3, Elements.Magic, Images.FaerieQueen, 7, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) },
             { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Enchantress_EnchantHealth, attack2: ac.Enchantress_EnchantPower, attack3: ac.Enchantress_CurseHealth, attack4: ac.Enchantress_CursePower) },
             // old dark mage card don't use 4002
             { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 2, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.PlagueKnight_GrabHealingPotion, attack2: ac.Any_CraftBattleCard) }, // New Attack
             { 4004, new LegendCard(id: 4004, "Fait", 3, Elements.Magic, Images.Fait, 6, 3, 6, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash, attack2: ac.Orb_Swing, attack3: ac.Any_BurnForThreeCard) }, // New Card
-
             // Shadow
             { 4002, new LegendCard(id: 4002, "Dark Mage", 5, Elements.Shadow, Images.DarkMage, 11, 1, 12, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Scythe_Slash) },
             { 5000, new LegendCard(id: 5000, "Caspian", 2, Elements.Shadow, Images.MasterThief, 4, 5, 4, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.Any_BurnForThreeCard, attack2: ac.MasterThief_GrabBomb) },
@@ -76,13 +70,10 @@ namespace BrawlTCG_alpha.Logic
             { 5004, new LegendCard(id: 5004, "Hellshot Hattori", 3, Elements.Shadow, Images.Hellshot_Hattori, 8, 2, 6, 0, Weapons.Sword, Weapons.Blasters, attack1: ac.Sword_Slash, attack2: ac.Blaster_Shot, attack3: ac.Blaster_DoubleShot) },
             { 5005, new LegendCard(id: 5005, "Dullahan Jiro", 3, Elements.Shadow, Images.DullahanJiro, 5, 3, 7, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash, attack3: ac.Jiro_SpawnAndPlayNinjaSpirit) },
             { 5006, new LegendCard(id: 5006, "Kitsune Hattori", 6, Elements.Shadow, Images.Kitsune, 15, 2, 13, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Spear_Stab) },
-
             // Wild
             { 6000, new LegendCard(id: 6000, "The Minotaur", 5, Elements.Wild, Images.Teros, 10, 1, 15, 0, Weapons.Axe, Weapons.Hammer, attack1: ac.Axe_Swing, attack2: ac.Hammer_Swing) },
             { 6001, new LegendCard(id: 6001, "Fox Spirit", 2, Elements.Wild, Images.Fox_Spirit, 1, 4, 6, 0, Weapons.Bow, Weapons.Hammer, attack1: ac.Hammer_Swing, attack3:ac.Yumiko_GrabOrbs) },
             { 6002, new LegendCard(id: 6002, "Dander", 1, Elements.Wild, Images.Dander, 6, 0, 2, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.Katar_Slash) },
-
-
             // Arctic
             { 7000, new LegendCard(id: 7000, "Snowman Kor", 4, Elements.Arctic, Images.SnowmanKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, attack1: ac.Any_Freeze) },
             { 7001, new LegendCard(id: 7001, "Atlantean Ada", 2, Elements.Arctic, Images.Atlantean_Ada, 2, 3, 5, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot, attack2: ac.Spear_Stab, attack3: ac.Ada_SpawnAndPlayAtlantis) },

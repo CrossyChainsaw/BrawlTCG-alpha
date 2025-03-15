@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using BrawlTCG_alpha.Logic.Managers;
 
 namespace BrawlTCG_alpha.Visuals
 {
@@ -18,6 +19,8 @@ namespace BrawlTCG_alpha.Visuals
         Game _game;
         List<Button> _attackButtons;
         bool _isRemoved = false;
+        PaintCardManager _paintCardManager;
+        int _scale = 3;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
         public List<DetailedCardControl> WeaponCardControls { get; internal set; } // the big weapons when showing details
@@ -44,6 +47,7 @@ namespace BrawlTCG_alpha.Visuals
             OriginalCardControl = originalCardControl;
             UI_ArrangeCardsInPlayingField = arrangeCards;
             _game = game;
+            _paintCardManager = new PaintCardManager();
         }
 
 
@@ -55,162 +59,21 @@ namespace BrawlTCG_alpha.Visuals
 
             if (Card is LegendCard legendCard)
             {
-                int attackButtonY = PaintLegendCard(g, legendCard);
+                int attackButtonY = _paintCardManager.PaintLegendCardDCC(g, legendCard, scale: _scale);
                 int descriptionY = AddAttackButtons(legendCard, attackButtonY);
-                PaintDescription(g, legendCard, descriptionY);
+                _paintCardManager.PaintLegendDescription(g, legendCard, descriptionY, scale: _scale);
             }
             else if (Card is WeaponCard weaponCard)
             {
-                PaintWeaponCard(g);
+                _paintCardManager.PaintWeaponCardDCC(g, weaponCard, scale: _scale);
             }
             else
             {
-                PaintAnyOtherCard(g);
+                _paintCardManager.PaintAnyOtherCardDCC(g, Card, scale: _scale);
             }
-            PaintBorder(g);
+            _paintCardManager.PaintCardBorder(g, scale: _scale);
         }
-        int PaintLegendCard(Graphics g, LegendCard legendCard)
-        {
-            Brush brush = new SolidBrush(legendCard.CardColor);
-            g.FillRectangle(brush, 0, 0, Width, Height);
 
-            float aspectRatio = 4f / 3f;
-            int maxWidth = Width - 20;
-            int availableHeight = Height - 60;
-            int newWidth = maxWidth;
-            int newHeight = (int)(newWidth / aspectRatio);
-
-            if (newHeight > availableHeight)
-            {
-                newHeight = availableHeight;
-                newWidth = (int)(newHeight * aspectRatio);
-            }
-
-            int x = 10 + (maxWidth - newWidth) / 2;
-            int y = 30;
-
-            int cornerRadius = 15;
-            GraphicsPath roundedImagePath = new GraphicsPath();
-            roundedImagePath.AddArc(x, y, cornerRadius, cornerRadius, 180, 90);
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y, cornerRadius, cornerRadius, 270, 90);
-            roundedImagePath.AddArc(x + newWidth - cornerRadius, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 0, 90);
-            roundedImagePath.AddArc(x, y + newHeight - cornerRadius, cornerRadius, cornerRadius, 90, 90);
-            roundedImagePath.CloseFigure();
-
-            g.SetClip(roundedImagePath);
-            g.DrawImage(legendCard.Image, new Rectangle(x, y, newWidth, newHeight));
-            g.ResetClip();
-
-
-            Brush textBrush = new SolidBrush(Card.TextColor);
-
-            g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-            g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(Width - 100, 5));
-            SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
-            g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((Width - attSize.Width) / 2, 5));
-
-            int attackButtonY = y + newHeight + 10;
-            return attackButtonY;
-        }
-        void PaintAnyOtherCard(Graphics g)
-        {
-            Brush cardBrush = new SolidBrush(Card.CardColor);
-            g.FillRectangle(cardBrush, 0, 0, Width, Height);
-
-            // Keep the original proportions of the image
-            float aspectRatio = (float)Card.Image.Width / Card.Image.Height;
-
-            // Define the maximum size for the image
-            int maxWidth = Width - 20;  // Padding of 10 on each side (left/right)
-            int maxHeight = Height - 60; // Padding of 30 (top/bottom)
-
-            // Calculate the width and height based on the aspect ratio and the available space
-            int imageWidth = maxWidth;
-            int imageHeight = (int)(imageWidth / aspectRatio);
-
-            // If the image height exceeds the available space, adjust it
-            if (imageHeight > maxHeight)
-            {
-                imageHeight = maxHeight;
-                imageWidth = (int)(imageHeight * aspectRatio);
-            }
-
-            // Center the image within the control
-            int x = (Width - imageWidth) / 2;
-            int y = 30;
-
-            // Draw the image (scaled to fit within the available space)
-            g.DrawImage(Card.Image, new Rectangle(x, y, imageWidth, imageHeight));
-
-            // Calculate space for the description text
-            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
-            int descriptionWidth = Width - 20;         // Padding on the left/right
-
-            // Draw the card's description (aligned to the left)
-            Brush textBrush = new SolidBrush(Card.TextColor);
-            StringFormat textFormat = new StringFormat();
-            textFormat.Alignment = StringAlignment.Near; // Align to the left
-
-            // You can adjust the font size or layout based on the description length
-            g.DrawString(Card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, Height - descriptionTop - 10), textFormat);
-
-            // Draw the card's name and cost (as before)
-            g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-        }
-        void PaintWeaponCard(Graphics g)
-        {
-            Brush cardBrush = new SolidBrush(Card.CardColor);
-            g.FillRectangle(cardBrush, 0, 0, Width, Height);
-
-            // Keep the original proportions of the image
-            float aspectRatio = (float)Card.Image.Width / Card.Image.Height;
-
-            // Define the maximum size for the image
-            int maxWidth = Width - 60;  // Padding of 10 on each side (left/right) // make 60
-            int maxHeight = Height - 60; // Padding of 30 (top/bottom)
-
-            // Calculate the width and height based on the aspect ratio and the available space
-            int imageWidth = maxWidth;
-            int imageHeight = (int)(imageWidth / aspectRatio);
-
-            // If the image height exceeds the available space, adjust it
-            if (imageHeight > maxHeight)
-            {
-                imageHeight = maxHeight;
-                imageWidth = (int)(imageHeight * aspectRatio);
-            }
-
-            // Center the image within the control
-            int x = (Width - imageWidth) / 2;
-            int y = (Height - imageHeight) / 2;
-
-            // Draw the image (scaled to fit within the available space)
-            g.DrawImage(Card.Image, new Rectangle(x, y, imageWidth, imageHeight));
-
-            // Calculate space for the description text
-            int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
-            int descriptionWidth = Width - 30;         // Padding on the left/right
-
-            // Draw the card's description (aligned to the left)
-            Brush textBrush = new SolidBrush(Card.TextColor);
-            StringFormat textFormat = new StringFormat();
-            textFormat.Alignment = StringAlignment.Near; // Align to the left
-
-            // You can adjust the font size or layout based on the description length
-            g.DrawString(Card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, Height - descriptionTop - 10), textFormat);
-
-
-            // Draw the card's name and cost (as before)
-            g.DrawString(Card.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(Card.Cost.ToString(), Font, textBrush, new PointF(Width - 20, Height - 25));
-        }
-        void PaintBorder(Graphics g)
-        {
-            int borderThickness = 3;
-            g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, Width - 2, Height - 2);
-        }
         // Attack Buttons (Initialized while painting)
         int AddAttackButtons(LegendCard legendCard, int attackButtonY)
         {
@@ -228,7 +91,7 @@ namespace BrawlTCG_alpha.Visuals
 
                 // check if you will get bonus damage
                 string damageString;
-                int elementalBoost = CheckElementalDamageBoost(legendCard, attack);
+                int elementalBoost = Attack.CheckElementalDamageBoost(legendCard, attack);
                 if (elementalBoost > 0)
                 {
                     damageString = $"{damage} Damage + {elementalBoost} Elemental Bonus";
@@ -347,7 +210,7 @@ namespace BrawlTCG_alpha.Visuals
 
                                     // Start Attacking
                                     _game.StartAttack(attack);
-                                    AttackLegendCard(legendCard, cardControl);
+                                    AttackLegend(legendCard, cardControl);
 
                                     // send msg
                                     NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
@@ -437,29 +300,6 @@ namespace BrawlTCG_alpha.Visuals
                 }
             }
         }
-        void PaintDescription(Graphics g, LegendCard legend, int y)
-        {
-            // Description
-            if (!string.IsNullOrEmpty(legend.Description))
-            {
-                Brush textBrush = new SolidBrush(Card.TextColor);
-
-                // Determine description position
-                int descriptionTop = y + 10;
-                int descriptionWidth = Width - 20;       // 10px padding left/right
-                int descriptionHeight = Height - descriptionTop - 10; // Remaining height
-
-                // Draw Description
-                StringFormat textFormat = new StringFormat { Alignment = StringAlignment.Near };
-                g.DrawString(
-                    legend.Description,
-                    Font,
-                    textBrush,
-                    new Rectangle(10, descriptionTop, descriptionWidth, descriptionHeight),
-                    textFormat
-                );
-            }
-        }
         string GetBurnWeaponEmojis(int nBurn)
         {
             string emojis = "";
@@ -469,6 +309,26 @@ namespace BrawlTCG_alpha.Visuals
             }
             return emojis;
         }
+        int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
+        {
+            int weaponCount = 0;
+
+            if (weaponType == Weapons.Any)
+            {
+                weaponCount = legendCard.StackedCards
+                    .Count(card => card is WeaponCard);
+            }
+            else
+            {
+                weaponCount = legendCard.StackedCards
+                    .Count(card => card is WeaponCard wc && wc.Weapon == weaponType);
+            }
+
+            return weaponCount >= weaponAmount ? weaponAmount : 0;
+        }
+
+
+        // Combat
         public void AttackThePlayer(LegendCard legend, Player otherPlayer, Attack attack)
         {
             // Attack
@@ -492,27 +352,7 @@ namespace BrawlTCG_alpha.Visuals
             // Check if i died
             this.OriginalCardControl.CheckIfDead();
         }
-        int CountWeaponCards(LegendCard legendCard, Weapons? weaponType, int weaponAmount)
-        {
-            int weaponCount = 0;
-
-            if (weaponType == Weapons.Any)
-            {
-                weaponCount = legendCard.StackedCards
-                    .Count(card => card is WeaponCard);
-            }
-            else
-            {
-                weaponCount = legendCard.StackedCards
-                    .Count(card => card is WeaponCard wc && wc.Weapon == weaponType);
-            }
-
-            return weaponCount >= weaponAmount ? weaponAmount : 0;
-        }
-
-
-        // Attack
-        void AttackLegendCard(LegendCard legend, CardControl enemyCardControl)
+        void AttackLegend(LegendCard legend, CardControl enemyCardControl)
         {
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
@@ -536,54 +376,6 @@ namespace BrawlTCG_alpha.Visuals
 
             // Check if i died
             this.OriginalCardControl.CheckIfDead();
-        }
-        int CheckElementalDamageBoost(LegendCard attackingLegend, Attack attack)
-        {
-            int elementalDamageBoost = 0;
-            foreach (Card card in attackingLegend.StackedCards)
-            {
-                if (card is WeaponCard weaponCard)
-                {
-                    int requiredMatches = attack.WeaponOneAmount;
-                    int foundMatches = 0;
-                    if (weaponCard.Weapon == attack.WeaponOne)
-                    {
-                        if (weaponCard.Element == attackingLegend.Element)
-                        {
-                            foundMatches++;
-                            if (foundMatches == requiredMatches)
-                            {
-                                elementalDamageBoost += requiredMatches;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (attack.WeaponTwo != null)
-            {
-                foreach (Card card in attackingLegend.StackedCards)
-                {
-                    if (card is WeaponCard weaponCard)
-                    {
-                        int requiredMatches = (int)attack.WeaponTwoAmount;
-                        int foundMatches2 = 0;
-                        if (weaponCard.Weapon == attack.WeaponTwo)
-                        {
-                            if (weaponCard.Element == attackingLegend.Element)
-                            {
-                                foundMatches2++;
-                                if (foundMatches2 == requiredMatches)
-                                {
-                                    elementalDamageBoost += requiredMatches;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return elementalDamageBoost;
         }
 
 
@@ -632,6 +424,7 @@ namespace BrawlTCG_alpha.Visuals
             _game.StopAttack();
         }
 
+
         // Events
         public void OnDetailedCardClicked()
         {
@@ -668,7 +461,7 @@ namespace BrawlTCG_alpha.Visuals
                 }
 
                 // the actual attack
-                AttackLegendCard((LegendCard)this.Card, clickedCard);
+                AttackLegend((LegendCard)this.Card, clickedCard);
 
                 // send the message
                 NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
