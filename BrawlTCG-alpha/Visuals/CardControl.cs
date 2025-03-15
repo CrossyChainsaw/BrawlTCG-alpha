@@ -238,6 +238,7 @@ namespace BrawlTCG_alpha.Visuals
                     {
                         Size = new Size(cardWidth, cardHeight),
                         Location = new Point(startX, startY),
+                        Scale = 1.5f
                     };
                     // Add to Memory
                     dcc.WeaponCardControls.Add(weaponCardControl);

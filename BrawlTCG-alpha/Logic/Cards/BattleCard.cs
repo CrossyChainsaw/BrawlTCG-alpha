@@ -20,7 +20,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public bool MultiTarget { get; private set; }
         public BattleCard(int id, string name, int cost, string description, Elements element, Image image, bool oneTimeUse, bool stackable, bool friendlyFire, 
             Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, 
-            Effect? whenPlayedEffect = null, int damage = 0, int powerModifier = 0, int healthModifier = 0, Elements[] targetElements = null, bool multiTarget = false, bool targetRequired = true) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+            Effect? whenPlayedEffect = null, int damage = 0, int powerModifier = 0, int healthModifier = 0, Elements[] targetElements = null, bool multiTarget = false, bool targetRequired = true, Player owner = null) : base(id, name, owner, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
         {
             Description = description;
             OneTimeUse = oneTimeUse;
@@ -37,7 +37,27 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public override Card Clone()
         {
-            return new BattleCard(ID, Name, Cost, Description, Element, Image, OneTimeUse, Stackable, FriendlyFire, StartTurnEffect, EndTurnEffect, WhenPlayedEffect, Damage, PowerModifier, HealthModifier, TargetElements, MultiTarget, TargetRequired);
+            return new BattleCard(
+                ID, 
+                Name, 
+                Cost, 
+                Description, 
+                Element, 
+                Image, 
+                OneTimeUse, 
+                Stackable, 
+                FriendlyFire, 
+                StartTurnEffect, 
+                EndTurnEffect, 
+                WhenPlayedEffect, 
+                Damage, 
+                PowerModifier, 
+                HealthModifier, 
+                TargetElements, 
+                MultiTarget, 
+                TargetRequired,
+                Owner
+                );
         }
     }
 }

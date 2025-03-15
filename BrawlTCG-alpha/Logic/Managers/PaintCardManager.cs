@@ -163,11 +163,11 @@ namespace BrawlTCG_alpha.Logic.Managers
 
 
         // Paint - DetailedCardControl
-        public int PaintLegendCardDCC(Graphics g, Card card, int scale)
+        public int PaintLegendCardDCC(Graphics g, Card card, float scale)
         {
             LegendCard legendCard = (LegendCard)card;
-            int width = CARD_WIDTH * scale;
-            int height = CARD_HEIGHT * scale;
+            int width = (int)(CARD_WIDTH * scale);
+            int height = (int)(CARD_HEIGHT * scale);
 
             Brush brush = new SolidBrush(legendCard.CardColor);
             g.FillRectangle(brush, 0, 0, width, height);
@@ -211,10 +211,10 @@ namespace BrawlTCG_alpha.Logic.Managers
             int attackButtonY = y + newHeight + 10;
             return attackButtonY;
         }
-        public void PaintAnyOtherCardDCC(Graphics g, Card card, int scale)
+        public void PaintAnyOtherCardDCC(Graphics g, Card card, float scale)
         {
-            int width = CARD_WIDTH * scale;
-            int height = CARD_HEIGHT * scale;
+            int width = (int)(CARD_WIDTH * scale);
+            int height = (int)(CARD_HEIGHT * scale);
 
             Brush cardBrush = new SolidBrush(card.CardColor);
             g.FillRectangle(cardBrush, 0, 0, width, height);
@@ -260,10 +260,10 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(width - 20, height - 25));
         }
-        public void PaintWeaponCardDCC(Graphics g, WeaponCard card, int scale)
+        public void PaintWeaponCardDCC(Graphics g, WeaponCard card, float scale = 1)
         {
-            int width = CARD_WIDTH * scale;
-            int height = CARD_HEIGHT * scale;
+            int width = (int)(CARD_WIDTH * scale);
+            int height = (int)(CARD_HEIGHT * scale);
 
             Brush cardBrush = new SolidBrush(card.CardColor);
             g.FillRectangle(cardBrush, 0, 0, width, height);
@@ -310,11 +310,11 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(width - 20, height - 25));
         }
-        public void PaintLegendDescription(Graphics g, LegendCard legend, int y, int scale)
+        public void PaintLegendDescription(Graphics g, LegendCard legend, int y, float scale)
         {
-            int width = CARD_WIDTH * scale;
-            int height = CARD_HEIGHT * scale;
-            legend.Description = Card.GenerateEffectDescription(legend); 
+            int width = (int)(CARD_WIDTH * scale);
+            int height = (int)(CARD_HEIGHT * scale);
+            legend.Description = Card.GenerateEffectDescription(legend);
 
             // Description
             if (!string.IsNullOrEmpty(legend.Description))
@@ -340,7 +340,7 @@ namespace BrawlTCG_alpha.Logic.Managers
 
 
         // Paint - Shared
-        public void PaintCardBorder(Graphics g, int scale = 1)
+        public void PaintCardBorder(Graphics g, float scale = 1)
         {
             int borderThickness = 3;
             g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, (CARD_WIDTH * scale) - 2, (CARD_HEIGHT * scale) - 2);

@@ -104,5 +104,12 @@ namespace BrawlTCG_alpha.Logic
                 InactivePlayer = Opponent;
             }
         }
+        public void SetOwnerOfAllMyCards(Player p)
+        {
+            foreach (Card card in p.Deck)
+            {
+                card.SetOwner(p);
+            }
+        }
     }
 }

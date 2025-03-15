@@ -32,7 +32,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public Weapons Weapon { get; internal set; }
 
         // Methods
-        public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon) : base(id, name, cost, element, image)
+        public WeaponCard(int id, string name, int cost, Elements element, Image image, Weapons weapon, Player owner=null) : base(id, name, owner, cost, element, image)
         {
             Description = GetWeaponCardDescription(weapon);
             Weapon = weapon;
@@ -60,7 +60,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         }
         public override Card Clone()
         {
-            return new WeaponCard(ID, Name, Cost, Element, Image, Weapon);
+            return new WeaponCard(ID, Name, Cost, Element, Image, Weapon, Owner);
         }
     }
 }

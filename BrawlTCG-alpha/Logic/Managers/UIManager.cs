@@ -4,6 +4,7 @@ using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -329,6 +330,7 @@ namespace BrawlTCG_alpha.Logic
                 }
             }
         }
+        /// <summary>Updates Player Health and Essence</summary>
         internal void UpdatePlayerInformation(Player player)
         {
             ZoneControl zone = GetMyZone(ZoneTypes.PlayerInfo, player);
@@ -558,33 +560,29 @@ namespace BrawlTCG_alpha.Logic
         // Play Card
         internal async Task<bool> TryToSnapCard(CardControl cardControl, Card card, Player player)
         {
+            bool isPlayed = false;
             if (card is EssenceCard)
             {
-                bool result = TryPlayEssenceCard(player, card, cardControl);
-                return result;
+                isPlayed = TryPlayEssenceCard(player, card, cardControl);
             }
             else if (card is StageCard stageCard)
             {
-                bool result = TryPlayStageCard(player, stageCard, cardControl);
-                return result;
+                isPlayed = TryPlayStageCard(player, stageCard, cardControl);
             }
             else if (card is LegendCard legendCard)
             {
-                bool result = TryPlayLegendCard(player, legendCard);
-                return result;
+                isPlayed = TryPlayLegendCard(player, legendCard);
             }
             else if (card is WeaponCard weaponCard)
             {
-                bool result = TryPlayWeaponCard(player, weaponCard, cardControl);
-                return result;
+                isPlayed = TryPlayWeaponCard(player, weaponCard, cardControl);
             }
             else if (card is BattleCard battleCard)
             {
-                bool result = TryPlayBattleCard(player, battleCard, cardControl);
-                return result;
+                isPlayed = TryPlayBattleCard(player, battleCard, cardControl);
             }
-            return false;
-
+            // dont put logic here, it would need to be communicated seperately
+            return isPlayed;
         }
         bool TryPlayWeaponCard(Player player, WeaponCard weapon, CardControl cardControlOld)
         {
@@ -831,7 +829,8 @@ namespace BrawlTCG_alpha.Logic
             essenceCardControl.Enabled = false;
             // Arrange Cards
             ArrangeCards(player, ZoneTypes.EssenceField, player.EssenceField);
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+            PostPlayEffects(player, card);
         }
         public void PlayStageCard(Player player, StageCard stageCard)
         {
@@ -845,15 +844,13 @@ namespace BrawlTCG_alpha.Logic
             }
 
             // Play the card in the zone on screen
-            CardControl stageCardControl = PlayCardInStageZone(player, stageCard);
+            PlayCardInStageZone(player, stageCard);
             // set the stage card in game memory
             _game.SetStageCardFromForm(player, stageCard);
-            // Disable Drag
-            stageCardControl.SetCanDrag(false);
             // when played effect
             _game.StageWhenPlayedEffect();
-            // update all cards
-            UpdateCardControlsInPlayingFieldInformation();
+            
+            PostPlayEffects(player, stageCard);
 
             // Local Functions
             void MoveOldStageCardToDiscardPile(ZoneControl stageZone)
@@ -882,14 +879,17 @@ namespace BrawlTCG_alpha.Logic
             Game game = _mainForm.game;
             // Give legend Card the ability to burn cards (this should happen in legen initiliazation not here right?)
             legendCard.UI_BurnWeaponCard += BurnWeaponCard;
+
             // Play Card
             CardControl legendCC = PlayCardInZone(player, legendCard, cardControl, playZone);
-            // the active stage effect
+
+            // apply the active stage effect
             StageCard activeStage = game.StageWhileInPlayEffect(legendCard);
+            // update cc
             legendCC.Invalidate();
             // when played effect
             legendCard.OnPlayedEffect(null, null, game);
-            // the active stage effect
+            // apply active WIP stage effect if it has changed (WIP = While in Play)
             if (activeStage != game.GetActiveStageCard())
             {
                 game.StageWhileInPlayEffect(legendCard);
@@ -897,15 +897,14 @@ namespace BrawlTCG_alpha.Logic
             }
             // Arrange Cards
             ArrangeCardsInPlayingField(player);
-            // Arrange Cards in hand
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+
+            PostPlayEffects(player, legendCard);
         }
         public void PlayWeaponCard(Player player, LegendCard legendCard, WeaponCard weapon, CardControl cardControlOld)
         {
             // Stack Card
             legendCard.StackCard(weapon);
             player.PlayCard(weapon); // play in memory
-            UpdatePlayerInformation(player); // update essence
 
             // play in UI
             ZoneControl handZone = GetMyZone(ZoneTypes.Hand, player);
@@ -922,8 +921,7 @@ namespace BrawlTCG_alpha.Logic
             // Reorder Z-Layer Stacked Cards
             ReorderZLayer(legendCardControl);
 
-            // Rearrange cards in hand
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+            PostPlayEffects(player, weapon);
         }
         public void PlayBattleCard(Player player, BattleCard battleCard, CardControl cardControlOld, CardControl targetCardControl)
         {
@@ -996,11 +994,7 @@ namespace BrawlTCG_alpha.Logic
                 // Discard
                 AddCardToDiscardPile(player, cardControlOld);
             }
-            // Arrange
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-
-            // Update player info
-            UpdatePlayerInformation(player);
+            PostPlayEffects(player, battleCard);
         }
         /// <summary>Handles playing cards visually and logically</summary>
         CardControl PlayCardInZone(Player player, Card card, CardControl cardControlOld, ZoneControl targetZone)
@@ -1015,9 +1009,6 @@ namespace BrawlTCG_alpha.Logic
             // Add Visually
             CardControl cardControl = CreateCardControl(player, targetZone, card, true);
             AddCardControl(cardControl, targetZone);
-
-            // Update info for essence
-            UpdatePlayerInformation(player);
 
             return cardControl;
         }
@@ -1037,16 +1028,23 @@ namespace BrawlTCG_alpha.Logic
 
             // Create the new control in the correct zone and position
             CardControl cardControl = CreateCardControl(player, stageZone, card, true);
+            cardControl.SetCanDrag(false);
 
             // Add it in the UI
             AddCardControl(cardControl, stageZone);
-            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
-
-            // Update player essence
-            UpdatePlayerInformation(player);
 
             // Return the new Control
             return cardControl;
+        }
+        void PostPlayEffects(Player player, Card card)
+        {
+            // while in play effect
+            _game.ApplyAllLegendsWhileInPlayEffectsToAllLegends(card);
+
+            // after play stuff
+            ArrangeCards(player, ZoneTypes.Hand, player.Hand);
+            UpdatePlayerInformation(player);
+            UpdateCardControlsInPlayingFieldInformation();
         }
         void BurnWeaponCard(LegendCard legendCard, WeaponCard wepCard)
         {

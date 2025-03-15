@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
 
 public enum Elements
@@ -33,6 +34,7 @@ namespace BrawlTCG_alpha.Logic
         // Properties
         public int ID {  get; internal set; }
         public string Name { get; internal set; }
+        public Player Owner { get; internal set; }
         public int Cost { get; internal set; }
         public string Description { get; internal set; }
         public Elements Element { get; internal set; }
@@ -42,16 +44,18 @@ namespace BrawlTCG_alpha.Logic
         public Action<object>? EndTurnEffect { get; internal set; }
         public Effect? WhenPlayedEffect { get; internal set; }
         public Effect? WhenDiscardedEffect { get; internal set; }
+        public Effect? WhileInPlayEffect { get; internal set; }
         public Image Image { get; internal set; }
         public Color CardColor { get; internal set; }
         public Color TextColor { get; internal set; }
 
 
         // Methods
-        public Card(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null)
+        public Card(int id, string name, Player owner, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null)
         {
             ID = id;
             Name = name;
+            Owner = owner;
             Cost = cost;
             Element = element;
             Image = image;
@@ -62,15 +66,20 @@ namespace BrawlTCG_alpha.Logic
             EndTurnEffect = endTurnEffect;
             WhenPlayedEffect = whenPlayedEffect;
             WhenDiscardedEffect = whenDiscardedEffect;
+            WhileInPlayEffect = whileInPlayEffect;
         }
         
-        public void OnStartTurn(object target, Card card, Game game) => StartTurnEffect?.Invoke(target, card, game);
+        public void OnStartTurn(object target, Card card, Game game) => StartTurnEffect?.Invoke(target, card, game, card);
         public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
-        public void OnPlayedEffect(object target, Card card, Game game) => WhenPlayedEffect?.Invoke(target, this, game);
+        public void OnPlayedEffect(object target, Card card, Game game) => WhenPlayedEffect?.Invoke(target, this, game, this);
         public void Discard()
         {
             IsDiscarded = true;
             IsOpen = true;
+        }
+        public void SetOwner(Player p)
+        {
+            Owner = p;
         }
 
         public static string GenerateEffectDescription(Card c)
@@ -86,8 +95,8 @@ namespace BrawlTCG_alpha.Logic
                 description += $"When Played: {c.WhenPlayedEffect.Description}\n";
             if (c.WhenDiscardedEffect != null)
                 description += $"When Discarded: {c.WhenDiscardedEffect.Description} \n";
-            if (c is StageCard stage && stage.WhileInPlayEffect != null)
-                description += $"While In Play: {stage.WhileInPlayEffect.Description}\n";
+            if (c.WhileInPlayEffect != null)
+                description += $"While In Play: {c.WhileInPlayEffect.Description}\n";
 
             return description;
         }
@@ -137,5 +146,6 @@ namespace BrawlTCG_alpha.Logic
         }
 
         public abstract Card Clone();
+
     }
 }
