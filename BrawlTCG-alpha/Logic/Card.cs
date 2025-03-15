@@ -21,6 +21,16 @@ namespace BrawlTCG_alpha.Logic
 {
     public abstract class Card
     {
+        // Fields
+        static Color MagicColor = Color.DarkViolet;
+        static Color NatureColor = Color.Teal; // DarkTurquoise
+        static Color FireColor = Color.DarkRed;
+        static Color CosmicColor = Color.DarkBlue;
+        static Color ShadowColor = Color.FromArgb(30, 30, 30);
+        static Color WildColor = Color.Sienna;
+        static Color ArcticColor = Color.LightCyan;
+        
+        // Properties
         public int ID {  get; internal set; }
         public string Name { get; internal set; }
         public int Cost { get; internal set; }
@@ -36,15 +46,8 @@ namespace BrawlTCG_alpha.Logic
         public Color CardColor { get; internal set; }
         public Color TextColor { get; internal set; }
 
-        static Color MagicColor = Color.DarkViolet;
-        static Color NatureColor = Color.Teal; // DarkTurquoise
-        static Color FireColor = Color.DarkRed;
-        static Color CosmicColor = Color.DarkBlue;
-        static Color ShadowColor = Color.FromArgb(30, 30, 30);
-        static Color WildColor = Color.Sienna;
-        static Color ArcticColor = Color.LightCyan;
 
-
+        // Methods
         public Card(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null)
         {
             ID = id;
@@ -60,6 +63,16 @@ namespace BrawlTCG_alpha.Logic
             WhenPlayedEffect = whenPlayedEffect;
             WhenDiscardedEffect = whenDiscardedEffect;
         }
+        
+        public void OnStartTurn(object target, Card card, Game game) => StartTurnEffect?.Invoke(target, card, game);
+        public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
+        public void OnPlayedEffect(object target, Card card, Game game) => WhenPlayedEffect?.Invoke(target, this, game);
+        public void Discard()
+        {
+            IsDiscarded = true;
+            IsOpen = true;
+        }
+
         public static string GenerateEffectDescription(Card c)
         {
             string description = "";
@@ -78,11 +91,6 @@ namespace BrawlTCG_alpha.Logic
 
             return description;
         }
-
-        public void OnStartTurn(object target, Card card, Game game) => StartTurnEffect?.Invoke(target, card, game);
-        public void OnEndTurn(object target) => EndTurnEffect?.Invoke(target);
-        public void OnPlayedEffect(object target, Card card, Game game) => WhenPlayedEffect?.Invoke(target, this, game);
-        public abstract Card Clone();
         public static Color SetCardColor(Elements element)
         {
             if (element == Elements.Magic)
@@ -127,10 +135,7 @@ namespace BrawlTCG_alpha.Logic
             }
             throw new Exception("This element has no text color");
         }
-        public void Discard()
-        {
-            IsDiscarded = true;
-            IsOpen = true;
-        }
+
+        public abstract Card Clone();
     }
 }
