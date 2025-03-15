@@ -13,188 +13,234 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int mustafarDamage = 2;
         public static Effect Mustafar = new Effect(
             description: $"All non-Fire Legends lose {mustafarDamage} health.",
-            effectAction: (target, card, game) => _StartTurnDamage(target, mustafarDamage, Elements.Fire)
+            effectAction: (target, card, game, playedCard) => _StartTurnDamage(target, mustafarDamage, Elements.Fire)
         );
 
         static int fangwildHeal = 2;
         public static Effect Fangwild = new Effect(
             description: $"All Magic and Nature Legends will gain {fangwildHeal} health.",
-            effectAction: (target, card, game) => _StartTurnHeal(target, fangwildHeal, Elements.Nature, Elements.Magic)
+            effectAction: (target, card, game, playedCard) => _StartTurnHeal(target, fangwildHeal, Elements.Nature, Elements.Magic)
         );
 
-        public static Effect Workshop = new Effect(
-            description: $"Obtain a random card",
-            effectAction: (target, card, game) => GenerateRandomCards(game, 1)
+        public static Effect Workshop_StartTurn = new Effect(
+            description: $"Instead of drawing a card you obtain a random card",
+            effectAction: (target, card, game, playedCard) => {
+                GenerateRandomCards(game, 1);
+                game.DrawCardStartTurn = false;
+            }
+        );
+
+        public static Effect Workshop_Discarded = new Effect(
+            description: $"N/A",
+            effectAction: (target, card, game, playedCard) => {
+                game.DrawCardStartTurn = true;
+            }
         );
 
         static int spaceTimeExtraDrawnCards = 2;
         public static Effect SpaceTime = new Effect(
             description: $"Draw {spaceTimeExtraDrawnCards} extra cards",
-            effectAction: (target, card, game) => DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
+            effectAction: (target, card, game, playedCard) => DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
         );
 
         public static Effect Essence = new Effect(
             description: $"Gain 1 Essence",
-            effectAction: (target, card, game) => _GivePlayerEssence(target)
+            effectAction: (target, card, game, playedCard) => _GivePlayerEssence(target)
         );
 
         public static Effect PromotionI = new Effect(
             description: $"Boost player max HP by 5",
-            effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(5); });
+            effectAction: (target, card, game, playedCard) => { game.ActivePlayer.BoostMaxHealth(5); });
 
         public static Effect PromotionII = new Effect(
             description: $"Boost player max HP by 10",
-            effectAction: (target, card, game) => { game.ActivePlayer.BoostMaxHealth(10); });
+            effectAction: (target, card, game, playedCard) => { game.ActivePlayer.BoostMaxHealth(10); });
+
+        public static Effect BoostFireLegendStats_WhileInPlayEffect = new Effect(
+            description: "When you play a Fire legend, that Fire legend gets +2/+2",
+            effectAction: (target, card, game, playedCard) => _BoostStats_WhenPlayed(card, playedCard, Elements.Fire));
+
+        public static Effect BoostAllNatureLegendsStats_WhileInPlay = new Effect(
+            description: "When you play a Nature card, all nature legends get +1/+1",
+            effectAction: (target, card, game, playedCard) => _BoostAllLegendsStats_WhenPlayed(card, game, playedCard, Elements.Nature),
+            multipleTriggersInTurn: true);
+
+        static void _BoostStats_WhenPlayed(Card effectOwner, Card playedCard, Elements element)
+        {
+            if (playedCard is LegendCard legend && playedCard != effectOwner)
+            {
+                if (legend.Element == element)
+                {
+                    legend.ModifyStat(Stats.Power, 2);
+                    legend.ModifyStat(Stats.Health, 2);
+                }
+            }
+        }
+
+        static void _BoostAllLegendsStats_WhenPlayed(Card effectOwner, Game game, Card playedCard, Elements element)
+        {
+            List<LegendCard> legends = game.GetAllMyLegendsOnThePlayingField(game.ActivePlayer);
+            foreach (LegendCard legend in legends)
+            {
+                if (playedCard.Element == element && legend.Element == element && playedCard != effectOwner)
+                {
+                    legend.ModifyStat(Stats.Power, 1);
+                    legend.ModifyStat(Stats.Health, 1);
+                }
+            }
+        }
 
         // Evil Hideout
         public static Effect EvilHideout_WhenPlayed = new Effect(
             description: "N/A",
-            effectAction: (target, card, game) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
+            effectAction: (target, card, game, playedCard) => _ModifyStatsOfAllLegendsWhenPlayed(game, new List<Elements> { Elements.Fire, Elements.Wild, Elements.Shadow }, Stats.Power, 3)
         );
         public static Effect EvilHideout_WhileInPlay = new Effect(
             description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _EvilHideout_WhilePlay(target)
+            effectAction: (target, card, game, playedCard) => _EvilHideout_WhilePlay(target)
         );
         public static Effect EvilHideout_WhenDiscarded = new Effect(
             description: "N/A",
-            effectAction: (target, card, game) => _EvilHideout_WhenDiscard(game)
+            effectAction: (target, card, game, playedCard) => _EvilHideout_WhenDiscard(game)
         );
 
         // Silent Galaxy
         public static Effect SilentGalaxy_WhenPlayed = new Effect(
             description: $"N/A",
-            effectAction: (target, card, game) => _SilentGalaxy_WhenPlayed(game)
+            effectAction: (target, card, game, playedCard) => _SilentGalaxy_WhenPlayed(game)
         );
         public static Effect SilentGalaxy_WhilePlay = new Effect(
             description: $"Only Cosmic Legends can Attack",
-            effectAction: (target, card, game) => _SilentGalaxy_WhilePlay(target)
+            effectAction: (target, card, game, playedCard) => _SilentGalaxy_WhilePlay(target)
         );
         public static Effect SilentGalaxy_WhenDiscarded = new Effect(
             description: $"N/A",
-            effectAction: (target, card, game) => _SilentGalaxy_WhenDiscard(game)
+            effectAction: (target, card, game, playedCard) => _SilentGalaxy_WhenDiscard(game)
         );
         public static Effect SilentGalaxy_StartTurn = new Effect(
             description: $"N/A",
-            effectAction: (target, card, game) => _SilentGalaxy_StartTurn(game)
+            effectAction: (target, card, game, playedCard) => _SilentGalaxy_StartTurn(game)
         );
 
         // Atlantis
         public static Effect Atlantis_WhenPlayed = new Effect(
             description: "N/A",
-            effectAction: (target, card, game) =>
+            effectAction: (target, card, game, playedCard) =>
                 _ModifyStatsOfAllLegendsWhenPlayed(game,
                     Enum.GetValues(typeof(Elements)).Cast<Elements>().Where(e => e != Elements.Arctic).ToList(), // all except arctic
                     Stats.Power, -2)
         );
         public static Effect Atlantis_WhileInPlay = new Effect(
             description: "Shadow, Wild and Fire Legends get +3 Power",
-            effectAction: (target, card, game) => _Atlantis_WhilePlay(target)
+            effectAction: (target, card, game, playedCard) => _Atlantis_WhilePlay(target)
         );
         public static Effect Atlantis_WhenDiscarded = new Effect(
             description: "N/A",
-            effectAction: (target, card, game) => _Atlantis_WhenDiscard(game)
+            effectAction: (target, card, game, playedCard) => _Atlantis_WhenDiscard(game)
         );
         static int atlantisDamage = 1;
         static Elements immuneType = Elements.Arctic;
         public static Effect Atlantis_StartTurn = new Effect(
             description: $"All non-{immuneType} Legends lose {atlantisDamage} health.",
-            effectAction: (target, card, game) => _StartTurnDamage(target, atlantisDamage, immuneType)
+            effectAction: (target, card, game, playedCard) => _StartTurnDamage(target, atlantisDamage, immuneType)
         );
 
         // When Played Effect
         static int mustafarID = 100;
         public static Effect GenerateAndPlayMustafar = new Effect(
             description: $"Change stage to Mustafar",
-            effectAction: (target, card, game) => GenerateAndPlayStage(game, mustafarID)
+            effectAction: (target, card, game, playedCard) => GenerateAndPlayStage(game, mustafarID)
         );
 
         static int matrixID = 102;
         public static Effect GenerateAndPlayMatrix = new Effect(
             description: $"Change stage to Matrix",
-            effectAction: (target, card, game) => GenerateAndPlayStage(game, matrixID)
+            effectAction: (target, card, game, playedCard) => GenerateAndPlayStage(game, matrixID)
         );
 
         static int workshopID = 103;
         public static Effect GenerateAndPlayWorkshop = new Effect(
             description: $"Change stage to Workshop",
-            effectAction: (target, card, game) => GenerateAndPlayStage(game, workshopID)
+            effectAction: (target, card, game, playedCard) => {
+                GenerateAndPlayStage(game, workshopID);
+            }
         );
 
         static int atlantisID = 106;
         public static Effect GenerateAndPlayAtlantis = new Effect(
             description: $"Change stage to Workshop",
-            effectAction: (target, card, game) => GenerateAndPlayStage(game, atlantisID)
+            effectAction: (target, card, game, playedCard) => GenerateAndPlayStage(game, atlantisID)
         );
 
         public static Effect BattleCardDirectDamageWhenPlayed = new Effect(
             description: "Deals direct damage to opposing Legend",
-            effectAction: (target, card, game) => _DirectDamage(target, card)
+            effectAction: (target, card, game, playedCard) => _DirectDamage(target, card)
         );
 
         public static Effect BattleCardHealWhenPlayed = new Effect(
             description: "Heals your Legend",
-            effectAction: (target, card, game) => _Heal(target, card)
+            effectAction: (target, card, game, playedCard) => _Heal(target, card)
         );
 
         public static Effect BoostHealthAndPower = new Effect(
             description: "Modifies Health and Power",
-            effectAction: (target, card, game) => _ModifyHealthAndPower(target, card)
+            effectAction: (target, card, game, playedCard) => _ModifyHealthAndPower(target, card)
         );
 
         public static Effect BoostHealthAndPowerAllYourLegends = new Effect(
             description: "Modifies Health and Power",
-            effectAction: (target, card, game) => _ModifyHealthAndPowerAllYourLegends(card, game)
+            effectAction: (target, card, game, playedCard) => _ModifyHealthAndPowerAllYourLegends(card, game)
         );
 
         static int nCards = 3;
         public static Effect CardChest = new Effect(
             description: $"Obtain {nCards} random cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nCards)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nCards)
         );
 
         public static Effect Bubble = new Effect(
             description: "Tap legend Card",
-            effectAction: (target, card, game) => TapLegendCard(target)
+            effectAction: (target, card, game, playedCard) => TapLegendCard(target)
         );
 
         static int nDragonChest = 3;
         public static Effect DragonChest = new Effect(
             description: $"Obtain {nCards} random Fire cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nDragonChest, Elements.Fire)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nDragonChest, Elements.Fire)
         );
 
         static int nWildChest = 3;
         public static Effect WildChest = new Effect(
             description: $"Obtain {nCards} random Wild cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nWildChest, Elements.Wild)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nWildChest, Elements.Wild)
         );
 
         static int nSunkenChest = 3;
         public static Effect SunkenChest = new Effect(
             description: $"Obtain {nCards} random Arctic cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nSunkenChest, Elements.Arctic)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nSunkenChest, Elements.Arctic)
         );
 
         static int nShadowChest = 3;
         public static Effect ShadowChest = new Effect(
             description: $"Obtain {nCards} random Shadow cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nShadowChest, Elements.Shadow)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nShadowChest, Elements.Shadow)
         );
 
         static int nCosmicChest = 3;
         public static Effect CosmicChest = new Effect(
             description: $"Obtain {nCards} random Cosmic cards",
-            effectAction: (target, card, game) => GenerateRandomCards(game, nCosmicChest, Elements.Cosmic)
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, nCosmicChest, Elements.Cosmic)
         );
 
         public static Effect DarkDuo = new Effect(
             description: $"Obtain 2 random Shadow Legends",
-            effectAction: (target, card, game) => GenerateRandomCards(game, 2, Elements.Shadow, typeof(LegendCard))
+            effectAction: (target, card, game, playedCard) => GenerateRandomCards(game, 2, Elements.Shadow, typeof(LegendCard))
         );
 
         public static Effect WitchParty = new Effect(
             description: $"Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance",
-            effectAction: (target, card, game) =>
+            effectAction: (target, card, game, playedCard) =>
             {
                 int faitID = 4004;
                 GenerateCard(game, faitID);

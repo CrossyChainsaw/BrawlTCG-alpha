@@ -59,13 +59,15 @@ namespace BrawlTCG_alpha.Logic.Cards
             Effect? startTurnEffect = null,
             Action<object>? endTurnEffect = null,
             Effect? whenPlayedEffect = null,
+            Effect? whenDiscardedEffect = null,
+            Effect? whileInPlayEffect = null,
             // LegendCard Opt.
             Action<object>? ability = null,
             Attack attack1 = null,
             Attack attack2 = null,
             Attack attack3 = null,
             Attack attack4 = null
-        ) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect)
+        ) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect, whileInPlayEffect)
         {
             // LegenCard
             Power = power;
@@ -104,6 +106,8 @@ namespace BrawlTCG_alpha.Logic.Cards
                 StartTurnEffect,
                 EndTurnEffect,
                 WhenPlayedEffect,
+                WhenDiscardedEffect,
+                WhileInPlayEffect,
                 Ability,
                 Attack1,
                 Attack2,

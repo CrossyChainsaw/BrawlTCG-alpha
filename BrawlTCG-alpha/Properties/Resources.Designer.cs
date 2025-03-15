@@ -543,6 +543,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FuryShang {
+            get {
+                object obj = ResourceManager.GetObject("FuryShang", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap GalaxyLance {
             get {
                 object obj = ResourceManager.GetObject("GalaxyLance", resourceCulture);
@@ -846,6 +856,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Raymesis {
             get {
                 object obj = ResourceManager.GetObject("Raymesis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RealQueen {
+            get {
+                object obj = ResourceManager.GetObject("RealQueen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

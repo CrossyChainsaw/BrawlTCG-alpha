@@ -195,7 +195,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
-        public static Attack Blaster_DoubleShot = new Attack("Shot", 5, Weapons.Blasters, 2, execute: (attacker, target, attack, activePlayer, game) =>
+        public static Attack Blaster_DoubleShot = new Attack("Double Shot", 5, Weapons.Blasters, 2, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
         });

@@ -20,7 +20,7 @@ namespace BrawlTCG_alpha.Visuals
         List<Button> _attackButtons;
         bool _isRemoved = false;
         PaintCardManager _paintCardManager;
-        int _scale = 3;
+        public float Scale { get; set; } = 3;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
         public List<DetailedCardControl> WeaponCardControls { get; internal set; } // the big weapons when showing details
@@ -59,19 +59,19 @@ namespace BrawlTCG_alpha.Visuals
 
             if (Card is LegendCard legendCard)
             {
-                int attackButtonY = _paintCardManager.PaintLegendCardDCC(g, legendCard, scale: _scale);
+                int attackButtonY = _paintCardManager.PaintLegendCardDCC(g, legendCard, scale: Scale);
                 int descriptionY = AddAttackButtons(legendCard, attackButtonY);
-                _paintCardManager.PaintLegendDescription(g, legendCard, descriptionY, scale: _scale);
+                _paintCardManager.PaintLegendDescription(g, legendCard, descriptionY, scale: Scale);
             }
             else if (Card is WeaponCard weaponCard)
             {
-                _paintCardManager.PaintWeaponCardDCC(g, weaponCard, scale: _scale);
+                _paintCardManager.PaintWeaponCardDCC(g, weaponCard, scale: Scale);
             }
             else
             {
-                _paintCardManager.PaintAnyOtherCardDCC(g, Card, scale: _scale);
+                _paintCardManager.PaintAnyOtherCardDCC(g, Card, scale: Scale);
             }
-            _paintCardManager.PaintCardBorder(g, scale: _scale);
+            _paintCardManager.PaintCardBorder(g, scale: Scale);
         }
 
         // Attack Buttons (Initialized while painting)

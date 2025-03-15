@@ -34,7 +34,7 @@ namespace BrawlTCG_alpha.Logic
             if (ActiveStageCard != null && ActiveStageCard.StartTurnEffect != null)
             {
                 var legends = player.PlayingField.OfType<LegendCard>().ToList();
-                ActiveStageCard.StartTurnEffect.Invoke(legends, ActiveStageCard, _game); // i want to reference the game instance i am in if possbile
+                ActiveStageCard.StartTurnEffect.Invoke(legends, ActiveStageCard, _game, ActiveStageCard); // i want to reference the game instance i am in if possbile
             }
         }
 
@@ -47,7 +47,7 @@ namespace BrawlTCG_alpha.Logic
                 List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
                 List<Card> allCards = l1.Concat(l2).ToList();
                 // effect
-                ActiveStageCard.WhenPlayedEffect.Invoke(allCards, ActiveStageCard, _game);
+                ActiveStageCard.WhenPlayedEffect.Invoke(allCards, ActiveStageCard, _game, ActiveStageCard);
             }
         }
 
@@ -60,7 +60,7 @@ namespace BrawlTCG_alpha.Logic
                 List<Card> l2 = _game.Opponent.GetAllCardsInPlayingField();
                 List<Card> allCards = l1.Concat(l2).ToList();
                 // effect
-                ActiveStageCard.WhenDiscardedEffect.Invoke(allCards, ActiveStageCard, _game);
+                ActiveStageCard.WhenDiscardedEffect.Invoke(allCards, ActiveStageCard, _game, ActiveStageCard);
             }
         }
 
@@ -70,7 +70,7 @@ namespace BrawlTCG_alpha.Logic
             {
                 if (ActiveStageCard.WhileInPlayEffect != null)
                 {
-                    ActiveStageCard.WhileInPlayEffect.Invoke(legend, ActiveStageCard, _game);
+                    ActiveStageCard.WhileInPlayEffect.Invoke(legend, ActiveStageCard, _game, ActiveStageCard);
                 }
             }
             return ActiveStageCard;

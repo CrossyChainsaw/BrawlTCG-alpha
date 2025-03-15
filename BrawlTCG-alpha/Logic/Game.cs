@@ -21,6 +21,7 @@ namespace BrawlTCG_alpha.Logic
         public Player Opponent => _playerManager.Opponent;
         public List<int> RandomCardIDs { get; private set; } = new List<int>();
         public UIManager UiManager { get; private set; }
+        public bool DrawCardStartTurn { get; set; } = true;
 
         // Fields
         const int STARTING_ESSENCE = 1; // 1
@@ -91,7 +92,7 @@ namespace BrawlTCG_alpha.Logic
         public Task StartTurn()
         {
             // Draw card start turn (only if you have <16 cards)
-            if (ActivePlayer.Hand.Count < MAX_CARDS_IN_HAND)
+            if (ActivePlayer.Hand.Count < MAX_CARDS_IN_HAND && DrawCardStartTurn)
             {
                 DrawCardFromDeck(ActivePlayer);
             }
@@ -144,19 +145,6 @@ namespace BrawlTCG_alpha.Logic
                 UiManager.MoveCardFromDeckZoneToHandZone(player, card);
             }
         }
-        public List<LegendCard> GetAllLegendsOnPlayingField()
-        {
-            List<Player> players = GetPlayers();
-            List<LegendCard> legends = new List<LegendCard>();
-            foreach (Player player in players)
-            {
-                foreach (LegendCard legend in player.PlayingField)
-                {
-                    legends.Add(legend);
-                }
-            }
-            return legends;
-        }
         public void AddCardToDiscardPile(Player player, Card card)
         {
             player.DiscardPile.Add(card);
@@ -170,6 +158,21 @@ namespace BrawlTCG_alpha.Logic
             // visually
             UiManager.AddCardToHandZone(player, card);
         }
+
+        // Legend Stuff - maybe make manager
+        public List<LegendCard> GetAllLegendsOnPlayingField()
+        {
+            List<Player> players = GetPlayers();
+            List<LegendCard> legends = new List<LegendCard>();
+            foreach (Player player in players)
+            {
+                foreach (LegendCard legend in player.PlayingField)
+                {
+                    legends.Add(legend);
+                }
+            }
+            return legends;
+        }
         public List<LegendCard> GetAllMyLegendsOnThePlayingField(Player player)
         {
             List<LegendCard> legends = new List<LegendCard>();
@@ -179,6 +182,38 @@ namespace BrawlTCG_alpha.Logic
             }
             return legends;
         }
+        public List<LegendCard> GetAllLegendsWithWhileInPlayEffects()
+        {
+            List<LegendCard> legends = GetAllLegendsOnPlayingField();
+            List<LegendCard> legendsWithWhileEffect = new List<LegendCard>();
+            foreach (LegendCard legend in legends)
+            {
+                if (legend.WhileInPlayEffect != null)
+                {
+                    legendsWithWhileEffect.Add(legend);
+                }
+            }
+            return legendsWithWhileEffect;
+        }
+        public void ApplyAllLegendsWhileInPlayEffects(LegendCard targetLegend)
+        {
+            List<LegendCard> legends = GetAllLegendsWithWhileInPlayEffects();
+            foreach (LegendCard legend in legends)
+            {
+                legend.WhileInPlayEffect.Invoke(null, legend, this, legend);
+            }
+        }
+        public void ApplyAllLegendsWhileInPlayEffectsToAllLegends(Card playedCard)
+        {
+            List<LegendCard> legendsWithEffect = GetAllLegendsWithWhileInPlayEffects();
+            foreach (LegendCard legendWithEff in legendsWithEffect)
+            {
+                legendWithEff.WhileInPlayEffect.Invoke(null, legendWithEff, this, playedCard);
+            }
+
+        }
+
+
 
         // UI-Manager
         public void EnableCardsInZone(Player player, ZoneTypes zoneType, bool enabled)
@@ -195,11 +230,13 @@ namespace BrawlTCG_alpha.Logic
             //UiManager.ShowCards(Opponent, true); // show opp cards nice for debugging
         }
 
+
         // NetworkManager
         public void SendMessageToPeer(string msg)
         {
             _networkManager.SendMessageToPeer(msg);
         }
+
 
         // AttackManager
         public Attack GetSelectedAttack()
@@ -251,6 +288,7 @@ namespace BrawlTCG_alpha.Logic
         {
             _stageCardManager.WhenDiscardedEffect();
         }
+        /// <summary>Apply stage effect on given Legend</summary>
         public StageCard StageWhileInPlayEffect(LegendCard legend)
         {
             return _stageCardManager.WhileInPlayEffect(legend);

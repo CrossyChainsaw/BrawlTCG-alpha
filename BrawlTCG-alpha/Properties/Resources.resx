@@ -454,4 +454,10 @@
   <data name="Avatar_CollectorsPackI" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Avatar_CollectorsPackI.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FuryShang" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FuryShang.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RealQueen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\RealQueen.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
