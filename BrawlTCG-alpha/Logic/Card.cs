@@ -60,21 +60,21 @@ namespace BrawlTCG_alpha.Logic
             WhenPlayedEffect = whenPlayedEffect;
             WhenDiscardedEffect = whenDiscardedEffect;
         }
-        public string GenerateEffectDescription()
+        public static string GenerateEffectDescription(Card c)
         {
             string description = "";
 
             // Effects
-            if (StartTurnEffect != null)
-                description += $"Start Turn Effect: {StartTurnEffect.Description}\n";
-            if (EndTurnEffect != null)
-                description += $"End Turn Effect: [WORK IN PROGRESS]\n";
-            if (WhenPlayedEffect != null)
-                description += $"When Played Effect: {WhenPlayedEffect.Description}\n";
-            if (WhenDiscardedEffect != null)
-                description += $"When Discarded Effect: {WhenDiscardedEffect.Description} \n";
-            if (this is StageCard stage && stage.WhileInPlayEffect != null)
-                description += $"While In Play Effect: {stage.WhileInPlayEffect.Description}\n";
+            if (c.StartTurnEffect != null)
+                description += $"Start Turn: {c.StartTurnEffect.Description}\n";
+            if (c.EndTurnEffect != null)
+                description += $"End Turn: [WORK IN PROGRESS]\n";
+            if (c.WhenPlayedEffect != null)
+                description += $"When Played: {c.WhenPlayedEffect.Description}\n";
+            if (c.WhenDiscardedEffect != null)
+                description += $"When Discarded: {c.WhenDiscardedEffect.Description} \n";
+            if (c is StageCard stage && stage.WhileInPlayEffect != null)
+                description += $"While In Play: {stage.WhileInPlayEffect.Description}\n";
 
             return description;
         }

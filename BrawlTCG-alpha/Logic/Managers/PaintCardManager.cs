@@ -20,7 +20,7 @@ namespace BrawlTCG_alpha.Logic.Managers
         public Font Font { get; } = new Font("Arial", 12, FontStyle.Bold);
 
 
-        // Paint (These were used in CardControl)
+        // Paint - CardControl
         public void PaintCardCC(PaintEventArgs e, Card card)
         {
             Graphics g = e.Graphics;
@@ -46,7 +46,6 @@ namespace BrawlTCG_alpha.Logic.Managers
             }
             PaintCardBorder(g);
         }
-
         void PaintLegendCardCC(Graphics g, Card card)
         {
             LegendCard legendCard = (LegendCard)card;
@@ -98,7 +97,6 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(5, CARD_HEIGHT - 71));
             g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF(5, CARD_HEIGHT - 48));
         }
-
         void PaintStageCardCC(Graphics g, Card card)
         {
             StageCard stageCard = (StageCard)card;
@@ -148,7 +146,6 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(stageCard.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(stageCard.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
         }
-
         void PaintAnyOtherCardCC(Graphics g, Card card)
         {
             Brush cardBrush = new SolidBrush(card.CardColor);
@@ -158,52 +155,26 @@ namespace BrawlTCG_alpha.Logic.Managers
             g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
             g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
         }
-
         void PaintCardBackSideCC(Graphics g)
         {
             g.FillRectangle(Brushes.LightBlue, 0, 0, CARD_WIDTH, CARD_HEIGHT);
             g.DrawImage(BackSideImage, new Rectangle(10, 30, CARD_WIDTH - 20, CARD_HEIGHT - 60));
         }
 
-        public void PaintCardBorder(Graphics g)
-        {
-            int borderThickness = 3;
-            g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, CARD_WIDTH - 2, CARD_HEIGHT - 2);
-        }
 
-
-
-        //protected override void OnPaintDCC(PaintEventArgs e, Card card)
-        //{
-        //    // base blabla
-        //    Graphics g = e.Graphics;
-
-        //    if (card is LegendCard legendCard)
-        //    {
-        //        int attackButtonY = PaintLegendCardDCC(g, legendCard);
-        //        int descriptionY = AddAttackButtons(legendCard, attackButtonY);
-        //        PaintDescription(g, legendCard, descriptionY);
-        //    }
-        //    else if (card is WeaponCard weaponCard)
-        //    {
-        //        PaintWeaponCardDCC(g, weaponCard);
-        //    }
-        //    else
-        //    {
-        //        PaintAnyOtherCardDCC(g, card);
-        //    }
-        //    PaintBorderDCC(g);
-        //}
-        public int PaintLegendCardDCC(Graphics g, Card card)
+        // Paint - DetailedCardControl
+        public int PaintLegendCardDCC(Graphics g, Card card, int scale)
         {
             LegendCard legendCard = (LegendCard)card;
+            int width = CARD_WIDTH * scale;
+            int height = CARD_HEIGHT * scale;
 
             Brush brush = new SolidBrush(legendCard.CardColor);
-            g.FillRectangle(brush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+            g.FillRectangle(brush, 0, 0, width, height);
 
             float aspectRatio = 4f / 3f;
-            int maxWidth = CARD_WIDTH - 20;
-            int availableHeight = CARD_HEIGHT - 60;
+            int maxWidth = width - 20;
+            int availableHeight = height - 60;
             int newWidth = maxWidth;
             int newHeight = (int)(newWidth / aspectRatio);
 
@@ -232,25 +203,28 @@ namespace BrawlTCG_alpha.Logic.Managers
             Brush textBrush = new SolidBrush(card.TextColor);
 
             g.DrawString(legendCard.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
-            g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(CARD_WIDTH - 100, 5));
+            g.DrawString(legendCard.Cost.ToString(), Font, textBrush, new PointF(width - 20, height - 25));
+            g.DrawString($"HP {legendCard.CurrentHP}/{legendCard.BaseHealth}", Font, textBrush, new PointF(width - 100, 5));
             SizeF attSize = g.MeasureString($"Att {legendCard.Power}", Font);
-            g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((CARD_WIDTH - attSize.Width) / 2, 5));
+            g.DrawString($"Att {legendCard.Power}", Font, textBrush, new PointF((width - attSize.Width) / 2, 5));
 
             int attackButtonY = y + newHeight + 10;
             return attackButtonY;
         }
-        public void PaintAnyOtherCardDCC(Graphics g, Card card)
+        public void PaintAnyOtherCardDCC(Graphics g, Card card, int scale)
         {
+            int width = CARD_WIDTH * scale;
+            int height = CARD_HEIGHT * scale;
+
             Brush cardBrush = new SolidBrush(card.CardColor);
-            g.FillRectangle(cardBrush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+            g.FillRectangle(cardBrush, 0, 0, width, height);
 
             // Keep the original proportions of the image
             float aspectRatio = (float)card.Image.Width / card.Image.Height;
 
             // Define the maximum size for the image
-            int maxWidth = CARD_WIDTH - 20;  // Padding of 10 on each side (left/right)
-            int maxHeight = CARD_HEIGHT - 60; // Padding of 30 (top/bottom)
+            int maxWidth = width - 20;  // Padding of 10 on each side (left/right)
+            int maxHeight = height - 60; // Padding of 30 (top/bottom)
 
             // Calculate the width and height based on the aspect ratio and the available space
             int imageWidth = maxWidth;
@@ -264,7 +238,7 @@ namespace BrawlTCG_alpha.Logic.Managers
             }
 
             // Center the image within the control
-            int x = (CARD_WIDTH - imageWidth) / 2;
+            int x = (width - imageWidth) / 2;
             int y = 30;
 
             // Draw the image (scaled to fit within the available space)
@@ -272,7 +246,7 @@ namespace BrawlTCG_alpha.Logic.Managers
 
             // Calculate space for the description text
             int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
-            int descriptionWidth = CARD_WIDTH - 20;         // Padding on the left/right
+            int descriptionWidth = width - 20;         // Padding on the left/right
 
             // Draw the card's description (aligned to the left)
             Brush textBrush = new SolidBrush(card.TextColor);
@@ -280,23 +254,26 @@ namespace BrawlTCG_alpha.Logic.Managers
             textFormat.Alignment = StringAlignment.Near; // Align to the left
 
             // You can adjust the font size or layout based on the description length
-            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, CARD_HEIGHT - descriptionTop - 10), textFormat);
+            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, height - descriptionTop - 10), textFormat);
 
             // Draw the card's name and cost (as before)
             g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
+            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(width - 20, height - 25));
         }
-        public void PaintWeaponCardDCC(Graphics g, WeaponCard card)
+        public void PaintWeaponCardDCC(Graphics g, WeaponCard card, int scale)
         {
+            int width = CARD_WIDTH * scale;
+            int height = CARD_HEIGHT * scale;
+
             Brush cardBrush = new SolidBrush(card.CardColor);
-            g.FillRectangle(cardBrush, 0, 0, CARD_WIDTH, CARD_HEIGHT);
+            g.FillRectangle(cardBrush, 0, 0, width, height);
 
             // Keep the original proportions of the image
             float aspectRatio = (float)card.Image.Width / card.Image.Height;
 
             // Define the maximum size for the image
-            int maxWidth = CARD_WIDTH - 60;  // Padding of 10 on each side (left/right) // make 60
-            int maxHeight = CARD_HEIGHT - 60; // Padding of 30 (top/bottom)
+            int maxWidth = width - 60;  // Padding of 10 on each side (left/right) // make 60
+            int maxHeight = height - 60; // Padding of 30 (top/bottom)
 
             // Calculate the width and height based on the aspect ratio and the available space
             int imageWidth = maxWidth;
@@ -310,15 +287,15 @@ namespace BrawlTCG_alpha.Logic.Managers
             }
 
             // Center the image within the control
-            int x = (CARD_WIDTH - imageWidth) / 2;
-            int y = (CARD_HEIGHT - imageHeight) / 2;
+            int x = (width - imageWidth) / 2;
+            int y = (height - imageHeight) / 2;
 
             // Draw the image (scaled to fit within the available space)
             g.DrawImage(card.Image, new Rectangle(x, y, imageWidth, imageHeight));
 
             // Calculate space for the description text
             int descriptionTop = y + imageHeight + 5;  // 5px padding below the image
-            int descriptionWidth = CARD_WIDTH - 30;         // Padding on the left/right
+            int descriptionWidth = width - 30;         // Padding on the left/right
 
             // Draw the card's description (aligned to the left)
             Brush textBrush = new SolidBrush(card.TextColor);
@@ -326,15 +303,19 @@ namespace BrawlTCG_alpha.Logic.Managers
             textFormat.Alignment = StringAlignment.Near; // Align to the left
 
             // You can adjust the font size or layout based on the description length
-            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, CARD_HEIGHT - descriptionTop - 10), textFormat);
+            g.DrawString(card.Description, Font, textBrush, new Rectangle(10, descriptionTop, descriptionWidth, height - descriptionTop - 10), textFormat);
 
 
             // Draw the card's name and cost (as before)
             g.DrawString(card.Name, Font, textBrush, new PointF(5, 5));
-            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(CARD_WIDTH - 20, CARD_HEIGHT - 25));
+            g.DrawString(card.Cost.ToString(), Font, textBrush, new PointF(width - 20, height - 25));
         }
-        public void PaintLegendDescription(Graphics g, LegendCard legend, int y)
+        public void PaintLegendDescription(Graphics g, LegendCard legend, int y, int scale)
         {
+            int width = CARD_WIDTH * scale;
+            int height = CARD_HEIGHT * scale;
+            legend.Description = Card.GenerateEffectDescription(legend); 
+
             // Description
             if (!string.IsNullOrEmpty(legend.Description))
             {
@@ -342,8 +323,8 @@ namespace BrawlTCG_alpha.Logic.Managers
 
                 // Determine description position
                 int descriptionTop = y + 10;
-                int descriptionWidth = CARD_WIDTH - 20;       // 10px padding left/right
-                int descriptionHeight = CARD_HEIGHT - descriptionTop - 10; // Remaining height
+                int descriptionWidth = width - 20;       // 10px padding left/right
+                int descriptionHeight = height - descriptionTop - 10; // Remaining height
 
                 // Draw Description
                 StringFormat textFormat = new StringFormat { Alignment = StringAlignment.Near };
@@ -356,14 +337,15 @@ namespace BrawlTCG_alpha.Logic.Managers
                 );
             }
         }
-        //string GetBurnWeaponEmojis(int nBurn)
-        //{
-        //    string emojis = "";
-        //    for (int i = 0; i < nBurn; i++)
-        //    {
-        //        emojis += "🔥";
-        //    }
-        //    return emojis;
-        //}
+
+
+        // Paint - Shared
+        public void PaintCardBorder(Graphics g, int scale = 1)
+        {
+            int borderThickness = 3;
+            g.DrawRectangle(new Pen(Color.Black, borderThickness), 0, 0, (CARD_WIDTH * scale) - 2, (CARD_HEIGHT * scale) - 2);
+        }
+
+
     }
 }

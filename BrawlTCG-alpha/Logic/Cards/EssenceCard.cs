@@ -11,7 +11,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public EssenceCard(int id, string name, int cost, Elements element, Image image, Effect startTurnEffect) : base(id, name, cost, element, image)
         {
             StartTurnEffect = startTurnEffect;
-            Description = GenerateEffectDescription();
+            Description = GenerateEffectDescription(this);
         }
         public override Card Clone()
         {

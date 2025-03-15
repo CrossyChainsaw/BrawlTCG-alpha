@@ -20,6 +20,7 @@ namespace BrawlTCG_alpha.Visuals
         List<Button> _attackButtons;
         bool _isRemoved = false;
         PaintCardManager _paintCardManager;
+        int _scale = 3;
         public Card Card { get; private set; }
         public List<CardControl> CardsControls { get; internal set; }
         public List<DetailedCardControl> WeaponCardControls { get; internal set; } // the big weapons when showing details
@@ -58,46 +59,22 @@ namespace BrawlTCG_alpha.Visuals
 
             if (Card is LegendCard legendCard)
             {
-                int attackButtonY = _paintCardManager.PaintLegendCardDCC(g, legendCard);
+                int attackButtonY = _paintCardManager.PaintLegendCardDCC(g, legendCard, scale: _scale);
                 int descriptionY = AddAttackButtons(legendCard, attackButtonY);
-                _paintCardManager.PaintLegendDescription(g, legendCard, descriptionY);
+                _paintCardManager.PaintLegendDescription(g, legendCard, descriptionY, scale: _scale);
             }
             else if (Card is WeaponCard weaponCard)
             {
-                _paintCardManager.PaintWeaponCardDCC(g, weaponCard);
+                _paintCardManager.PaintWeaponCardDCC(g, weaponCard, scale: _scale);
             }
             else
             {
-                _paintCardManager.PaintAnyOtherCardDCC(g, Card);
+                _paintCardManager.PaintAnyOtherCardDCC(g, Card, scale: _scale);
             }
-            _paintCardManager.PaintCardBorder(g);
+            _paintCardManager.PaintCardBorder(g, scale: _scale);
         }
-
 
         // Attack Buttons (Initialized while painting)
-        public void AttackThePlayer(LegendCard legend, Player otherPlayer, Attack attack)
-        {
-            // Attack
-            attack.Effect.Invoke(legend, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
-            // Burn Weapons
-            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
-            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
-            // update player health
-            UI_UpdatePlayerInformation(otherPlayer);
-            // Notify
-            MessageBox.Show($"{otherPlayer.Name} just took damage");
-            // Check if dead
-            if (otherPlayer.Health <= 0)
-            {
-                MessageBox.Show($"{otherPlayer.Name} has been defeated");
-            }
-            // Stop Attacking
-            StopAttacking();
-            // Remove Card
-            OnDetailedCardClicked();
-            // Check if i died
-            this.OriginalCardControl.CheckIfDead();
-        }
         int AddAttackButtons(LegendCard legendCard, int attackButtonY)
         {
             List<Attack> legendAttacks = legendCard.GetAttacks();
@@ -233,7 +210,7 @@ namespace BrawlTCG_alpha.Visuals
 
                                     // Start Attacking
                                     _game.StartAttack(attack);
-                                    AttackLegendCard(legendCard, cardControl);
+                                    AttackLegend(legendCard, cardControl);
 
                                     // send msg
                                     NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");
@@ -289,38 +266,38 @@ namespace BrawlTCG_alpha.Visuals
 
             return attackButtonY;
 
-        }
-        void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
-        {
-            // only enable them if this is your legend && if the card is on the playing field
-            if (Owner == _game.ActivePlayer && legendCard.OnPlayingField)
+            void EnableAttackButton(LegendCard legendCard, Attack attack, Button attackButton)
             {
-                // Assume the attack can be played unless we find a reason it can't
-                bool canPlayAttack = true;
-
-                // Check if WeaponOne requirement is met
-                int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
-                if (weaponOneCount < attack.WeaponOneAmount)
+                // only enable them if this is your legend && if the card is on the playing field
+                if (Owner == _game.ActivePlayer && legendCard.OnPlayingField)
                 {
-                    canPlayAttack = false; // WeaponOne requirement is not met
-                }
+                    // Assume the attack can be played unless we find a reason it can't
+                    bool canPlayAttack = true;
 
-                // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
-                if (attack.WeaponTwo != null)
-                {
-                    int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
-                    if (weaponTwoCount < attack.WeaponTwoAmount)
+                    // Check if WeaponOne requirement is met
+                    int weaponOneCount = CountWeaponCards(legendCard, attack.WeaponOne, attack.WeaponOneAmount);
+                    if (weaponOneCount < attack.WeaponOneAmount)
                     {
-                        canPlayAttack = false; // WeaponTwo requirement is not met
+                        canPlayAttack = false; // WeaponOne requirement is not met
                     }
-                }
 
-                // Enable or disable the attack button based on whether all conditions are met
-                attackButton.Enabled = canPlayAttack;
-            }
-            else
-            {
-                attackButton.Enabled = false;
+                    // Check if WeaponTwo requirement is met (only if WeaponTwo is not null)
+                    if (attack.WeaponTwo != null)
+                    {
+                        int weaponTwoCount = CountWeaponCards(legendCard, attack.WeaponTwo, (int)attack.WeaponTwoAmount);
+                        if (weaponTwoCount < attack.WeaponTwoAmount)
+                        {
+                            canPlayAttack = false; // WeaponTwo requirement is not met
+                        }
+                    }
+
+                    // Enable or disable the attack button based on whether all conditions are met
+                    attackButton.Enabled = canPlayAttack;
+                }
+                else
+                {
+                    attackButton.Enabled = false;
+                }
             }
         }
         string GetBurnWeaponEmojis(int nBurn)
@@ -352,7 +329,30 @@ namespace BrawlTCG_alpha.Visuals
 
 
         // Combat
-        void AttackLegendCard(LegendCard legend, CardControl enemyCardControl)
+        public void AttackThePlayer(LegendCard legend, Player otherPlayer, Attack attack)
+        {
+            // Attack
+            attack.Effect.Invoke(legend, otherPlayer, attack, _game.ActivePlayer, _game); // send attack name? // attacking legend card index
+            // Burn Weapons
+            legend.BurnWeapon(attack.WeaponOne, attack.WeaponOneBurnAmount);
+            legend.BurnWeapon(attack.WeaponTwo, attack.WeaponTwoBurnAmount);
+            // update player health
+            UI_UpdatePlayerInformation(otherPlayer);
+            // Notify
+            MessageBox.Show($"{otherPlayer.Name} just took damage");
+            // Check if dead
+            if (otherPlayer.Health <= 0)
+            {
+                MessageBox.Show($"{otherPlayer.Name} has been defeated");
+            }
+            // Stop Attacking
+            StopAttacking();
+            // Remove Card
+            OnDetailedCardClicked();
+            // Check if i died
+            this.OriginalCardControl.CheckIfDead();
+        }
+        void AttackLegend(LegendCard legend, CardControl enemyCardControl)
         {
             LegendCard targetLegend = (LegendCard)enemyCardControl.Card;
 
@@ -461,7 +461,7 @@ namespace BrawlTCG_alpha.Visuals
                 }
 
                 // the actual attack
-                AttackLegendCard((LegendCard)this.Card, clickedCard);
+                AttackLegend((LegendCard)this.Card, clickedCard);
 
                 // send the message
                 NETWORK_SendMessage($"ATTACK_LEGEND:LEGEND_INDEX:{fieldIndex}:ATTACK:{attack.Name}:TARGET_LEGEND_INDEX:{enemyFieldIndex}");

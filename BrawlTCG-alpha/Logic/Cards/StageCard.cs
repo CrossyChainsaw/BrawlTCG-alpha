@@ -14,7 +14,7 @@ namespace BrawlTCG_alpha.Logic.Cards
         public StageCard(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null,Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect)
         {
             WhileInPlayEffect = whileInPlayEffect;
-            Description = GenerateEffectDescription();
+            Description = GenerateEffectDescription(this);
         }
 
         public override Card Clone()
