@@ -34,6 +34,7 @@ namespace BrawlTCG_alpha.Logic
         // Properties
         public int ID {  get; internal set; }
         public string Name { get; internal set; }
+        public Player Owner { get; internal set; }
         public int Cost { get; internal set; }
         public string Description { get; internal set; }
         public Elements Element { get; internal set; }
@@ -50,10 +51,11 @@ namespace BrawlTCG_alpha.Logic
 
 
         // Methods
-        public Card(int id, string name, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null)
+        public Card(int id, string name, Player owner, int cost, Elements element, Image image, Effect? startTurnEffect = null, Action<object>? endTurnEffect = null, Effect? whenPlayedEffect = null, Effect? whenDiscardedEffect = null, Effect? whileInPlayEffect = null)
         {
             ID = id;
             Name = name;
+            Owner = owner;
             Cost = cost;
             Element = element;
             Image = image;
@@ -74,6 +76,10 @@ namespace BrawlTCG_alpha.Logic
         {
             IsDiscarded = true;
             IsOpen = true;
+        }
+        public void SetOwner(Player p)
+        {
+            Owner = p;
         }
 
         public static string GenerateEffectDescription(Card c)
@@ -140,5 +146,6 @@ namespace BrawlTCG_alpha.Logic
         }
 
         public abstract Card Clone();
+
     }
 }

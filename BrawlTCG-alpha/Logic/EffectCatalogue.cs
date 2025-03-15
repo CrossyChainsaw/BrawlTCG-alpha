@@ -67,7 +67,7 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         static void _BoostStats_WhenPlayed(Card effectOwner, Card playedCard, Elements element)
         {
-            if (playedCard is LegendCard legend && playedCard != effectOwner)
+            if (playedCard is LegendCard legend && playedCard != effectOwner && effectOwner.Owner == playedCard.Owner)
             {
                 if (legend.Element == element)
                 {
@@ -82,7 +82,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             List<LegendCard> legends = game.GetAllMyLegendsOnThePlayingField(game.ActivePlayer);
             foreach (LegendCard legend in legends)
             {
-                if (playedCard.Element == element && legend.Element == element && playedCard != effectOwner)
+                if (playedCard.Element == element && legend.Element == element && playedCard != effectOwner && effectOwner.Owner == playedCard.Owner)
                 {
                     legend.ModifyStat(Stats.Power, 1);
                     legend.ModifyStat(Stats.Health, 1);

@@ -64,6 +64,7 @@ namespace BrawlTCG_alpha.Visuals
 
             // Get player deck
             List<Card> playerDeck = Deck.LoadDeckFromFile(TB_Deck.Text + ".txt");
+
             playerDeck = ShuffleDeck(playerDeck);
             // validate deck (put this in method)
             if (playerDeck == null || playerDeck.Count == 0)

@@ -61,13 +61,14 @@ namespace BrawlTCG_alpha.Logic.Cards
             Effect? whenPlayedEffect = null,
             Effect? whenDiscardedEffect = null,
             Effect? whileInPlayEffect = null,
+            Player owner = null,
             // LegendCard Opt.
             Action<object>? ability = null,
             Attack attack1 = null,
             Attack attack2 = null,
             Attack attack3 = null,
             Attack attack4 = null
-        ) : base(id, name, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect, whileInPlayEffect)
+        ) : base(id, name, owner, cost, element, image, startTurnEffect, endTurnEffect, whenPlayedEffect, whenDiscardedEffect, whileInPlayEffect)
         {
             // LegenCard
             Power = power;
@@ -78,6 +79,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             CurrentHP = BaseHealth;
             PrimaryWeapon = primaryWeapon;
             SecondaryWeapon = secondaryWeapon;
+            Owner = owner;
             Description = $"{BaseHealth,4}hp {power,4}att {primaryWeapon,20} {secondaryWeapon,20}\n";
             // LegendCard Optional
             Ability = ability;
@@ -108,6 +110,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                 WhenPlayedEffect,
                 WhenDiscardedEffect,
                 WhileInPlayEffect,
+                Owner,
                 Ability,
                 Attack1,
                 Attack2,

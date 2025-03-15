@@ -45,6 +45,10 @@ namespace BrawlTCG_alpha.Logic
         }
         public void Prepare()
         {
+            // Set owner of all cards
+            SetOwnerOfAllMyCards(ActivePlayer);
+            SetOwnerOfAllMyCards(InactivePlayer);
+
             // Setup all the zones visually
             UiManager.InitializeZones();
 
@@ -264,6 +268,10 @@ namespace BrawlTCG_alpha.Logic
         public List<Player> GetPlayers()
         {
             return _playerManager.GetPlayers();
+        }
+        void SetOwnerOfAllMyCards(Player p)
+        {
+            _playerManager.SetOwnerOfAllMyCards(p);
         }
         void RandomizeStartingPlayer()
         {
