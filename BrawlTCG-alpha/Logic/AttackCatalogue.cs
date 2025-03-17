@@ -105,6 +105,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             DefaultAttack(attacker, target, attack);
         });
+        public static Attack Cannon_Blast = new Attack("Cannon Blast", 1, Weapons.Cannon, 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            DefaultAttack(attacker, target, attack);
+        });
         public static Attack Orb_Throw = new Attack("Orb Throw", 3, Weapons.Orb, 1, execute: (attacker, target, attack, activePlayer, game) =>
         {
             DefaultAttack(attacker, target, attack);
@@ -313,6 +317,10 @@ namespace BrawlTCG_alpha.Logic.Cards
         {
             int atlantisID = 106;
             ec.GenerateAndPlayStage(game, atlantisID);
+        }, instaEffect: true);
+        public static Attack Seven_CraftWeapons = new Attack("Craft 4 Random Weapons", -1000, Weapons.Spear, 1, weaponOneBurnAmount: 1, execute: (attacker, target, attack, activePlayer, game) =>
+        {
+            ec.GenerateRandomWeaponCards(game, 4);
         }, instaEffect: true);
     }
 }

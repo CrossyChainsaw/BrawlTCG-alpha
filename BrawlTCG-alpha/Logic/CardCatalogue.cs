@@ -24,7 +24,7 @@ namespace BrawlTCG_alpha.Logic
             { 100, new StageCard(id:100, "Mustafar", 2, Elements.Fire, Images.Mustafar, startTurnEffect: ec.Mustafar) },
             { 101, new StageCard(id:101, "Fangwild", 3, Elements.Nature, Images.Fangwild, startTurnEffect: ec.Fangwild) },
             { 102, new StageCard(id:102, "Matrix", 1, Elements.Cosmic, Images.Matrix) },
-            { 103, new StageCard(id:103, "The Workshop", 2, Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop_StartTurn, whenDiscardedEffect: ec.Workshop_Discarded) }, // rework
+            { 103, new StageCard(id:103, "The Workshop", 2, Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop_StartTurn, whenDiscardedEffect: ec.Workshop_Discarded) },
             { 104, new StageCard(id:104, "Evil Hideout", 3, Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) },
             { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
             { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis_StartTurn, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
@@ -40,15 +40,16 @@ namespace BrawlTCG_alpha.Logic
             { 1005, new LegendCard(id: 1005, "Yumiko", 4, Elements.Nature, Images.Yumiko, 3, 3, 15, 0, Weapons.Bow, Weapons.Hammer, attack1: ac.Hammer_Swing, attack2: ac.Hammer_Gimp, attack3:ac.Yumiko_GrabOrbs) },
             { 1006, new LegendCard(id: 1006, "Forest Spirit", 1, Elements.Nature, Images.Forest_Spirit, 3, 2, 1, 0, Weapons.Orb, Weapons.Gauntlets, attack1: ac.ForestSpirit_Explode, attack2: ac.ForestSpirit_Heal) },
             { 1007, new LegendCard(id: 1007, "Demon Bride", 3, Elements.Nature, Images.Demon_Bride, 4, 3, 9, 0, Weapons.Sword, Weapons.Spear, attack1: ac.Sword_Slash, attack2: ac.Any_BlowAKiss) },
-            { 1008, new LegendCard(id: 1008, "Faerie Queen", 3, Elements.Nature, Images.RealQueen, 1, 3, 7, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss, whileInPlayEffect: ec.BoostAllNatureLegendsStats_WhileInPlay) }, // new card
+            { 1008, new LegendCard(id: 1008, "Faerie Queen", 3, Elements.Nature, Images.RealQueen, 1, 3, 7, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Any_BlowAKiss, whileInPlayEffect: ec.BoostAllNatureLegendsStats_WhileInPlay) },
             // Fire
             { 2000, new LegendCard(id: 2000, "Iron Lady", 5, Elements.Fire, Images.IronLady, 7, 5, 15, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower, attack4: ac.Artemis_IronLady_MeltDown) },
             { 2001, new LegendCard(id: 2001, "Heatblast", 4, Elements.Fire, Images.Heatblast, 9, 5, 6, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Heatblast_Burn) },
             { 2002, new LegendCard(id: 2002, "Ulgrim", 5, Elements.Fire, Images.Ulgrim, 5, 5, 16, 0, Weapons.Axe, Weapons.RocketLance, attack1: ac.Axe_Swing, attack2: ac.Lance_Flamethrower, attack3: ac.Any_CraftFireCard, whenPlayedEffect: ec.GenerateAndPlayWorkshop) },
             { 2003, new LegendCard(id: 2003, "Molten Kor", 3, Elements.Fire, Images.MoltenKor, 0, 2, 16, 0, Weapons.Gauntlets, Weapons.Hammer, whenPlayedEffect: ec.GenerateAndPlayMustafar)},
-            { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 11, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)}, // nerf att 13>11
+            { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 11, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)},
             { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash) },
-            { 2006, new LegendCard(id: 2006, "Fury Shang", 3, Elements.Fire, Images.FuryShang, 6, 3, 6, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, whileInPlayEffect: ec.BoostFireLegendStats_WhileInPlayEffect) }, // new card
+            { 2006, new LegendCard(id: 2006, "Fury Shang", 3, Elements.Fire, Images.FuryShang, 6, 3, 6, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, whileInPlayEffect: ec.BoostFireLegendStats_WhileInPlayEffect) },
+            { 2007, new LegendCard(id: 2007, "Seven", 2, Elements.Fire, Images.Seven, 4, 2, 4, 0, Weapons.Spear, Weapons.Cannon, attack1: ac.Cannon_Blast, attack2: ac.Seven_CraftWeapons) }, // new card
             // Cosmic
             { 3000, new LegendCard(id: 3000, "Artemis", 3, Elements.Cosmic, Images.Artemis, 5, 5, 12, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower) },
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Lance_Flamethrower) },
@@ -58,7 +59,7 @@ namespace BrawlTCG_alpha.Logic
             { 3005, new LegendCard(id: 3005, "Breaker Shang", 2, Elements.Cosmic, Images.Breaker_Shang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.Any_CraftCosmicCard) },
             { 3006, new LegendCard(id: 3006, "Witch Scarlet", 2, Elements.Cosmic, Images.WitchScarlet, 1, 3, 6, 0, Weapons.Hammer, Weapons.RocketLance, attack1: ac.Hammer_Swing, attack2: ac.Lance_Poke, attack3: ac.Any_GenerateAndPlayMatrix) },
             // Magic
-            { 4000, new LegendCard(id: 4000, "Arcadia", 3, Elements.Magic, Images.FaerieQueen, 6, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) }, // nerf att 7>6
+            { 4000, new LegendCard(id: 4000, "Arcadia", 3, Elements.Magic, Images.FaerieQueen, 6, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) },
             { 4001, new LegendCard(id: 4001, "Enchantress", 4, Elements.Magic, Images.Enchantress, 0, 5, 15, 0, Weapons.Scythe, Weapons.Orb, attack1: ac.Enchantress_EnchantHealth, attack2: ac.Enchantress_EnchantPower, attack3: ac.Enchantress_CurseHealth, attack4: ac.Enchantress_CursePower) },
             // old dark mage card don't use 4002
             { 4003, new LegendCard(id: 4003, "Plague Knight", 4, Elements.Magic, Images.PlagueKnight, 1, 2, 14, 0, Weapons.Gauntlets, Weapons.Katars, attack1: ac.PlagueKnight_GrabHealingPotion, attack2: ac.Any_CraftBattleCard) },
@@ -85,14 +86,17 @@ namespace BrawlTCG_alpha.Logic
             { 13000, new WeaponCard(id: 13000, "Axe of Regrowth", 1, Elements.Nature, Images.Axe_of_Regrowth, Weapons.Axe) },
             { 13001, new WeaponCard(id: 13001, "Buzz Axe", 1, Elements.Wild, Images.BuzzAxe, Weapons.Axe) },
             { 13002, new WeaponCard(id: 13002, "Boiling Point", 1, Elements.Fire, Images.BoilingPoint, Weapons.Axe) },
-            // Battle Boots (no cards yet, keeping the comment)
+            // Battle Boots
+            { 14000, new WeaponCard(id: 14000, "Molten Boots", 1, Elements.Fire, Images.MoltenBoots, Weapons.BattleBoots) }, // new card
             // Blasters
             { 15000, new WeaponCard(id: 15000, "Blazing Fire", 1, Elements.Fire, Images.BlazingFire, Weapons.Blasters) },
             { 15001, new WeaponCard(id: 15001, "Revolvers", 1, Elements.Shadow, Images.Revolvers, Weapons.Blasters) },
             { 15002, new WeaponCard(id: 15002, "Aqua Blasters", 1, Elements.Arctic, Images.Aqua_Blasters, Weapons.Blasters) },
             { 15003, new WeaponCard(id: 15003, "Splish Splash", 1, Elements.Arctic, Images.Splish_Splash, Weapons.Blasters) },
-            // Bow (no cards yet, keeping the comment)
+            // Bow
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
+            // Canon
+            { 26000, new WeaponCard(id: 26000, "Canon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) }, // new card
             // Gauntlets
             { 17000, new WeaponCard(id: 17000, "Sleight of Hand", 1, Elements.Shadow, Images.Sleight_of_Hand, Weapons.Gauntlets) },
             { 17001, new WeaponCard(id: 17001, "Rippers", 1, Elements.Wild, Images.MordexGaunts, Weapons.Gauntlets) },
@@ -134,10 +138,10 @@ namespace BrawlTCG_alpha.Logic
 
 
 
-            { 500, new BattleCard(id: 500, "Bouncy Bomb", 3, "When Played: Deals direct damage 7", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: 7) }, // nerf cost 2>3
+            { 500, new BattleCard(id: 500, "Bouncy Bomb", 3, "When Played: Deals direct damage 7", Elements.Shadow, Images.BouncyBomb, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: 7) },
             { 501, new BattleCard(id: 501, "Vial of Crows", 1, "When Played: Heals legend by 6", Elements.Shadow, Images.Vial_of_Crows, true, false, true, whenPlayedEffect: ec.BattleCardHealWhenPlayed, healthModifier: 6) },
-            { 502, new BattleCard(id: 502, "Snowball", 2, "When Played: Deals direct damage 3", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: 3) }, // nerf cost 1>2
-            { 503, new BattleCard(id: 503, "Super Saiyan", 6, "When Played: Boosts legend stats +5/+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: ec.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) }, // nerf cost 5>6
+            { 502, new BattleCard(id: 502, "Snowball", 2, "When Played: Deals direct damage 3", Elements.Arctic, Images.Snowball, true, false, false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: 3) },
+            { 503, new BattleCard(id: 503, "Super Saiyan", 6, "When Played: Boosts legend stats +5/+5", Elements.Wild, Images.SuperSaiyan, false, true, true, whenPlayedEffect: ec.BoostHealthAndPower, powerModifier: 5, healthModifier: 5) },
             { 504, new BattleCard(id: 504, "Orb", 0, "When Played: Deals direct damage 1", Elements.Magic, Images.Orb, true, false, false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: 1) },
             { 505, new BattleCard(id: 505, "Xull's Fury", 3, "When Played: Boosts legend stats +5 Attack", Elements.Fire, Images.XullsFury, false, true, true, whenPlayedEffect: ec.BoostHealthAndPower, powerModifier: 5, healthModifier: 0) },
             { 506, new BattleCard(id: 506, "Chest", 1, "When Played: Obtain 3 random cards", Elements.Magic, Images.CardChest, true, false, true, whenPlayedEffect: ec.CardChest, targetRequired: false) },
@@ -151,12 +155,14 @@ namespace BrawlTCG_alpha.Logic
             { 514, new BattleCard(id: 514, "Dragon's Chest", 3, "When Played: Obtain three random Fire cards", Elements.Fire, Images.Dragon_Chest, true, false, true, whenPlayedEffect: ec.DragonChest, targetRequired: false) },
             { 515, new BattleCard(id: 515, "Sunken Chest", 3, "When Played: Obtain three random Arctic cards", Elements.Arctic, Images.Sunken_Chest, true, false, true, whenPlayedEffect: ec.SunkenChest, targetRequired: false) },
             { 516, new BattleCard(id: 516, "Forgeborne Chest", 3, "When Played: Obtain three random Shadow cards", Elements.Shadow, Images.Shadow_Chest, true, false, true, whenPlayedEffect: ec.ShadowChest, targetRequired: false) },
-            { 517, new BattleCard(id: 517, "Dark Duo", 4, "When Played: Legend Obtain 2 Shadow legends", Elements.Shadow, Images.DarkDuo, true, false, true, whenPlayedEffect: ec.DarkDuo, targetRequired: false) }, // nerf cost 3>4
-            { 518, new BattleCard(id: 518, "Witch Party", 6, "When Played: Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) }, // nerf cost 5>6
+            { 517, new BattleCard(id: 517, "Dark Duo", 4, "When Played: Legend Obtain 2 Shadow legends", Elements.Shadow, Images.DarkDuo, true, false, true, whenPlayedEffect: ec.DarkDuo, targetRequired: false) },
+            { 518, new BattleCard(id: 518, "Witch Party", 6, "When Played: Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) },
             { 519, new BattleCard(id: 519, "Promotion I", 5, "When Played: Player Max health goes up by 5", Elements.Magic, Images.Avatar_CollectorsPackI, true, false, false, whenPlayedEffect: ec.PromotionI, targetRequired: false) },
             { 520, new BattleCard(id: 520, "Promotion II", 10, "When Played: Player Max health goes up by 10", Elements.Magic, Images.Avatar_CollectorsPack, true, false, false, whenPlayedEffect: ec.PromotionII, targetRequired: false) },
-            
-            // adrenaline image = heartbeat. legend can attack 2 times this turn
+            { 521, new BattleCard(id: 521, "Adrenaline", 2, "When Played: Legend can attack again", Elements.Nature, Images.Adrenaline, true, false, true, whenPlayedEffect: ec.Adrenaline) }, // new card
+            { 522, new BattleCard(id: 522, "Death's Hour", 7, "When Played: Every legend's HP becomes 1", Elements.Shadow, Images.DeathsHour, true, false, false, whenPlayedEffect: ec.DeathsHour, targetRequired: false) }, // new card
+            { 523, new BattleCard(id: 523, "Cursed Kunai", 3, "When Played: Obtain a random Katar Legend and random Katars", Elements.Shadow, Images.CursedKunai, true, false, false, whenPlayedEffect: ec.CursedKunai, targetRequired: false) }, // new card
+            { 524, new BattleCard(id: 524, "Ymir's Breath", 5, "When Played: Tap all opposing legends", Elements.Arctic, Images.YmirsBreath, true, false, false, whenPlayedEffect: ec.YmirsBreath, targetRequired: false) }, // new card
         };
 
 
@@ -271,6 +277,56 @@ namespace BrawlTCG_alpha.Logic
 
             return CardDictionary[randomKey].Clone(); // Clone to avoid modifying the original
         }
+
+        public static Card GetRandomWeaponCard()
+        {
+            var random = new Random();
+
+            // Get all values from the Weapons enum, excluding 'Any'
+            Array weaponValues = Enum.GetValues(typeof(Weapons))
+                                      .Cast<Weapons>()
+                                      .Where(weapon => weapon != Weapons.Any) // Exclude 'Any'
+                                      .ToArray();
+
+            // Select a random weapon from the filtered values
+            Weapons randomWeapon = (Weapons)weaponValues.GetValue(random.Next(weaponValues.Length));
+
+            // Filter the dictionary to only include WeaponCard objects and match the randomly selected weapon
+            List<WeaponCard> weaponCards = CardDictionary.Values
+                .OfType<WeaponCard>()  // Ensure we're working with WeaponCard specifically
+                .Where(card => card.Weapon == randomWeapon) // Assuming Weapon is a property of WeaponCard
+                .ToList();
+
+            // Ensure there are cards for the given weapon
+            if (weaponCards.Count == 0)
+            {
+                throw new Exception($"No cards available for weapon type {randomWeapon}.");
+            }
+
+            // Select a random card and return a clone
+            return weaponCards[random.Next(weaponCards.Count)].Clone();
+        }
+
+        public static Card GetRandomWeaponCard(Weapons weapon)
+        {
+            var random = new Random();
+
+            // Filter the dictionary to only include WeaponCard objects and match the randomly selected weapon
+            List<WeaponCard> weaponCards = CardDictionary.Values
+                .OfType<WeaponCard>()  // Ensure we're working with WeaponCard specifically
+                .Where(card => card.Weapon == weapon) // Assuming Weapon is a property of WeaponCard
+                .ToList();
+
+            // Ensure there are cards for the given weapon
+            if (weaponCards.Count == 0)
+            {
+                throw new Exception($"No cards available for weapon type {weapon}.");
+            }
+
+            // Select a random card and return a clone
+            return weaponCards[random.Next(weaponCards.Count)].Clone();
+        }
+
         public static Card GetRandomCard(Elements? element = null, Type cardType = null)
         {
             var random = new Random();
@@ -291,6 +347,28 @@ namespace BrawlTCG_alpha.Logic
             return filteredCards[random.Next(filteredCards.Count)].Clone();
         }
 
+        public static LegendCard GetRandomLegendCard(Weapons weapon)
+        {
+            var random = new Random();
+
+            // Filter the LegendCards in the dictionary (assuming LegendCard is in CardDictionary)
+            List<LegendCard> legendCards = CardDictionary.Values
+                .OfType<LegendCard>()
+                .Where(legend => legend.PrimaryWeapon == weapon || legend.SecondaryWeapon == weapon) // Ensure the legend has the specified weapon
+                .ToList();
+
+            // Ensure we have legends that match the specified weapon
+            if (legendCards.Count == 0)
+            {
+                throw new Exception($"No legends available with the weapon {weapon}.");
+            }
+
+            // Select a random legend that matches the specified weapon
+            LegendCard randomLegend = legendCards[random.Next(legendCards.Count)];
+
+            // Return the selected legend
+            return randomLegend;
+        }
 
 
 
