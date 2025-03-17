@@ -26,7 +26,8 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static Effect Workshop_StartTurn = new Effect(
             description: $"Instead of drawing a card you obtain a random card",
-            effectAction: (target, card, game, playedCard) => {
+            effectAction: (target, card, game, playedCard) =>
+            {
                 GenerateRandomCards(game, 1);
                 game.DrawCardStartTurn = false;
             }
@@ -34,7 +35,8 @@ namespace BrawlTCG_alpha.Logic.Cards
 
         public static Effect Workshop_Discarded = new Effect(
             description: $"N/A",
-            effectAction: (target, card, game, playedCard) => {
+            effectAction: (target, card, game, playedCard) =>
+            {
                 game.DrawCardStartTurn = true;
             }
         );
@@ -163,7 +165,8 @@ namespace BrawlTCG_alpha.Logic.Cards
         static int workshopID = 103;
         public static Effect GenerateAndPlayWorkshop = new Effect(
             description: $"Change stage to Workshop",
-            effectAction: (target, card, game, playedCard) => {
+            effectAction: (target, card, game, playedCard) =>
+            {
                 GenerateAndPlayStage(game, workshopID);
             }
         );
@@ -280,80 +283,110 @@ namespace BrawlTCG_alpha.Logic.Cards
             description: $"Obtain random Katars Legend and random Katars",
             effectAction: (target, card, game, playedCard) =>
             {
-                GenerateRandomLegendWithSpecificWeapon(game, 1, Weapons.Katars);
-                GenerateRandomWeaponCards(game, 1, Weapons.Katars);
+                List<int> concatenatedList = new List<int>();
+
+                List<int> legendCardIDs = GenerateRandomLegendWithSpecificWeaponIDs(game, 1, Weapons.Katars);
+                concatenatedList.AddRange(legendCardIDs);
+
+                List<int> weaponCardIDs = GenerateRandomWeaponCardIDs(game, 1, Weapons.Katars);
+                concatenatedList.AddRange(weaponCardIDs);
+
+                CommunicateCardIDsToPeer(game, concatenatedList);
+            });
+
+        public static Effect YmirsBreath = new Effect(
+            description: $"Tapp all opposing legends",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                List<LegendCard> legends = game.GetAllMyLegendsOnThePlayingField(game.InactivePlayer);
+                foreach (LegendCard legend in legends)
+                {
+                    legend.TapOut();
+                }
             });
 
 
 
         // Generic Methods
+        public static List<int> GenerateRandomLegendWithSpecificWeaponIDs(Game game, int nCards, Weapons weapon)
+        {
+            List<int> generatedCardIDs = new List<int>();
+
+            if (game.ActivePlayer == game.Me)
+            {
+                for (int i = 0; i < nCards; i++)
+                {
+                    Card generatedCard = CardCatalogue.GetRandomLegendCard(weapon);
+                    generatedCardIDs.Add(generatedCard.ID);
+                }
+            }
+
+            return generatedCardIDs;
+        }
+        public static List<int> GenerateRandomWeaponCardIDs(Game game, int nCards)
+        {
+            List<int> generatedCardIDs = new List<int>();
+
+            if (game.ActivePlayer == game.Me)
+            {
+                for (int i = 0; i < nCards; i++)
+                {
+                    Card generatedCard = CardCatalogue.GetRandomWeaponCard();
+                    generatedCardIDs.Add(generatedCard.ID);
+                }
+            }
+
+            return generatedCardIDs;
+        }
+        public static List<int> GenerateRandomWeaponCardIDs(Game game, int nCards, Weapons weapon)
+        {
+            List<int> generatedCardIDs = new List<int>();
+
+            if (game.ActivePlayer == game.Me)
+            {
+                for (int i = 0; i < nCards; i++)
+                {
+                    Card generatedCard = CardCatalogue.GetRandomWeaponCard(weapon);
+                    generatedCardIDs.Add(generatedCard.ID);
+                }
+            }
+
+            return generatedCardIDs;
+        }
+
+
         public static void GenerateRandomCards(Game game, int nCards, Elements? element = null, Type cardType = null)
         {
-            if (game.ActivePlayer == game.Me)
+            List<int> generatedCardIDs = new List<int>();
+
+            for (int i = 0; i < nCards; i++)
             {
-                List<int> generatedCardIDs = new List<int>();
-
-                for (int i = 0; i < nCards; i++)
-                {
-                    // Generate a random elemental card (optionally filtered by element and type)
-                    Card generatedCard = CardCatalogue.GetRandomCard(element, cardType);
-
-                    // Store the generated card ID
-                    generatedCardIDs.Add(generatedCard.ID);
-
-                    // Add the generated card to the player's hand
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Form a single message containing all card IDs
-                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
-
-                // Send the message to the peer
-                game.SendMessageToPeer(message);
-
-                // Show the generated cards
-                game.ShowCards();
+                Card generatedCard = CardCatalogue.GetRandomCard(element, cardType);
+                generatedCardIDs.Add(generatedCard.ID);
             }
-            else
+            CommunicateCardIDsToPeer(game, generatedCardIDs);
+        } // ideally this returns an id list?
+        public static void GenerateRandomWeaponCards(Game game, int nCards)
+        {
+            List<int> generatedCardIDs = new List<int>();
+
+            for (int i = 0; i < nCards; i++)
             {
-                // Wait until we receive all expected card IDs (Avoid infinite loop!)
-                while (game.RandomCardIDs.Count < nCards)
-                {
-                    Thread.Sleep(10);
-                }
-
-                // Retrieve all generated cards based on the received random card IDs
-                List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id))
-                    .Where(card => card != null)
-                    .ToList();
-
-                // Add each generated card to the player's hand
-                foreach (Card generatedCard in generatedCards)
-                {
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Clear the list instead of setting it to null
-                game.RandomCardIDs.Clear();
+                Card generatedCard = CardCatalogue.GetRandomWeaponCard();
+                generatedCardIDs.Add(generatedCard.ID);
             }
+            CommunicateCardIDsToPeer(game, generatedCardIDs);
         }
-        public static void GenerateRandomLegendWithSpecificWeapon(Game game, int nCards, Weapons weapon, Elements? element = null)
+
+
+        public static void CommunicateCardIDsToPeer(Game game, List<int> generatedCardIDs)
         {
             if (game.ActivePlayer == game.Me)
             {
-                List<int> generatedCardIDs = new List<int>();
-
-                for (int i = 0; i < nCards; i++)
+                foreach (int id in generatedCardIDs)
                 {
-                    // Generate a random elemental card (optionally filtered by element and type)
-                    Card generatedCard = CardCatalogue.GetRandomLegendCard(weapon);
-
-                    // Store the generated card ID
-                    generatedCardIDs.Add(generatedCard.ID);
-
-                    // Add the generated card to the player's hand
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                    Card card = CardCatalogue.GetCardById(id);
+                    game.AddCardToHandZone(game.ActivePlayer, card);
                 }
 
                 // Form a single message containing all card IDs
@@ -368,21 +401,15 @@ namespace BrawlTCG_alpha.Logic.Cards
             else
             {
                 // Wait until we receive all expected card IDs (Avoid infinite loop!)
-                while (game.RandomCardIDs.Count < nCards)
+                while (game.RandomCardIDs.Count < generatedCardIDs.Count)
                 {
                     Thread.Sleep(10);
                 }
 
-                // Retrieve all generated cards based on the received random card IDs
-                List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id))
-                    .Where(card => card != null)
-                    .ToList();
-
-                // Add each generated card to the player's hand
-                foreach (Card generatedCard in generatedCards)
+                foreach (int id in game.RandomCardIDs)
                 {
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                    Card card = CardCatalogue.GetCardById(id);
+                    game.AddCardToHandZone(game.ActivePlayer, card);
                 }
 
                 // Clear the list instead of setting it to null
@@ -390,108 +417,8 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         }
 
-        public static void GenerateRandomWeaponCards(Game game, int nCards, Elements? element = null)
-        {
-            if (game.ActivePlayer == game.Me)
-            {
-                List<int> generatedCardIDs = new List<int>();
 
-                for (int i = 0; i < nCards; i++)
-                {
-                    // Generate a random elemental card (optionally filtered by element and type)
-                    Card generatedCard = CardCatalogue.GetRandomWeaponCard();
 
-                    // Store the generated card ID
-                    generatedCardIDs.Add(generatedCard.ID);
-
-                    // Add the generated card to the player's hand
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Form a single message containing all card IDs
-                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
-
-                // Send the message to the peer
-                game.SendMessageToPeer(message);
-
-                // Show the generated cards
-                game.ShowCards();
-            }
-            else
-            {
-                // Wait until we receive all expected card IDs (Avoid infinite loop!)
-                while (game.RandomCardIDs.Count < nCards)
-                {
-                    Thread.Sleep(10);
-                }
-
-                // Retrieve all generated cards based on the received random card IDs
-                List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id))
-                    .Where(card => card != null)
-                    .ToList();
-
-                // Add each generated card to the player's hand
-                foreach (Card generatedCard in generatedCards)
-                {
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Clear the list instead of setting it to null
-                game.RandomCardIDs.Clear();
-            }
-        }
-        public static void GenerateRandomWeaponCards(Game game, int nCards, Weapons weapon, Elements? element = null)
-        {
-            if (game.ActivePlayer == game.Me)
-            {
-                List<int> generatedCardIDs = new List<int>();
-
-                for (int i = 0; i < nCards; i++)
-                {
-                    // Generate a random wep card
-                    Card generatedCard = CardCatalogue.GetRandomWeaponCard(weapon);
-
-                    // Store the generated card ID
-                    generatedCardIDs.Add(generatedCard.ID);
-
-                    // Add the generated card to the player's hand
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Form a single message containing all card IDs
-                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
-
-                // Send the message to the peer
-                game.SendMessageToPeer(message);
-
-                // Show the generated cards
-                game.ShowCards();
-            }
-            else
-            {
-                // Wait until we receive all expected card IDs (Avoid infinite loop!)
-                while (game.RandomCardIDs.Count < nCards)
-                {
-                    Thread.Sleep(10);
-                }
-
-                // Retrieve all generated cards based on the received random card IDs
-                List<Card> generatedCards = game.RandomCardIDs
-                    .Select(id => CardCatalogue.GetCardById(id))
-                    .Where(card => card != null)
-                    .ToList();
-
-                // Add each generated card to the player's hand
-                foreach (Card generatedCard in generatedCards)
-                {
-                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
-                }
-
-                // Clear the list instead of setting it to null
-                game.RandomCardIDs.Clear();
-            }
-        }
         internal static void GenerateAndPlayLegend(Game game, int cardID)
         {
             // first give the player essence before playing it!

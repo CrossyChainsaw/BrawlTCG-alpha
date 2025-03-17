@@ -174,16 +174,12 @@ namespace BrawlTCG_alpha.Visuals
                 listCardEffects.Items.Clear();
                 listCardEffects.Visible = false;
 
-                if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {_selectedCard.StartTurnEffect.Description}");
-                if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn Effect: [WORK IN PROGRESS]");
-                if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {_selectedCard.WhenPlayedEffect.Description}");
-                if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded Effect: {_selectedCard.WhenDiscardedEffect.Description}");
+                if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn: {_selectedCard.StartTurnEffect.Description}");
+                if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn: [WORK IN PROGRESS]");
+                if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played: {_selectedCard.WhenPlayedEffect.Description}");
+                if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded: {_selectedCard.WhenDiscardedEffect.Description}");
+                if (_selectedCard.WhileInPlayEffect != null) listCardEffects.Items.Add($"While in Play: {_selectedCard.WhileInPlayEffect.Description}");
 
-                // Check for WhileInPlayEffect if it's a StageCard
-                if (_selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
-                {
-                    listCardEffects.Items.Add($"While In Play Effect: {stage.WhileInPlayEffect.Description}");
-                }
 
                 if (listCardEffects.Items.Count > 0)
                 {
@@ -238,15 +234,11 @@ namespace BrawlTCG_alpha.Visuals
                     listCardEffects.Items.Clear();
                     listCardEffects.Visible = false;
 
-                    if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn Effect: {_selectedCard.StartTurnEffect.Description}");
-                    if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn Effect: [WORK IN PROGRESS]");
-                    if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played Effect: {_selectedCard.WhenPlayedEffect.Description}");
-                    if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded Effect: {_selectedCard.WhenDiscardedEffect.Description}");
-
-                    if (_selectedCard is StageCard stage && stage.WhileInPlayEffect != null)
-                    {
-                        listCardEffects.Items.Add($"While In Play Effect: {stage.WhileInPlayEffect.Description}");
-                    }
+                    if (_selectedCard.StartTurnEffect != null) listCardEffects.Items.Add($"Start Turn: {_selectedCard.StartTurnEffect.Description}");
+                    if (_selectedCard.EndTurnEffect != null) listCardEffects.Items.Add($"End Turn: [WORK IN PROGRESS]");
+                    if (_selectedCard.WhenPlayedEffect != null) listCardEffects.Items.Add($"When Played: {_selectedCard.WhenPlayedEffect.Description}");
+                    if (_selectedCard.WhenDiscardedEffect != null) listCardEffects.Items.Add($"When Discarded: {_selectedCard.WhenDiscardedEffect.Description}");
+                    if (_selectedCard.WhileInPlayEffect != null) listCardEffects.Items.Add($"While in Play: {_selectedCard.WhileInPlayEffect.Description}");
 
                     if (listCardEffects.Items.Count > 0)
                     {

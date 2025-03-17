@@ -49,7 +49,7 @@ namespace BrawlTCG_alpha.Logic
             { 2004, new LegendCard(id: 2004, "Jhala", 3, Elements.Fire, Images.Jhala, 11, 1, 1, 0, Weapons.Axe, Weapons.Sword, attack1: ac.Sword_Slash, attack2: ac.Axe_Swing)},
             { 2005, new LegendCard(id: 2005, "Hothead Jiro", 2, Elements.Fire, Images.Hothead_Jiro, 4, 2, 4, 0, Weapons.Sword, Weapons.Scythe, attack1: ac.Sword_Slash, attack2: ac.Scythe_Slash) },
             { 2006, new LegendCard(id: 2006, "Fury Shang", 3, Elements.Fire, Images.FuryShang, 6, 3, 6, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, whileInPlayEffect: ec.BoostFireLegendStats_WhileInPlayEffect) },
-            { 2007, new LegendCard(id: 2007, "Seven", 2, Elements.Fire, Images.BrawlLogo, 4, 2, 4, 0, Weapons.Spear, Weapons.Cannon, attack1: ac.Cannon_Blast, attack2: ac.Seven_CraftWeapons) }, // new card
+            { 2007, new LegendCard(id: 2007, "Seven", 2, Elements.Fire, Images.Seven, 4, 2, 4, 0, Weapons.Spear, Weapons.Cannon, attack1: ac.Cannon_Blast, attack2: ac.Seven_CraftWeapons) }, // new card
             // Cosmic
             { 3000, new LegendCard(id: 3000, "Artemis", 3, Elements.Cosmic, Images.Artemis, 5, 5, 12, 0, Weapons.RocketLance, Weapons.Scythe, attack1: ac.Scythe_Slash, attack2: ac.Scythe_Gimp, attack3: ac.Lance_Flamethrower) },
             { 3001, new LegendCard(id: 3001, "Orion", 3, Elements.Cosmic, Images.Orion, 4, 6, 12, 0, Weapons.RocketLance, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Lance_Flamethrower) },
@@ -87,7 +87,7 @@ namespace BrawlTCG_alpha.Logic
             { 13001, new WeaponCard(id: 13001, "Buzz Axe", 1, Elements.Wild, Images.BuzzAxe, Weapons.Axe) },
             { 13002, new WeaponCard(id: 13002, "Boiling Point", 1, Elements.Fire, Images.BoilingPoint, Weapons.Axe) },
             // Battle Boots
-            { 14000, new WeaponCard(id: 14000, "Battle Boots", 1, Elements.Wild, Images.BrawlLogo, Weapons.BattleBoots) }, // new card
+            { 14000, new WeaponCard(id: 14000, "Molten Boots", 1, Elements.Fire, Images.MoltenBoots, Weapons.BattleBoots) }, // new card
             // Blasters
             { 15000, new WeaponCard(id: 15000, "Blazing Fire", 1, Elements.Fire, Images.BlazingFire, Weapons.Blasters) },
             { 15001, new WeaponCard(id: 15001, "Revolvers", 1, Elements.Shadow, Images.Revolvers, Weapons.Blasters) },
@@ -96,7 +96,7 @@ namespace BrawlTCG_alpha.Logic
             // Bow
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
             // Canon
-            { 26000, new WeaponCard(id: 26000, "Canon", 1, Elements.Fire, Images.BrawlLogo, Weapons.Cannon) }, // new card
+            { 26000, new WeaponCard(id: 26000, "Canon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) }, // new card
             // Gauntlets
             { 17000, new WeaponCard(id: 17000, "Sleight of Hand", 1, Elements.Shadow, Images.Sleight_of_Hand, Weapons.Gauntlets) },
             { 17001, new WeaponCard(id: 17001, "Rippers", 1, Elements.Wild, Images.MordexGaunts, Weapons.Gauntlets) },
@@ -159,9 +159,10 @@ namespace BrawlTCG_alpha.Logic
             { 518, new BattleCard(id: 518, "Witch Party", 6, "When Played: Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) },
             { 519, new BattleCard(id: 519, "Promotion I", 5, "When Played: Player Max health goes up by 5", Elements.Magic, Images.Avatar_CollectorsPackI, true, false, false, whenPlayedEffect: ec.PromotionI, targetRequired: false) },
             { 520, new BattleCard(id: 520, "Promotion II", 10, "When Played: Player Max health goes up by 10", Elements.Magic, Images.Avatar_CollectorsPack, true, false, false, whenPlayedEffect: ec.PromotionII, targetRequired: false) },
-            { 521, new BattleCard(id: 521, "Adrenaline", 2, "When Played: Legend can attack again", Elements.Nature, Images.BrawlLogo, true, false, false, whenPlayedEffect: ec.Adrenaline) }, // new card
-            { 522, new BattleCard(id: 522, "Death's Hour", 7, "When Played: Every legend's HP becomes 1", Elements.Shadow, Images.BrawlLogo, true, false, false, whenPlayedEffect: ec.DeathsHour, targetRequired: false) }, // new card
-            { 523, new BattleCard(id: 523, "Cursed Kunai", 3, "When Played: Obtain a random Katar Legend and random Katars", Elements.Shadow, Images.BrawlLogo, true, false, false, whenPlayedEffect: ec.CursedKunai, targetRequired: false) }, // new card
+            { 521, new BattleCard(id: 521, "Adrenaline", 2, "When Played: Legend can attack again", Elements.Nature, Images.Adrenaline, true, false, true, whenPlayedEffect: ec.Adrenaline) }, // new card
+            { 522, new BattleCard(id: 522, "Death's Hour", 7, "When Played: Every legend's HP becomes 1", Elements.Shadow, Images.DeathsHour, true, false, false, whenPlayedEffect: ec.DeathsHour, targetRequired: false) }, // new card
+            { 523, new BattleCard(id: 523, "Cursed Kunai", 3, "When Played: Obtain a random Katar Legend and random Katars", Elements.Shadow, Images.CursedKunai, true, false, false, whenPlayedEffect: ec.CursedKunai, targetRequired: false) }, // new card
+            { 524, new BattleCard(id: 524, "Ymir's Breath", 5, "When Played: Tap all opposing legends", Elements.Arctic, Images.YmirsBreath, true, false, false, whenPlayedEffect: ec.YmirsBreath, targetRequired: false) }, // new card
         };
 
 
