@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -253,6 +255,36 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         );
 
+        public static Effect Adrenaline = new Effect(
+            description: $"Allow legend to attack again",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.AttackedThisTurn = false;
+                }
+            });
+
+        public static Effect DeathsHour = new Effect(
+            description: $"Every legend's HP becomes 1",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                List<LegendCard> legends = game.GetAllLegendsOnPlayingField();
+                foreach (LegendCard legend in legends)
+                {
+                    legend.CurrentHP = 1;
+                }
+            });
+
+        public static Effect CursedKunai = new Effect(
+            description: $"Obtain random Katars Legend and random Katars",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                GenerateRandomLegendWithSpecificWeapon(game, 1, Weapons.Katars);
+                GenerateRandomWeaponCards(game, 1, Weapons.Katars);
+            });
+
+
 
         // Generic Methods
         public static void GenerateRandomCards(Game game, int nCards, Elements? element = null, Type cardType = null)
@@ -265,6 +297,160 @@ namespace BrawlTCG_alpha.Logic.Cards
                 {
                     // Generate a random elemental card (optionally filtered by element and type)
                     Card generatedCard = CardCatalogue.GetRandomCard(element, cardType);
+
+                    // Store the generated card ID
+                    generatedCardIDs.Add(generatedCard.ID);
+
+                    // Add the generated card to the player's hand
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Form a single message containing all card IDs
+                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
+
+                // Send the message to the peer
+                game.SendMessageToPeer(message);
+
+                // Show the generated cards
+                game.ShowCards();
+            }
+            else
+            {
+                // Wait until we receive all expected card IDs (Avoid infinite loop!)
+                while (game.RandomCardIDs.Count < nCards)
+                {
+                    Thread.Sleep(10);
+                }
+
+                // Retrieve all generated cards based on the received random card IDs
+                List<Card> generatedCards = game.RandomCardIDs
+                    .Select(id => CardCatalogue.GetCardById(id))
+                    .Where(card => card != null)
+                    .ToList();
+
+                // Add each generated card to the player's hand
+                foreach (Card generatedCard in generatedCards)
+                {
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Clear the list instead of setting it to null
+                game.RandomCardIDs.Clear();
+            }
+        }
+        public static void GenerateRandomLegendWithSpecificWeapon(Game game, int nCards, Weapons weapon, Elements? element = null)
+        {
+            if (game.ActivePlayer == game.Me)
+            {
+                List<int> generatedCardIDs = new List<int>();
+
+                for (int i = 0; i < nCards; i++)
+                {
+                    // Generate a random elemental card (optionally filtered by element and type)
+                    Card generatedCard = CardCatalogue.GetRandomLegendCard(weapon);
+
+                    // Store the generated card ID
+                    generatedCardIDs.Add(generatedCard.ID);
+
+                    // Add the generated card to the player's hand
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Form a single message containing all card IDs
+                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
+
+                // Send the message to the peer
+                game.SendMessageToPeer(message);
+
+                // Show the generated cards
+                game.ShowCards();
+            }
+            else
+            {
+                // Wait until we receive all expected card IDs (Avoid infinite loop!)
+                while (game.RandomCardIDs.Count < nCards)
+                {
+                    Thread.Sleep(10);
+                }
+
+                // Retrieve all generated cards based on the received random card IDs
+                List<Card> generatedCards = game.RandomCardIDs
+                    .Select(id => CardCatalogue.GetCardById(id))
+                    .Where(card => card != null)
+                    .ToList();
+
+                // Add each generated card to the player's hand
+                foreach (Card generatedCard in generatedCards)
+                {
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Clear the list instead of setting it to null
+                game.RandomCardIDs.Clear();
+            }
+        }
+
+        public static void GenerateRandomWeaponCards(Game game, int nCards, Elements? element = null)
+        {
+            if (game.ActivePlayer == game.Me)
+            {
+                List<int> generatedCardIDs = new List<int>();
+
+                for (int i = 0; i < nCards; i++)
+                {
+                    // Generate a random elemental card (optionally filtered by element and type)
+                    Card generatedCard = CardCatalogue.GetRandomWeaponCard();
+
+                    // Store the generated card ID
+                    generatedCardIDs.Add(generatedCard.ID);
+
+                    // Add the generated card to the player's hand
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Form a single message containing all card IDs
+                string message = "RANDOM_CARD_ID:" + string.Join(":", generatedCardIDs);
+
+                // Send the message to the peer
+                game.SendMessageToPeer(message);
+
+                // Show the generated cards
+                game.ShowCards();
+            }
+            else
+            {
+                // Wait until we receive all expected card IDs (Avoid infinite loop!)
+                while (game.RandomCardIDs.Count < nCards)
+                {
+                    Thread.Sleep(10);
+                }
+
+                // Retrieve all generated cards based on the received random card IDs
+                List<Card> generatedCards = game.RandomCardIDs
+                    .Select(id => CardCatalogue.GetCardById(id))
+                    .Where(card => card != null)
+                    .ToList();
+
+                // Add each generated card to the player's hand
+                foreach (Card generatedCard in generatedCards)
+                {
+                    game.AddCardToHandZone(game.ActivePlayer, generatedCard);
+                }
+
+                // Clear the list instead of setting it to null
+                game.RandomCardIDs.Clear();
+            }
+        }
+        public static void GenerateRandomWeaponCards(Game game, int nCards, Weapons weapon, Elements? element = null)
+        {
+            if (game.ActivePlayer == game.Me)
+            {
+                List<int> generatedCardIDs = new List<int>();
+
+                for (int i = 0; i < nCards; i++)
+                {
+                    // Generate a random wep card
+                    Card generatedCard = CardCatalogue.GetRandomWeaponCard(weapon);
 
                     // Store the generated card ID
                     generatedCardIDs.Add(generatedCard.ID);
