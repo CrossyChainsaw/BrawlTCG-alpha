@@ -87,7 +87,7 @@ namespace BrawlTCG_alpha.Logic
             { 13001, new WeaponCard(id: 13001, "Buzz Axe", 1, Elements.Wild, Images.BuzzAxe, Weapons.Axe) },
             { 13002, new WeaponCard(id: 13002, "Boiling Point", 1, Elements.Fire, Images.BoilingPoint, Weapons.Axe) },
             // Battle Boots
-            { 14000, new WeaponCard(id: 14000, "Molten Boots", 1, Elements.Fire, Images.MoltenBoots, Weapons.BattleBoots) }, // new card
+            { 14000, new WeaponCard(id: 14000, "Molten Boots", 1, Elements.Fire, Images.MoltenBoots, Weapons.BattleBoots) },
             // Blasters
             { 15000, new WeaponCard(id: 15000, "Blazing Fire", 1, Elements.Fire, Images.BlazingFire, Weapons.Blasters) },
             { 15001, new WeaponCard(id: 15001, "Revolvers", 1, Elements.Shadow, Images.Revolvers, Weapons.Blasters) },
@@ -96,7 +96,7 @@ namespace BrawlTCG_alpha.Logic
             // Bow
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
             // Canon
-            { 26000, new WeaponCard(id: 26000, "Molten Cannon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) }, // new card
+            { 26000, new WeaponCard(id: 26000, "Molten Cannon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) },
             // Gauntlets
             { 17000, new WeaponCard(id: 17000, "Sleight of Hand", 1, Elements.Shadow, Images.Sleight_of_Hand, Weapons.Gauntlets) },
             { 17001, new WeaponCard(id: 17001, "Rippers", 1, Elements.Wild, Images.MordexGaunts, Weapons.Gauntlets) },
@@ -159,13 +159,16 @@ namespace BrawlTCG_alpha.Logic
             { 518, new BattleCard(id: 518, "Witch Party", 6, "When Played: Obtain Fait, Witch Scarlet, Amethyst Scythe and Galaxy Lance", Elements.Magic, Images.WitchParty, true, false, true, whenPlayedEffect: ec.WitchParty, targetRequired: false) },
             { 519, new BattleCard(id: 519, "Promotion I", 5, "When Played: Player Max health goes up by 5", Elements.Magic, Images.Avatar_CollectorsPackI, true, false, false, whenPlayedEffect: ec.PromotionI, targetRequired: false) },
             { 520, new BattleCard(id: 520, "Promotion II", 10, "When Played: Player Max health goes up by 10", Elements.Magic, Images.Avatar_CollectorsPack, true, false, false, whenPlayedEffect: ec.PromotionII, targetRequired: false) },
-            { 521, new BattleCard(id: 521, "Adrenaline", 2, "When Played: Legend can attack again", Elements.Nature, Images.Adrenaline, true, false, true, whenPlayedEffect: ec.Adrenaline) }, // new card
-            { 522, new BattleCard(id: 522, "Death's Hour", 7, "When Played: Every legend's HP becomes 1", Elements.Shadow, Images.DeathsHour, true, false, false, whenPlayedEffect: ec.DeathsHour, targetRequired: false) }, // new card
-            { 523, new BattleCard(id: 523, "Cursed Kunai", 3, "When Played: Obtain a random Katar Legend and random Katars", Elements.Shadow, Images.CursedKunai, true, false, false, whenPlayedEffect: ec.CursedKunai, targetRequired: false) }, // new card
-            { 524, new BattleCard(id: 524, "Ymir's Breath", 5, "When Played: Tap all opposing legends", Elements.Arctic, Images.YmirsBreath, true, false, false, whenPlayedEffect: ec.YmirsBreath, targetRequired: false) }, // new card
+            { 521, new BattleCard(id: 521, "Adrenaline", 2, "When Played: Legend can attack again", Elements.Nature, Images.Adrenaline, true, false, true, whenPlayedEffect: ec.Adrenaline) },
+            { 522, new BattleCard(id: 522, "Death's Hour", 7, "When Played: Every legend's HP becomes 1", Elements.Shadow, Images.DeathsHour, true, false, false, whenPlayedEffect: ec.DeathsHour, targetRequired: false) },
+            { 523, new BattleCard(id: 523, "Cursed Kunai", 3, "When Played: Obtain a random Katar Legend and random Katars", Elements.Shadow, Images.CursedKunai, true, false, false, whenPlayedEffect: ec.CursedKunai, targetRequired: false) },
+            { 524, new BattleCard(id: 524, "Ymir's Breath", 5, "When Played: Tap all opposing legends", Elements.Arctic, Images.YmirsBreath, true, false, false, whenPlayedEffect: ec.YmirsBreath, targetRequired: false) },
+            { 525, new BattleCard(id: 525, "Cody Travis", 6, "When Played: Gimp a legend", Elements.Wild, Images.finger, oneTimeUse: true, stackable: false, friendlyFire: false, whenPlayedEffect: ec.BattleCardDirectDamageWhenPlayed, damage: int.MaxValue) },//new card
         };
 
-
+        // ideas
+        // legend that gives you essence start turn / when played
+        // more people cards
 
 
         // Fire
