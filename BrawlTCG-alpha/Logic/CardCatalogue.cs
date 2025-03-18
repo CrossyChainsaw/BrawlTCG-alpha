@@ -96,7 +96,7 @@ namespace BrawlTCG_alpha.Logic
             // Bow
             { 16000, new WeaponCard(id: 16000, "Sakura Strike", 1, Elements.Nature, Images.Sakura_Strike, Weapons.Bow) },
             // Canon
-            { 26000, new WeaponCard(id: 26000, "Canon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) }, // new card
+            { 26000, new WeaponCard(id: 26000, "Molten Cannon", 1, Elements.Fire, Images.MoltenCannon, Weapons.Cannon) }, // new card
             // Gauntlets
             { 17000, new WeaponCard(id: 17000, "Sleight of Hand", 1, Elements.Shadow, Images.Sleight_of_Hand, Weapons.Gauntlets) },
             { 17001, new WeaponCard(id: 17001, "Rippers", 1, Elements.Wild, Images.MordexGaunts, Weapons.Gauntlets) },
