@@ -135,7 +135,7 @@ namespace BrawlTCG_alpha.Logic.Cards
                     Stats.Power, -2)
         );
         public static Effect Atlantis_WhileInPlay = new Effect(
-            description: "Shadow, Wild and Fire Legends get +3 Power",
+            description: "Non-Arctic legends do 2 damage less",
             effectAction: (target, card, game, playedCard) => _Atlantis_WhilePlay(target)
         );
         public static Effect Atlantis_WhenDiscarded = new Effect(
