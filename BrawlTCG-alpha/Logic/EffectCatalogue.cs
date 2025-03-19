@@ -305,6 +305,36 @@ namespace BrawlTCG_alpha.Logic.Cards
                 }
             });
 
+        public static Effect The_Finger = new Effect(
+            description: $"Legend attack becomes 0",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                if (target is LegendCard legend)
+                {
+                    legend.Power = 0;
+                }
+            });
+
+        public static Effect ScytheForever = new Effect(
+            description: $"Obtain 3 random scythes",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                List<int> weaponCardIDs = GenerateRandomWeaponCardIDs(game, 3, Weapons.Scythe);
+                CommunicateCardIDsToPeer(game, weaponCardIDs);
+            });
+
+        public static Effect DidShawWinYet = new Effect(
+            description: $"Obtain 3x the rock",
+            effectAction: (target, card, game, playedCard) =>
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int theRockID = 6003;
+                    GenerateCard(game, theRockID);
+                }
+            }
+        );
+
 
 
         // Generic Methods
