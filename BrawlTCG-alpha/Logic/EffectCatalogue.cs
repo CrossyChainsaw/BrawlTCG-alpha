@@ -41,10 +41,13 @@ namespace BrawlTCG_alpha.Logic.Cards
             }
         );
 
-        static int spaceTimeExtraDrawnCards = 2;
+        static int spaceTimeExtraDrawnCards = 1;
         public static Effect SpaceTime = new Effect(
-            description: $"Draw {spaceTimeExtraDrawnCards} extra cards",
-            effectAction: (target, card, game, playedCard) => DrawCards(game, spaceTimeExtraDrawnCards, startTurn: true)
+            description: $"Both players draw {spaceTimeExtraDrawnCards} card",
+            effectAction: (target, card, game, playedCard) => {
+                DrawCards(game, spaceTimeExtraDrawnCards, game.ActivePlayer, startTurn: true);
+                DrawCards(game, spaceTimeExtraDrawnCards, game.InactivePlayer, startTurn: true);
+            }
         );
 
         public static Effect Essence = new Effect(
@@ -475,9 +478,9 @@ namespace BrawlTCG_alpha.Logic.Cards
             // flip to show
             game.ShowCards();
         }
-        public static void DrawCards(Game game, int n, bool startTurn = false)
+        public static void DrawCards(Game game, int n, Player player, bool startTurn = false)
         {
-            if (startTurn && game.ActivePlayer.Hand.Count > 15)
+            if (startTurn && player.Hand.Count > 15)
             {
 
             }
@@ -485,7 +488,7 @@ namespace BrawlTCG_alpha.Logic.Cards
             {
                 for (int i = 0; i < n; i++)
                 {
-                    game.DrawCardFromDeck(game.ActivePlayer);
+                    game.DrawCardFromDeck(player);
                 }
                 game.ShowCards();
             }

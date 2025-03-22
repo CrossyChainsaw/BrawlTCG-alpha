@@ -26,7 +26,7 @@ namespace BrawlTCG_alpha.Logic
             { 102, new StageCard(id:102, "Matrix", 1, Elements.Cosmic, Images.Matrix) },
             { 103, new StageCard(id:103, "The Workshop", 2, Elements.Fire, Images.TheWorkshop, startTurnEffect: ec.Workshop_StartTurn, whenDiscardedEffect: ec.Workshop_Discarded) },
             { 104, new StageCard(id:104, "Evil Hideout", 3, Elements.Fire, Images.Evil_Hideout, whenPlayedEffect: ec.EvilHideout_WhenPlayed, whileInPlayEffect: ec.EvilHideout_WhileInPlay, whenDiscardedEffect: ec.EvilHideout_WhenDiscarded) },
-            { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) },
+            { 105, new StageCard(id:105, "Space Time", 1, Elements.Cosmic, Images.SpaceTime, startTurnEffect: ec.SpaceTime) }, // rework
             { 106, new StageCard(id:106, "Atlantis", 3, Elements.Arctic, Images.Atlantis, startTurnEffect: ec.Atlantis_StartTurn, whenPlayedEffect: ec.Atlantis_WhenPlayed, whileInPlayEffect: ec.Atlantis_WhileInPlay, whenDiscardedEffect: ec.Atlantis_WhenDiscarded)  },
             { 107, new StageCard(id:107, "Silent Galaxy", 5, Elements.Cosmic, Images.SilentGalaxy, startTurnEffect: ec.SilentGalaxy_StartTurn, whenPlayedEffect: ec.SilentGalaxy_WhenPlayed, whileInPlayEffect: ec.SilentGalaxy_WhilePlay, whenDiscardedEffect: ec.SilentGalaxy_WhenDiscarded) },
             
@@ -56,7 +56,7 @@ namespace BrawlTCG_alpha.Logic
             { 3002, new LegendCard(id: 3002, "Wu Shang", 4, Elements.Cosmic, Images.Spyrox_WuShang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.WuShang_DownSig) },
             { 3003, new LegendCard(id: 3003, "Aurora Brynn", 5, Elements.Cosmic, Images.AuroraBrynn, 10, 2, 16, 0, Weapons.Axe, Weapons.Spear, attack1: ac.Axe_Swing, attack2: ac.Spear_Stab) },
             { 3004, new LegendCard(id: 3004, "Astro Commander", 4, Elements.Cosmic, Images.AstralCoreAda, 14, 1, 3, 0, Weapons.Blasters, Weapons.Spear, attack1: ac.Blaster_Shot) },
-            { 3005, new LegendCard(id: 3005, "Breaker Shang", 2, Elements.Cosmic, Images.Breaker_Shang, 7, 1, 13, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.Any_CraftCosmicCard) },
+            { 3005, new LegendCard(id: 3005, "Breaker Shang", 2, Elements.Cosmic, Images.Breaker_Shang, 5, 1, 4, 0, Weapons.Gauntlets, Weapons.Spear, attack1: ac.Spear_Stab, attack2: ac.Gauntlets_Punch, attack3: ac.Any_CraftCosmicCard) },
             { 3006, new LegendCard(id: 3006, "Witch Scarlet", 2, Elements.Cosmic, Images.WitchScarlet, 1, 3, 6, 0, Weapons.Hammer, Weapons.RocketLance, attack1: ac.Hammer_Swing, attack2: ac.Lance_Poke, attack3: ac.Any_GenerateAndPlayMatrix) },
             // Magic
             { 4000, new LegendCard(id: 4000, "Arcadia", 3, Elements.Magic, Images.FaerieQueen, 6, 3, 8, 0, Weapons.Spear, Weapons.Greatsword, attack1: ac.Spear_Stab, attack2: ac.Greatsword_Swing, attack3: ac.Greatsword_String, attack4: ac.Arcadia_PinkRoses) },
