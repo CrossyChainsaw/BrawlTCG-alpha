@@ -481,4 +481,19 @@
   <data name="YmirsBreath" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\YmirsBreath.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="finger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\finger.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NecromanticAuraBlack" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NecromanticAuraBlack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sandstorm" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sandstorm.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="shaw" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\shaw.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TheRock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TheRock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

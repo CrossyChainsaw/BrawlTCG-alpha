@@ -543,6 +543,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap finger {
+            get {
+                object obj = ResourceManager.GetObject("finger", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Forest_Spirit {
             get {
                 object obj = ResourceManager.GetObject("Forest_Spirit", resourceCulture);
@@ -813,6 +823,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap NecromanticAuraBlack {
+            get {
+                object obj = ResourceManager.GetObject("NecromanticAuraBlack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Nightmare_Claws {
             get {
                 object obj = ResourceManager.GetObject("Nightmare_Claws", resourceCulture);
@@ -963,6 +983,16 @@ namespace BrawlTCG_alpha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap sandstorm {
+            get {
+                object obj = ResourceManager.GetObject("sandstorm", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ScryingGlass {
             get {
                 object obj = ResourceManager.GetObject("ScryingGlass", resourceCulture);
@@ -1016,6 +1046,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap ShatteringStar {
             get {
                 object obj = ResourceManager.GetObject("ShatteringStar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap shaw {
+            get {
+                object obj = ResourceManager.GetObject("shaw", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1166,6 +1206,16 @@ namespace BrawlTCG_alpha.Properties {
         internal static System.Drawing.Bitmap Teros {
             get {
                 object obj = ResourceManager.GetObject("Teros", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TheRock {
+            get {
+                object obj = ResourceManager.GetObject("TheRock", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

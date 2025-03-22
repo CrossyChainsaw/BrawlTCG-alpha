@@ -143,7 +143,7 @@ namespace BrawlTCG_alpha.Logic
         public void DrawCardFromDeck(Player player)
         {
             // Logic
-            Card? card = ActivePlayer.DrawCardFromDeck();
+            Card? card = player.DrawCardFromDeck();
             if (card != null)
             {
                 UiManager.MoveCardFromDeckZoneToHandZone(player, card);
