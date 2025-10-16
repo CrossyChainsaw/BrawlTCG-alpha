@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +17,8 @@ namespace BrawlTCG_alpha.Visuals
     {
         // Deck
         const int MINIMUM_CARDS_IN_DECK = 40;
+        
+        // P2P
         // Host variables
         TcpListener _host;
         // Client Variables
@@ -22,6 +26,9 @@ namespace BrawlTCG_alpha.Visuals
         NetworkStream _stream;
         StreamReader _streamReader;
         StreamWriter _streamWriter;
+
+        // Client-Server
+        private ClientWebSocket socket;
 
         // Methods
         public FRM_Menu()
@@ -33,11 +40,6 @@ namespace BrawlTCG_alpha.Visuals
         {
             Form frm = new FRM_DeckBuilder();
             frm.Show();
-        }
-
-        private async void BTN_OnlineMultiplayer_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("No");
         }
 
         List<Card> ShuffleDeck(List<Card> deck)
@@ -62,8 +64,21 @@ namespace BrawlTCG_alpha.Visuals
                 return;
             }
 
-            // Get player deck
-            List<Card> playerDeck = Deck.LoadDeckFromFile(TB_Deck.Text + ".txt");
+            // Get Player Deck
+            List<Card> playerDeck = null;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            openFileDialog.Title = "Select a Deck File";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFile = openFileDialog.FileName;
+                playerDeck = Deck.LoadDeckFromFile(selectedFile);
+            }
+            else
+            {
+                MessageBox.Show("No deck selected.");
+                return;
+            }
 
             playerDeck = ShuffleDeck(playerDeck);
             // validate deck (put this in method)
@@ -233,6 +248,34 @@ namespace BrawlTCG_alpha.Visuals
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private async void BTN_Connect_Click(object sender, EventArgs e)
+        {
+            socket = new ClientWebSocket();
+
+            try
+            {
+                // 1️⃣ Attempt connection to Python WebSocket server
+                await socket.ConnectAsync(new Uri("ws://localhost:8765"), CancellationToken.None);
+
+                if (socket.State == WebSocketState.Open)
+                {
+                    MessageBox.Show("✅ Connected to server successfully!");
+                    this.Hide();
+                    var lobbyForm = new FRM_ServerLobby(socket);
+                    lobbyForm.FormClosed += (s, args) => this.Close(); // ensures app exits when lobby closes
+                    lobbyForm.Show();
+                }
+                else
+                {
+                    MessageBox.Show("⚠️ Failed to connect. Current state: " + socket.State);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("❌ Connection error: " + ex.Message);
+            }
         }
     }
 }

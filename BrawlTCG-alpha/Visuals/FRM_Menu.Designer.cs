@@ -32,18 +32,18 @@
             BTN_EditDeck = new Button();
             TB_Name = new TextBox();
             BTN_P2P = new Button();
-            TB_Deck = new TextBox();
             LBL_Status = new Label();
             label1 = new Label();
             label2 = new Label();
             groupBox1 = new GroupBox();
+            BTN_Connect = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // BTN_EditDeck
             // 
             BTN_EditDeck.BackColor = Color.MediumPurple;
-            BTN_EditDeck.Font = new Font("Program OT Bold", 72F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            BTN_EditDeck.Font = new Font("Microsoft Sans Serif", 72F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BTN_EditDeck.Location = new Point(12, 12);
             BTN_EditDeck.Name = "BTN_EditDeck";
             BTN_EditDeck.Size = new Size(702, 155);
@@ -63,7 +63,7 @@
             // 
             // BTN_P2P
             // 
-            BTN_P2P.Location = new Point(5, 92);
+            BTN_P2P.Location = new Point(5, 59);
             BTN_P2P.Name = "BTN_P2P";
             BTN_P2P.Size = new Size(181, 29);
             BTN_P2P.TabIndex = 6;
@@ -71,19 +71,9 @@
             BTN_P2P.UseVisualStyleBackColor = true;
             BTN_P2P.Click += BTN_P2P_Click;
             // 
-            // TB_Deck
-            // 
-            TB_Deck.BackColor = Color.White;
-            TB_Deck.Location = new Point(5, 59);
-            TB_Deck.Name = "TB_Deck";
-            TB_Deck.Size = new Size(180, 27);
-            TB_Deck.TabIndex = 1;
-            TB_Deck.Text = "deckPlayer1";
-            TB_Deck.TextChanged += TB_Deck_TextChanged;
-            // 
             // LBL_Status
             // 
-            LBL_Status.Location = new Point(5, 124);
+            LBL_Status.Location = new Point(5, 91);
             LBL_Status.Name = "LBL_Status";
             LBL_Status.Size = new Size(180, 23);
             LBL_Status.TabIndex = 7;
@@ -92,7 +82,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(464, 369);
+            label1.Location = new Point(464, 580);
             label1.Name = "label1";
             label1.Size = new Size(250, 20);
             label1.TabIndex = 8;
@@ -105,13 +95,12 @@
             label2.Name = "label2";
             label2.Size = new Size(180, 23);
             label2.TabIndex = 9;
-            label2.Text = "Play Online";
+            label2.Text = "Play Online (P2P)";
             // 
             // groupBox1
             // 
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(LBL_Status);
-            groupBox1.Controls.Add(TB_Deck);
             groupBox1.Controls.Add(TB_Name);
             groupBox1.Controls.Add(BTN_P2P);
             groupBox1.Location = new Point(13, 188);
@@ -120,6 +109,18 @@
             groupBox1.TabIndex = 10;
             groupBox1.TabStop = false;
             // 
+            // BTN_Connect
+            // 
+            BTN_Connect.BackColor = Color.PaleVioletRed;
+            BTN_Connect.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            BTN_Connect.Location = new Point(13, 369);
+            BTN_Connect.Name = "BTN_Connect";
+            BTN_Connect.Size = new Size(702, 155);
+            BTN_Connect.TabIndex = 11;
+            BTN_Connect.Text = "Connect to Server";
+            BTN_Connect.UseVisualStyleBackColor = false;
+            BTN_Connect.Click += BTN_Connect_Click;
+            // 
             // FRM_Menu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -127,7 +128,8 @@
             BackColor = Color.FromArgb(255, 192, 255);
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.None;
-            ClientSize = new Size(726, 410);
+            ClientSize = new Size(726, 609);
+            Controls.Add(BTN_Connect);
             Controls.Add(groupBox1);
             Controls.Add(label1);
             Controls.Add(BTN_EditDeck);
@@ -148,10 +150,10 @@
         private Button BTN_EditDeck;
         private TextBox TB_Name;
         private Button BTN_P2P;
-        private TextBox TB_Deck;
         private Label LBL_Status;
         private Label label1;
         private Label label2;
         private GroupBox groupBox1;
+        private Button BTN_Connect;
     }
 }
