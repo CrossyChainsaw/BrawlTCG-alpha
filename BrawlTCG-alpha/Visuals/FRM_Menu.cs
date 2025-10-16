@@ -17,7 +17,7 @@ namespace BrawlTCG_alpha.Visuals
     {
         // Deck
         const int MINIMUM_CARDS_IN_DECK = 40;
-        
+
         // P2P
         // Host variables
         TcpListener _host;
@@ -163,9 +163,6 @@ namespace BrawlTCG_alpha.Visuals
                     new FRM_Game(this, _host, _client, peerPlayer, hostPlayer).Show();
                     this.Hide();
                 }));
-
-                // Close the listener
-                //_host.Stop();
             }
             catch (Exception ex)
             {
@@ -240,42 +237,104 @@ namespace BrawlTCG_alpha.Visuals
             return player2;
         }
 
-        private void TB_Deck_TextChanged(object sender, EventArgs e)
+
+        async private void BTN_Connect_Click(object sender, EventArgs e)
         {
+            // 1️⃣ Get player name
+            string playerName = TB_Name.Text;
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                MessageBox.Show("Please enter your name.");
+                return;
+            }
 
-        }
+            // 2️⃣ Select deck file
+            List<Card> playerDeck = null;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            openFileDialog.Title = "Select a Deck File";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFile = openFileDialog.FileName;
+                playerDeck = Deck.LoadDeckFromFile(selectedFile);
+            }
+            else
+            {
+                MessageBox.Show("No deck selected.");
+                return;
+            }
 
-        private void groupBox2_Enter(object sender, EventArgs e)
-        {
+            playerDeck = ShuffleDeck(playerDeck);
 
-        }
+            // 3️⃣ Validate deck
+            if (playerDeck.Count < MINIMUM_CARDS_IN_DECK)
+            {
+                MessageBox.Show($"Your deck must have at least {MINIMUM_CARDS_IN_DECK} cards. Current: {playerDeck.Count}");
+                return;
+            }
 
-        private async void BTN_Connect_Click(object sender, EventArgs e)
-        {
-            socket = new ClientWebSocket();
+            // 4️⃣ Ask for server IP
+            string serverIp = Microsoft.VisualBasic.Interaction.InputBox("Enter server IP:", "Connect to Server", "127.0.0.1");
+            if (string.IsNullOrWhiteSpace(serverIp))
+            {
+                MessageBox.Show("Invalid server IP.");
+                return;
+            }
+
+            int serverPort = 5000; // example port
 
             try
             {
-                // 1️⃣ Attempt connection to Python WebSocket server
-                await socket.ConnectAsync(new Uri("ws://localhost:8765"), CancellationToken.None);
+                // 5️⃣ Connect to server
+                SetStatus("Connecting to server...");
+                _client = new TcpClient();
+                await _client.ConnectAsync(serverIp, serverPort);
 
-                if (socket.State == WebSocketState.Open)
+                _stream = _client.GetStream();
+                _streamReader = new StreamReader(_stream);
+                _streamWriter = new StreamWriter(_stream) { AutoFlush = true };
+                SetStatus("Connected to server!");
+
+                // 6️⃣ Send player data
+                string deckString = string.Join(",", playerDeck.Select(c => c.ID));
+                string playerData = $"PLAYER_NAME:{playerName}:PLAYER_DECK:{deckString}";
+                _streamWriter.WriteLine(playerData);
+
+                // 7️⃣ Wait for opponent data from server
+                string opponentData = await _streamReader.ReadLineAsync();
+                if (string.IsNullOrEmpty(opponentData))
                 {
-                    MessageBox.Show("✅ Connected to server successfully!");
+                    MessageBox.Show("Failed to receive opponent data from server.");
+                    return;
+                }
+
+
+                Player opponent = ProcesPeerData(opponentData, isHost: false, isMe: false);
+                Player me = new Player(playerName, playerDeck, isHost: false, isMe: true);
+
+                // 7️⃣a Ask server who goes first
+                _streamWriter.WriteLine("DIST_TURNS_REQUEST");
+
+                // 7️⃣b Wait for server response
+                string distResponse = await _streamReader.ReadLineAsync();
+                bool amIFirst = distResponse == "DIST_TURNS:true";
+
+                // 8️⃣ Launch game with proper order
+                this.Invoke(() =>
+                {
+                    if (amIFirst)
+                        new FRM_Game(this, _client, hostPlayer: me, peerPlayer: opponent).Show();
+                    else
+                        new FRM_Game(this, _client, hostPlayer: opponent, peerPlayer: me).Show();
+
                     this.Hide();
-                    var lobbyForm = new FRM_ServerLobby(socket);
-                    lobbyForm.FormClosed += (s, args) => this.Close(); // ensures app exits when lobby closes
-                    lobbyForm.Show();
-                }
-                else
-                {
-                    MessageBox.Show("⚠️ Failed to connect. Current state: " + socket.State);
-                }
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show("❌ Connection error: " + ex.Message);
+                MessageBox.Show($"Failed to connect to server: {ex.Message}");
             }
         }
     }
 }
+

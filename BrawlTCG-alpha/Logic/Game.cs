@@ -53,7 +53,7 @@ namespace BrawlTCG_alpha.Logic
             UiManager.InitializeZones();
 
             // Define Players
-            //RandomizeStartingPlayer(); // host always starts
+            // RandomizeStartingPlayer(); // host always starts
 
             // Initialize Decks Visually
             UiManager.InitializeDeckPile(ActivePlayer);

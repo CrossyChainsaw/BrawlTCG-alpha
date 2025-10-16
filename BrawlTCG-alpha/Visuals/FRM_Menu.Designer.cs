@@ -67,7 +67,7 @@
             BTN_P2P.Name = "BTN_P2P";
             BTN_P2P.Size = new Size(181, 29);
             BTN_P2P.TabIndex = 6;
-            BTN_P2P.Text = "Multiplayer";
+            BTN_P2P.Text = "Multiplayer (P2P)";
             BTN_P2P.UseVisualStyleBackColor = true;
             BTN_P2P.Click += BTN_P2P_Click;
             // 
@@ -99,6 +99,7 @@
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(BTN_Connect);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(LBL_Status);
             groupBox1.Controls.Add(TB_Name);
@@ -111,14 +112,12 @@
             // 
             // BTN_Connect
             // 
-            BTN_Connect.BackColor = Color.PaleVioletRed;
-            BTN_Connect.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BTN_Connect.Location = new Point(13, 369);
+            BTN_Connect.Location = new Point(192, 59);
             BTN_Connect.Name = "BTN_Connect";
-            BTN_Connect.Size = new Size(702, 155);
-            BTN_Connect.TabIndex = 11;
-            BTN_Connect.Text = "Connect to Server";
-            BTN_Connect.UseVisualStyleBackColor = false;
+            BTN_Connect.Size = new Size(203, 29);
+            BTN_Connect.TabIndex = 10;
+            BTN_Connect.Text = "Multiplayer (Client-Server)";
+            BTN_Connect.UseVisualStyleBackColor = true;
             BTN_Connect.Click += BTN_Connect_Click;
             // 
             // FRM_Menu
@@ -129,7 +128,6 @@
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.None;
             ClientSize = new Size(726, 609);
-            Controls.Add(BTN_Connect);
             Controls.Add(groupBox1);
             Controls.Add(label1);
             Controls.Add(BTN_EditDeck);
