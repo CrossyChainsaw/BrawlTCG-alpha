@@ -18,17 +18,13 @@ namespace BrawlTCG_alpha.Visuals
         // Deck
         const int MINIMUM_CARDS_IN_DECK = 40;
 
-        // P2P
-        // Host variables
+        // Host variables (for p2p)
         TcpListener _host;
         // Client Variables
         TcpClient _client;
         NetworkStream _stream;
         StreamReader _streamReader;
         StreamWriter _streamWriter;
-
-        // Client-Server
-        private ClientWebSocket socket;
 
         // Methods
         public FRM_Menu()
