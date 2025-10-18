@@ -43,7 +43,7 @@ namespace BrawlTCG_alpha.Visuals
             Size = new Size(800, 600);
             InitializeComponents();
             LoadCards();
-            LoadDecks();    
+            LoadDecks();
         }
 
 
@@ -554,5 +554,13 @@ namespace BrawlTCG_alpha.Visuals
             return deck;
         }
 
+        public static bool DoesDeckExist()
+        {
+            if (File.Exists("deckPlayer1.txt") && File.Exists("deckPlayer2.txt"))
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

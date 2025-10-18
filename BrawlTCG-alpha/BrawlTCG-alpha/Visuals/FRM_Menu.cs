@@ -34,6 +34,14 @@ namespace BrawlTCG_alpha.Visuals
 
         private void BTN_EditDeck_OnClick(object sender, EventArgs e)
         {
+            if (!FRM_DeckBuilder.DoesDeckExist())
+            {
+                // Create files for both players
+                string deckPath1 = "deckPlayer1.txt";
+                string deckPath2 = "deckPlayer2.txt";
+                File.WriteAllText(deckPath1, ""); // creates empty file
+                File.WriteAllText(deckPath2, ""); // creates empty file
+            }
             Form frm = new FRM_DeckBuilder();
             frm.Show();
         }

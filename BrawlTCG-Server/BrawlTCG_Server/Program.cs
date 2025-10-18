@@ -12,11 +12,24 @@ namespace BrawlTCG_Server
         static async Task Main(string[] args)
         {
             int port = 5000;
+
+            // 0️⃣ Print all available IPv4 addresses
+            Console.WriteLine("Server can be reached at these IP addresses:");
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    Console.WriteLine($"  {ip}:{port}");
+                }
+            }
+
+            // 1️⃣ Start listener
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
-            Console.WriteLine($"Server listening on port {port}...");
+            Console.WriteLine($"Server listening on port {port}...\n");
 
-            // Accept exactly 2 clients for a game
+            // 2️⃣ Accept exactly 2 clients for a game
             Console.WriteLine("Waiting for player 1...");
             TcpClient client1 = await listener.AcceptTcpClientAsync();
             Console.WriteLine("Player 1 connected.");
@@ -25,30 +38,29 @@ namespace BrawlTCG_Server
             TcpClient client2 = await listener.AcceptTcpClientAsync();
             Console.WriteLine("Player 2 connected.");
 
-            // Setup streams
+            // 3️⃣ Setup streams
             StreamReader reader1 = new StreamReader(client1.GetStream());
             StreamWriter writer1 = new StreamWriter(client1.GetStream()) { AutoFlush = true };
             StreamReader reader2 = new StreamReader(client2.GetStream());
             StreamWriter writer2 = new StreamWriter(client2.GetStream()) { AutoFlush = true };
 
-            // 1️⃣ Exchange initial player data
+            // 4️⃣ Exchange initial player data
             string player1Data = await reader1.ReadLineAsync();
             string player2Data = await reader2.ReadLineAsync();
 
-            // Send each player the other’s data
             await writer1.WriteLineAsync(player2Data);
             await writer2.WriteLineAsync(player1Data);
 
             Console.WriteLine("Player data exchanged. Waiting for turn distribution request...");
 
-            // 2️⃣ Handle DIST_TURNS request
+            // 5️⃣ Handle DIST_TURNS request
             var distTask1 = HandleDistTurns(reader1, writer1, isFirst: true);
             var distTask2 = HandleDistTurns(reader2, writer2, isFirst: false);
             await Task.WhenAll(distTask1, distTask2);
 
             Console.WriteLine("Turn distribution complete. Starting message relay...");
 
-            // 3️⃣ Start relaying in-game messages
+            // 6️⃣ Start relaying in-game messages
             var task1 = RelayMessages(reader1, writer2, "Player 1 -> Player 2");
             var task2 = RelayMessages(reader2, writer1, "Player 2 -> Player 1");
 
@@ -67,7 +79,6 @@ namespace BrawlTCG_Server
                 string request = await reader.ReadLineAsync();
                 if (request != null && request == "DIST_TURNS_REQUEST")
                 {
-                    // First connected player gets true, second gets false
                     await writer.WriteLineAsync(isFirst ? "DIST_TURNS:true" : "DIST_TURNS:false");
                     Console.WriteLine($"Sent turn info to {(isFirst ? "Player 1" : "Player 2")}: {isFirst}");
                 }

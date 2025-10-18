@@ -37,13 +37,15 @@
             label2 = new Label();
             groupBox1 = new GroupBox();
             BTN_Connect = new Button();
+            label3 = new Label();
+            label4 = new Label();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // BTN_EditDeck
             // 
             BTN_EditDeck.BackColor = Color.MediumPurple;
-            BTN_EditDeck.Font = new Font("Microsoft Sans Serif", 72F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            BTN_EditDeck.Font = new Font("Microsoft Sans Serif", 36F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BTN_EditDeck.Location = new Point(12, 12);
             BTN_EditDeck.Name = "BTN_EditDeck";
             BTN_EditDeck.Size = new Size(702, 155);
@@ -57,23 +59,23 @@
             TB_Name.BackColor = Color.White;
             TB_Name.Location = new Point(5, 26);
             TB_Name.Name = "TB_Name";
-            TB_Name.PlaceholderText = "Name";
-            TB_Name.Size = new Size(180, 27);
+            TB_Name.PlaceholderText = "Username";
+            TB_Name.Size = new Size(204, 27);
             TB_Name.TabIndex = 0;
             // 
             // BTN_P2P
             // 
             BTN_P2P.Location = new Point(5, 59);
             BTN_P2P.Name = "BTN_P2P";
-            BTN_P2P.Size = new Size(181, 29);
+            BTN_P2P.Size = new Size(204, 29);
             BTN_P2P.TabIndex = 6;
-            BTN_P2P.Text = "Multiplayer (P2P)";
+            BTN_P2P.Text = "Multiplayer (P2P or LAN)";
             BTN_P2P.UseVisualStyleBackColor = true;
             BTN_P2P.Click += BTN_P2P_Click;
             // 
             // LBL_Status
             // 
-            LBL_Status.Location = new Point(5, 91);
+            LBL_Status.Location = new Point(6, 129);
             LBL_Status.Name = "LBL_Status";
             LBL_Status.Size = new Size(180, 23);
             LBL_Status.TabIndex = 7;
@@ -95,10 +97,12 @@
             label2.Name = "label2";
             label2.Size = new Size(180, 23);
             label2.TabIndex = 9;
-            label2.Text = "Play Online (P2P)";
+            label2.Text = "Play Online";
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(label4);
+            groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(BTN_Connect);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(LBL_Status);
@@ -112,13 +116,29 @@
             // 
             // BTN_Connect
             // 
-            BTN_Connect.Location = new Point(192, 59);
+            BTN_Connect.Location = new Point(6, 94);
             BTN_Connect.Name = "BTN_Connect";
             BTN_Connect.Size = new Size(203, 29);
             BTN_Connect.TabIndex = 10;
             BTN_Connect.Text = "Multiplayer (Client-Server)";
             BTN_Connect.UseVisualStyleBackColor = true;
             BTN_Connect.Click += BTN_Connect_Click;
+            // 
+            // label3
+            // 
+            label3.Location = new Point(215, 98);
+            label3.Name = "label3";
+            label3.Size = new Size(359, 23);
+            label3.TabIndex = 11;
+            label3.Text = "(Client-Server: Someone has to run the server)";
+            // 
+            // label4
+            // 
+            label4.Location = new Point(215, 63);
+            label4.Name = "label4";
+            label4.Size = new Size(381, 23);
+            label4.TabIndex = 12;
+            label4.Text = "(P2P Connection: Direct connection to each others pc)";
             // 
             // FRM_Menu
             // 
@@ -153,5 +173,7 @@
         private Label label2;
         private GroupBox groupBox1;
         private Button BTN_Connect;
+        private Label label4;
+        private Label label3;
     }
 }

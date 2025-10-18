@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BrawlTCG_Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b8c1734f6c33e19e52018edf3c4304c0c2ec5c8")]
 [assembly: System.Reflection.AssemblyProductAttribute("BrawlTCG_Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BrawlTCG_Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
